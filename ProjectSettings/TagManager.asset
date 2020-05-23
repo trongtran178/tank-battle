@@ -8,6 +8,9 @@ TagManager:
   - player
   - player2
   - bullet
+  - FxTemporaire
+  - Effect_Destroy_Enemy_Station
+  - player_body
   layers:
   - Default
   - TransparentFX
