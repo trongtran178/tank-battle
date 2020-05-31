@@ -4,17 +4,14 @@ namespace Assets.Scripts.Enemies
 {
     public class FrogEnemy : Enemy
     {
+        public GameObject self;
+        public GameObject currentHealthBar;
 
-        public float speedAttack;
-        public float maxHealth = 100.0f;
-        public float moveSpeed = 50.0f;
-
-        private float currentHealth;
+        private  float currentHealth;
         private GameObject player;
         private GameObject player_body;
-        private Rigidbody2D rigidBody;
-        public GameObject self;
-        private GameObject healthBar;
+        private Rigidbody2D rigidBody2D;
+    
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -22,25 +19,23 @@ namespace Assets.Scripts.Enemies
         /// </summary>
         private float horizontalMove = 0;
 
+        // Su dung de xu ly di chuyen
         private Vector3 Velocity = Vector3.zero;
 
         void Awake()
         {
+            currentHealth = health;
+
             player = GameObject.FindGameObjectWithTag("player");
             player_body = GameObject.FindGameObjectWithTag("player_body");
-            //healthBar = GetComponentInParent()/
-            rigidBody = GetComponentInParent<Rigidbody2D>();
-            
-            currentHealth = maxHealth;
+            rigidBody2D = GetComponentInParent<Rigidbody2D>();
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             InvokeRepeating("HandleAttack", .1f, .1f);
         }
 
-        // Update is called once per frame
         void Update()
         {
             Move();
@@ -48,7 +43,7 @@ namespace Assets.Scripts.Enemies
 
         private void Move()
         {
-            if (player == null)
+            if (player == null || player.activeSelf == false)
             {
                 self.GetComponent<Animation>().Play("Mon_T_Jump");
                 return;
@@ -89,8 +84,8 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody.velocity.y);
-            rigidBody.velocity = Vector3.SmoothDamp(rigidBody.velocity, targetVelocity, ref Velocity, .05f);
+            Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
+            rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
         }
 
         private void HandleAttack()
@@ -100,13 +95,19 @@ namespace Assets.Scripts.Enemies
             float distanceBetweenPlayer = Vector2.Distance(player_body.transform.position, transform.position);
 
             if (self.GetComponent<Animation>().IsPlaying("Mon_T_Attack")) return;
+            // self.GetComponent<Animation>("aa")
             else if (distanceBetweenPlayer < 7)
             {
                 player.GetComponent<TankController2>().TakeDamage(20);
                 self.GetComponent<Animation>().Play("Mon_T_Attack");
+
+                /////////////////////////////////////////
+                /////////// IMPORTANT CODE  /////////////
+                /////////// SET SPEED OF ANIMATION //////
+                /////////////////////////////////////////
+                // self.GetComponent<Animation>()["Mon_T_Attack"].speed = (float) 2.3;
             }
         }
-
 
         private bool IsFlip()
         {
@@ -119,23 +120,24 @@ namespace Assets.Scripts.Enemies
 
         private void Death()
         {
-           
+            Destroy(self);
         }
 
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerEnter2D(Collider2D collider)
         {
-            Bullet bullet = collision.GetComponent<Bullet>();
-
+            Bullet bullet = collider.GetComponent<Bullet>();
+          
+            // Bi trung dan tu player
             if (bullet != null)
             {
-                //currentHealth -= bullet.damage;
-                //healthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, healthBar.transform.localScale.y);
-                //if (currentHealth <= 0)
-                //{
-                //    self.GetComponent<Animation>().Play("Mon_T_Dead");
-                //    // Invoke("Death", 2);
-                //}
+                currentHealth -= bullet.damage;
+                currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+                if (currentHealth <= 0)
+                {
+                    self.GetComponent<Animation>().Play("Mon_T_Dead");
+                    Invoke("Death", 2);
+                }
             }
         }
 

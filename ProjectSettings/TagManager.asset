@@ -12,6 +12,7 @@ TagManager:
   - Effect_Destroy_Enemy_Station
   - player_body
   - enemy_frog
+  - enemy_controller
   layers:
   - Default
   - TransparentFX
