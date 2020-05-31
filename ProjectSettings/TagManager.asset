@@ -11,6 +11,7 @@ TagManager:
   - FxTemporaire
   - Effect_Destroy_Enemy_Station
   - player_body
+  - enemy_frog
   layers:
   - Default
   - TransparentFX

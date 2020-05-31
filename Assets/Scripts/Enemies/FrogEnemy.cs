@@ -5,30 +5,32 @@ namespace Assets.Scripts.Enemies
     public class FrogEnemy : Enemy
     {
 
-        public float attackSpeed;
+        public float speedAttack;
         public float maxHealth = 100.0f;
-        public float moveSpeed = 90.0f;
+        public float moveSpeed = 50.0f;
 
         private float currentHealth;
         private GameObject player;
         private GameObject player_body;
         private Rigidbody2D rigidBody;
-
+        public GameObject self;
+        private GameObject healthBar;
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
         ///  else enemy will Idle
         /// </summary>
         private float horizontalMove = 0;
+
         private Vector3 Velocity = Vector3.zero;
+
         void Awake()
         {
             player = GameObject.FindGameObjectWithTag("player");
             player_body = GameObject.FindGameObjectWithTag("player_body");
-
+            //healthBar = GetComponentInParent()/
             rigidBody = GetComponentInParent<Rigidbody2D>();
-
-
+            
             currentHealth = maxHealth;
         }
 
@@ -48,26 +50,29 @@ namespace Assets.Scripts.Enemies
         {
             if (player == null)
             {
-                this.GetComponent<Animation>().Play("Mon_T_Jump");
+                self.GetComponent<Animation>().Play("Mon_T_Jump");
                 return;
             }
 
+            // Neu het mau thi khong the tan cong duoc nua
             if (currentHealth <= 0) return;
+            // Neu dang tan cong thi khong chay animation va k tan cong nua, doi den khi 1 luot danh thanh cong
+            if (self.GetComponent<Animation>().IsPlaying("Mon_T_Attack")) return; 
 
-
+            
             float distanceBetweenPlayer = Vector2.Distance(player_body.transform.position, transform.position);
             if (distanceBetweenPlayer >= 7)
             {
                 CancelInvoke("Attack");
-                this.GetComponent<Animation>().Play("Mon_T_Run");
-                if (isFlip())
+                self.GetComponent<Animation>().Play("Mon_T_Run");
+                if (IsFlip())
                 {
-                    this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, 90, this.transform.eulerAngles.z);
+                    self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, 90, self.transform.eulerAngles.z);
                     horizontalMove = 1 * moveSpeed;
                 }
                 else
                 {
-                    this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, -90, this.transform.eulerAngles.z);
+                    self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, -90, self.transform.eulerAngles.z);
                     horizontalMove = -1 * moveSpeed;
                 }
             }
@@ -77,13 +82,16 @@ namespace Assets.Scripts.Enemies
             }
         }
 
-
         private void FixedUpdate()
         {
-            Vector3 targetVelocity = new Vector2(horizontalMove * 10f, rigidBody.velocity.y);
-            rigidBody.velocity = Vector3.SmoothDamp(rigidBody.velocity, targetVelocity, ref Velocity, .05f);
+            HandleMove();
         }
 
+        private void HandleMove()
+        {
+            Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody.velocity.y);
+            rigidBody.velocity = Vector3.SmoothDamp(rigidBody.velocity, targetVelocity, ref Velocity, .05f);
+        }
 
         private void HandleAttack()
         {
@@ -91,21 +99,27 @@ namespace Assets.Scripts.Enemies
             if (currentHealth <= 0) return;
             float distanceBetweenPlayer = Vector2.Distance(player_body.transform.position, transform.position);
 
-            if (distanceBetweenPlayer >= 7)
+            if (self.GetComponent<Animation>().IsPlaying("Mon_T_Attack")) return;
+            else if (distanceBetweenPlayer < 7)
             {
-
+                player.GetComponent<TankController2>().TakeDamage(20);
+                self.GetComponent<Animation>().Play("Mon_T_Attack");
             }
         }
 
 
-        private bool isFlip()
+        private bool IsFlip()
         {
+            if (player_body.transform.position.x - transform.position.x > 0)
+            {
+                return true;
+            }
             return false;
         }
 
         private void Death()
         {
-
+           
         }
 
 
@@ -115,13 +129,14 @@ namespace Assets.Scripts.Enemies
 
             if (bullet != null)
             {
-                TakeDamage();
+                //currentHealth -= bullet.damage;
+                //healthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, healthBar.transform.localScale.y);
+                //if (currentHealth <= 0)
+                //{
+                //    self.GetComponent<Animation>().Play("Mon_T_Dead");
+                //    // Invoke("Death", 2);
+                //}
             }
-        }
-
-        private void TakeDamage()
-        {
-
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)

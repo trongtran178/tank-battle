@@ -10,7 +10,7 @@ namespace Assets.Scripts.Enemies
         // Start is called before the first frame update
         void Start()
         {
-
+            
         }
 
         // Update is called once per frame
@@ -26,9 +26,7 @@ namespace Assets.Scripts.Enemies
 
             if (bullet != null)
             {
-
-                effectDestroyEnemyStation.SetActive(true);
-
+                // effectDestroyEnemyStation.SetActive(true);
             }
         }
 

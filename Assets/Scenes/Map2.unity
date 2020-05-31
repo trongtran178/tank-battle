@@ -6749,7 +6749,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 417748471}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -107.92909, y: 29.21999, z: -79.94234}
+  m_LocalPosition: {x: -119.8261, y: 29.21999, z: -79.94234}
   m_LocalScale: {x: 4.332934, y: 7.644788, z: 2.8412683}
   m_Children: []
   m_Father: {fileID: 0}
@@ -6839,7 +6839,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 435452714}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -107.92909, y: 29.21999, z: -79.94234}
+  m_LocalPosition: {x: -119.8261, y: 29.21999, z: -79.94234}
   m_LocalScale: {x: 0.29767287, y: 0.2312022, z: 0.2312022}
   m_Children:
   - {fileID: 701093357}
@@ -18313,6 +18313,7 @@ GameObject:
   - component: {fileID: 1071670226}
   - component: {fileID: 1071670228}
   - component: {fileID: 1071670227}
+  - component: {fileID: 1071670229}
   m_Layer: 0
   m_Name: Enemy_Frog_Controller
   m_TagString: Untagged
@@ -18417,6 +18418,22 @@ PolygonCollider2D:
       - {x: 0.24823572, y: -0.051902056}
       - {x: 0.32063216, y: 0.04260972}
       - {x: 0.41409236, y: 0.32653642}
+--- !u!114 &1071670229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071670225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c51762383f57344ab963fd74a9486e37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedAttack: 0
+  maxHealth: 100
+  moveSpeed: 50
+  self: {fileID: 1188885469}
 --- !u!1001 &1080426954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18745,7 +18762,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!4 &1188885471 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd,
@@ -19255,9 +19272,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Frog
       objectReference: {fileID: 0}
+    - target: {fileID: 100096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 100096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -99.34
+      value: -91.15
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -19269,19 +19294,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7159193
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6981831
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_RootOrder
@@ -19293,7 +19318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -91.437004
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 400096, guid: 89df803ecaa16734c822c13e38f7cfcd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
