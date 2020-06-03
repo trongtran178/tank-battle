@@ -8,6 +8,7 @@ TagManager:
   - player
   - player2
   - bullet
+  - enemy
   layers:
   - Default
   - TransparentFX
@@ -17,9 +18,9 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
+  - tank
+  - army
+  - ememy
   - 
   - 
   - 

@@ -28,6 +28,15 @@ PrefabInstance:
       propertyPath: m_TagString
       value: bullet
       objectReference: {fileID: 0}
+    - target: {fileID: 189068, guid: 92e083ab2d58e5d48a8476b917c5a9be, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416624, guid: 92e083ab2d58e5d48a8476b917c5a9be, type: 3}
+      propertyPath: Prefab
+      value: 
+      objectReference: {fileID: 1678266536710752, guid: e9f2eebd4297d16468c064220662eea2,
+        type: 3}
     - target: {fileID: 424090, guid: 92e083ab2d58e5d48a8476b917c5a9be, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -80,11 +89,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 11416624, guid: 92e083ab2d58e5d48a8476b917c5a9be, type: 3}
-      propertyPath: Prefab
-      value: 
-      objectReference: {fileID: 1678266536710752, guid: e9f2eebd4297d16468c064220662eea2,
-        type: 3}
     - target: {fileID: 21235938, guid: 92e083ab2d58e5d48a8476b917c5a9be, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -117,6 +121,10 @@ PrefabInstance:
     - target: {fileID: 1997882812359486, guid: 840f338b0237d3440b6d0de9ca9481f5, type: 3}
       propertyPath: m_Name
       value: vfx_Projectile_RadioactiveBall
+      objectReference: {fileID: 0}
+    - target: {fileID: 1997882812359486, guid: 840f338b0237d3440b6d0de9ca9481f5, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4387073695559136, guid: 840f338b0237d3440b6d0de9ca9481f5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -173,6 +181,18 @@ PrefabInstance:
     - target: {fileID: 4387073695559136, guid: 840f338b0237d3440b6d0de9ca9481f5, type: 3}
       propertyPath: m_LocalScale.z
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729205543857794, guid: 840f338b0237d3440b6d0de9ca9481f5, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1599817429380146, guid: 840f338b0237d3440b6d0de9ca9481f5, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1263503905813920, guid: 840f338b0237d3440b6d0de9ca9481f5, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 114908792907059822, guid: 840f338b0237d3440b6d0de9ca9481f5,
         type: 3}

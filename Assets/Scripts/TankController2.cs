@@ -26,6 +26,8 @@ public class TankController2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        Physics2D.IgnoreLayerCollision(8, 9);
         velx = Input.GetAxis("Horizontal");
         vely = Rb.velocity.y;
         Rb.velocity = new Vector2(velx*speed,vely);

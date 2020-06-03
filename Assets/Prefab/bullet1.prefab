@@ -1,5 +1,108 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!60 &8901602227579950881
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7063646231846416335}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.53, y: 2.55}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.59499997, y: -0.175}
+      - {x: 0.60499996, y: -0.085}
+      - {x: 0.60499996, y: 0.114999995}
+      - {x: 0.565, y: 0.255}
+      - {x: 0.515, y: 0.345}
+      - {x: 0.33499998, y: 0.515}
+      - {x: 0.195, y: 0.59499997}
+      - {x: 0.114999995, y: 0.615}
+      - {x: -0.13499999, y: 0.615}
+      - {x: -0.255, y: 0.575}
+      - {x: -0.355, y: 0.515}
+      - {x: -0.49499997, y: 0.375}
+      - {x: -0.555, y: 0.295}
+      - {x: -0.625, y: 0.114999995}
+      - {x: -0.625, y: -0.055}
+      - {x: -0.60499996, y: -0.16499999}
+      - {x: -0.565, y: -0.265}
+      - {x: -0.505, y: -0.385}
+      - {x: -0.355, y: -0.525}
+      - {x: -0.16499999, y: -0.60499996}
+      - {x: -0.065, y: -0.615}
+      - {x: -0.035, y: -0.615}
+      - {x: 0.105, y: -0.60499996}
+      - {x: 0.24499999, y: -0.575}
+      - {x: 0.33499998, y: -0.525}
+      - {x: 0.505, y: -0.345}
+--- !u!114 &114024457899688384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7063646231846416335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 438b16ff95d7cbe44a762bfd4951bdcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DebugCollisions: 0
+  ImpactMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  ImpactThreshold: 1
+  ImpactDelay: 0
+  DamageOnImpact: 0
+  DamageDestructible: {fileID: 0}
+  DamageScale: 1
+  UseFirstOnly: 1
+  OnImpact:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4399534356632832879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7063646231846416335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219c397b38044224ebec4db6a2fd3468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 1329845292236604, guid: bd00b2f98d19d4a70ad195bf428e208d, type: 3}
+  SpawnInStart: 0
+--- !u!114 &6411061767353079359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7063646231846416335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7d87bf7ab9de435e855b324bdc4d139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 20
 --- !u!1001 &7063646231846292803
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10,6 +113,10 @@ PrefabInstance:
     - target: {fileID: 189068, guid: 4e60d4d64e71ced42851723f1ebaba43, type: 3}
       propertyPath: m_Name
       value: bullet1
+      objectReference: {fileID: 0}
+    - target: {fileID: 189068, guid: 4e60d4d64e71ced42851723f1ebaba43, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 424090, guid: 4e60d4d64e71ced42851723f1ebaba43, type: 3}
       propertyPath: m_LocalPosition.x
@@ -101,5 +208,12 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: -3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11425046, guid: 4e60d4d64e71ced42851723f1ebaba43, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 4e60d4d64e71ced42851723f1ebaba43, type: 3}
+--- !u!1 &7063646231846416335 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 189068, guid: 4e60d4d64e71ced42851723f1ebaba43,
+    type: 3}
+  m_PrefabInstance: {fileID: 7063646231846292803}
+  m_PrefabAsset: {fileID: 0}
