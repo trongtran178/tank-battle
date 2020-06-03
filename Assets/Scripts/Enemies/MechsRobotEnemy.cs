@@ -12,21 +12,24 @@ namespace Assets.Scripts.Enemies
         public GameObject currentHealthBar;
         public GameObject weaponLeft;
         public GameObject weaponRight;
+        public GameObject projectile;
         public GameObject effectTakeDamage;
         public GameObject effectDestroy;
-
-
+        /// Effect for almost out of blood
+        public GameObject effectDamaged; 
+        public GameObject firePoint;
+        
         private Animator animator; // include jump, idle, attack, fall back.
         private Animator weaponLeftAnimator;
         private Animator weaponRightAnimator;
 
         private float currentHealth;
         private float horizontalMove = 0;
-
-        private Rigidbody2D rigidBody2D;
-
+       
         private GameObject player;
         private GameObject player_body;
+        private Rigidbody2D rigidBody2D;
+
        
 
         // Su dung de xu ly di chuyen
@@ -52,22 +55,23 @@ namespace Assets.Scripts.Enemies
             animator.Play("Walk");
             weaponLeftAnimator.Play("Idle");
             weaponRightAnimator.Play("Idle");
+            InvokeRepeating("Attack", .0f, 3.0f);
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(currentHealth > 0)
-            {
-                Move();
-            }
+            if(currentHealth > 0) Move();
+            if (!player) CancelInvoke("Attack");
         }
 
         private void Move()
         {
             if (player == null || player.activeSelf == false)
             {
-                self.GetComponent<Animation>().Play("Jump_jetpack");
+                animator.Play("Jump_simple");
+                weaponLeftAnimator.Play("Idle");
+                weaponRightAnimator.Play("Idle");
                 return;
             }
             // Neu enemy het mau thi khong the di chuyen duoc
@@ -78,6 +82,7 @@ namespace Assets.Scripts.Enemies
            
                 if (distanceBetweenPlayer >= (minimumDistanceIndicatorBetweenPlayer - 8) && Vector2.Distance(player.transform.position, self.transform.position) <= (minimumDistanceIndicatorBetweenPlayer + 8))
                 {
+                    // Attack here
                     horizontalMove = 0;
                     animator.Play("Idle");
                     weaponLeftAnimator.Play("Shoot");
@@ -102,9 +107,18 @@ namespace Assets.Scripts.Enemies
 
         private void Attack()
         {
-            //if (!self.activeSelf || self == null) return;
-            //Quaternion quaternion = new Quaternion(20, 0, self.transform.rotation.z, self.transform.rotation.w);
-            //Instantiate(vfx_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), firePoint.rotation.y, firePoint.rotation.z));
+            if (currentHealth <= 0 || !self.activeSelf || self == null)
+            {
+                CancelInvoke("Attack");
+                return;
+            }
+            GameObject _projectile = projectile;
+                
+           _projectile.SetActive(true);
+           
+            Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
+            _projectile.transform.localRotation = firePoint.transform.localRotation;
+
         }
 
         private void FixedUpdate()
@@ -136,6 +150,7 @@ namespace Assets.Scripts.Enemies
                 rigidBody2D.constraints = RigidbodyConstraints2D.FreezeAll;
                 StartCoroutine(FreezeRotation(.1f));
                 currentHealth -= bullet.damage;
+                
                 currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
                 if (currentHealth <= 0)
                 {
@@ -143,6 +158,11 @@ namespace Assets.Scripts.Enemies
                     weaponLeftAnimator.Play("Idle");
                     weaponRightAnimator.Play("Idle");
                     Invoke("Death", 2);
+                }
+                // Almost out of blood
+                else if(currentHealth <= health / 2)
+                {
+                    effectDamaged.SetActive(true);
                 }
                 
             }
@@ -160,7 +180,7 @@ namespace Assets.Scripts.Enemies
         }
 
         private double getAttackCorner()
-        {
+        {   if (!player) return -1;
             float x = Mathf.Abs(Mathf.Abs(self.transform.position.x) - Mathf.Abs(player.transform.position.x));
             float y = Mathf.Abs(Mathf.Abs(self.transform.position.y) - Mathf.Abs(player.transform.position.y));
             return (Mathf.Atan(y / x) * (180 / 3.14));

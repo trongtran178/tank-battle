@@ -84,6 +84,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
+            if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
         }
