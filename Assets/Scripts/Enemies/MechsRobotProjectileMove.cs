@@ -19,8 +19,11 @@ public class MechsRobotProjectileMove : MonoBehaviour
            // edit tag, hard code
         player = GameObject.FindGameObjectWithTag("player");
         player_body = GameObject.FindGameObjectWithTag("player_body");
-        if(player)
+        if (player) {
             target = new Vector2(player_body.transform.position.x, player_body.transform.position.y);
+            //target = new Vector2(float.PositiveInfinity, player_body.transform.position.y);
+        }
+            
         initializationTime = Time.timeSinceLevelLoad;
     }
 
@@ -28,13 +31,10 @@ public class MechsRobotProjectileMove : MonoBehaviour
     void Update()
     {
         float timeSinceInitialization = Time.timeSinceLevelLoad - initializationTime;
-        if (timeSinceInitialization >= 3)
-        {
-            Instantiate(explosion, transform.position, transform.rotation);
+        if (timeSinceInitialization >= 2) DestroyProjectile();
 
-            DestroyProjectile();
-        }
         self.transform.position = Vector2.MoveTowards(self.transform.position, target, speed * Time.deltaTime);
+        if (self.transform.position.x == target.x && self.transform.position.y == target.y) DestroyProjectile();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -42,13 +42,13 @@ public class MechsRobotProjectileMove : MonoBehaviour
         if (collision.CompareTag("player"))
         {
             player.GetComponent<TankController2>().TakeDamage(20);
-            Instantiate(explosion, transform.position, transform.rotation);
             DestroyProjectile();
         }
     }
 
     void DestroyProjectile()
     {
+        Instantiate(explosion, transform.position, transform.rotation);
         Destroy(self);
     }
 }
