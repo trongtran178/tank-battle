@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1483989944914006742}
   - component: {fileID: 1483989944914006736}
   - component: {fileID: 1483989944914006737}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: car-monster-tire (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,9 +110,9 @@ GameObject:
   - component: {fileID: 1483989945452710229}
   - component: {fileID: 1483989945452710231}
   - component: {fileID: 1483989945452710230}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: enemy
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 1483989945453221737}
   - component: {fileID: 1483989945453221736}
   - component: {fileID: 1483989945453221739}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: car-tank-cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,6 +366,7 @@ MonoBehaviour:
   v: 0
   doLonKc: 0
   timeGun: 3
+  flagGun: 0
 --- !u!1 &1483989945642637261
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,7 +378,7 @@ GameObject:
   - component: {fileID: 1483989945642637260}
   - component: {fileID: 1483989945642637263}
   - component: {fileID: 1483989945642637262}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: car-tank-bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -490,7 +491,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1483989946321388121}
   - component: {fileID: 1483989946321388120}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: car-tank-fg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -570,7 +571,7 @@ GameObject:
   - component: {fileID: 1483989946446543941}
   - component: {fileID: 1483989946446543943}
   - component: {fileID: 1483989946446543940}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: car-monster-tire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,6 +667,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7620673170058827866, guid: cd74da667a0db4a5d9f3f4d2820e7512,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7620673170058827867, guid: cd74da667a0db4a5d9f3f4d2820e7512,
         type: 3}
@@ -791,6 +797,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RenderMode
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7620673170693240315, guid: cd74da667a0db4a5d9f3f4d2820e7512,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7620673169202589388, guid: cd74da667a0db4a5d9f3f4d2820e7512,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd74da667a0db4a5d9f3f4d2820e7512, type: 3}

@@ -28,6 +28,8 @@ public class Bullet : MonoBehaviour
         Enemy enemy= collision.GetComponent<Enemy>();
         TankController2 tank = collision.GetComponent<TankController2>();
 
+        Dogcollider dog = collision.GetComponent<Dogcollider>();
+
         SoldierMain soldier = collision.GetComponent<SoldierMain>();
         if(enemy!=null)
         {
@@ -46,6 +48,12 @@ public class Bullet : MonoBehaviour
         {
             soldier.TakeDamage(damage);
         }
+        if (dog != null)
+        {
+            dog.TakeDamage(damage);
+        }
+
+        
 
 
     }

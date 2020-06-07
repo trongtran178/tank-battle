@@ -9,6 +9,7 @@ TagManager:
   - player2
   - bullet
   - enemy
+  - soldier
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - 
   - tank
   - army
-  - ememy
+  - enemy
   - 
   - 
   - 
