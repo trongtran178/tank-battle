@@ -79,8 +79,7 @@ namespace Assets.Scripts.Enemies
 
         private void FixedUpdate()
         {
-           
-                HandleMove();
+            HandleMove();
         }
 
         private void HandleMove()
@@ -102,15 +101,19 @@ namespace Assets.Scripts.Enemies
             // self.GetComponent<Animation>("aa")
             else if (distanceBetweenPlayer < 7)
             {
-                player.GetComponent<TankController2>().TakeDamage(20);
                 self.GetComponent<Animation>().Play("Mon_T_Attack");
-
+                //Invoke("AwaitPlayerTakeDamage", .3f);
                 /////////////////////////////////////////
-                /////////// IMPORTANT CODE  /////////////
+                /////////// IMPORTANT CODE //////////////
                 /////////// SET SPEED OF ANIMATION //////
                 /////////////////////////////////////////
                 // self.GetComponent<Animation>()["Mon_T_Attack"].speed = (float) 2.3;
             }
+        }
+
+        private void AwaitPlayerTakeDamage()
+        {
+            player.GetComponent<TankController2>().TakeDamage(20);
         }
 
         private bool IsFlip()

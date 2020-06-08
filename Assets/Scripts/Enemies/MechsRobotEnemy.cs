@@ -15,7 +15,6 @@ namespace Assets.Scripts.Enemies
         public GameObject projectile;
         public GameObject effectTakeDamage;
         public GameObject effectDestroy;
-        //  Effect for almost out of blood
         public GameObject effectDamaged;
         public GameObject firePoint;
 
@@ -29,8 +28,6 @@ namespace Assets.Scripts.Enemies
         private GameObject player;
         private GameObject player_body;
         private Rigidbody2D rigidBody2D;
-
-
 
         // Su dung de xu ly di chuyen
         private Vector3 Velocity = Vector3.zero;
@@ -55,14 +52,14 @@ namespace Assets.Scripts.Enemies
             animator.Play("Walk");
             weaponLeftAnimator.Play("Idle");
             weaponRightAnimator.Play("Idle");
-            InvokeRepeating("Attack", .0f, 3.0f);
+            InvokeRepeating("HandleAttack", .0f, 3.0f);
         }
 
         // Update is called once per frame
         void Update()
         {
             if (currentHealth > 0) Move();
-            if (!player) CancelInvoke("Attack");
+            if (!player) CancelInvoke("HandleAttack");
         }
 
         private void Move()
@@ -79,7 +76,6 @@ namespace Assets.Scripts.Enemies
             else if (player.activeSelf)
             {
                 float distanceBetweenPlayer = Vector2.Distance(player.transform.position, self.transform.position);
-
                 if (distanceBetweenPlayer >= (minimumDistanceIndicatorBetweenPlayer - 8) && Vector2.Distance(player.transform.position, self.transform.position) <= (minimumDistanceIndicatorBetweenPlayer + 8))
                 {
                     // Attack here
@@ -105,20 +101,23 @@ namespace Assets.Scripts.Enemies
             }
         }
 
-        private void Attack()
+        private void HandleAttack()
         {
             if (currentHealth <= 0 || !self.activeSelf || self == null)
             {
-                CancelInvoke("Attack");
+                CancelInvoke("HandleAttack");
                 return;
             }
-            GameObject _projectile = projectile;
 
-            _projectile.SetActive(true);
+            float distanceBetweenPlayer = Vector2.Distance(player.transform.position, self.transform.position);
+            if (distanceBetweenPlayer >= (minimumDistanceIndicatorBetweenPlayer - 8) && Vector2.Distance(player.transform.position, self.transform.position) <= (minimumDistanceIndicatorBetweenPlayer + 8))
+            {
+                GameObject _projectile = projectile;
+                _projectile.SetActive(true);
 
-            Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
-            _projectile.transform.localRotation = firePoint.transform.localRotation;
-
+                Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
+                _projectile.transform.localRotation = firePoint.transform.localRotation;
+            }
         }
 
         private void FixedUpdate()

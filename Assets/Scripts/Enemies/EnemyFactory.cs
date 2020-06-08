@@ -11,14 +11,16 @@ namespace Assets.Scripts.Enemies
         public GameObject currentHealthBar;
         public GameObject effectDestroy;
         public GameObject self;
-
         public GameObject mechsRobot;
         public GameObject frog;
 
         private float currentHealth;
+        private float generateEnemyTime = 10.0f;
         private static ArrayList enemies;
         private System.Random random = new System.Random();
         private GameObject player;
+        private bool flag = false;
+
         void Awake()
         {
             currentHealth = 100;
@@ -29,12 +31,25 @@ namespace Assets.Scripts.Enemies
         // Start is called before the first frame update
         private void Start()
         {
-            InvokeRepeating("GenerateEnemy", 1.0f, 10.0f);
+            InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
         }
 
         private void Update()
         {
             if (!player) CancelInvoke("GenerateEnemy");
+            if(currentHealth <= 60)
+            {
+                if(flag == false)
+                {
+                    generateEnemyTime = 2.0f;
+                    CancelInvoke("GenerateEnemy");
+                    InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
+
+                }
+                flag = true;
+                
+               
+            }
         }
 
         public void CreateEnemies(EnemyType enemyType)
@@ -77,7 +92,7 @@ namespace Assets.Scripts.Enemies
             if (bullet != null)
             {
                 // Take damage
-                currentHealth -= 30;
+                currentHealth -= 10;
                 currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
 
                 if (currentHealth <= 0)
@@ -101,6 +116,7 @@ namespace Assets.Scripts.Enemies
             }
             int randomVal = random.Next(1, 10);
             CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+            //CreateEnemies(EnemyType.FROG);
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
