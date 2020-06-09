@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a7e1baf9f8c0b0f4bbb29a573a7866a6, type: 3}
+        m_Texture: {fileID: 2800000, guid: ee273508edcc44f749fbb1a2f1ad7197, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:

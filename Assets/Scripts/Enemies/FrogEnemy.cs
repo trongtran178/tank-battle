@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Assets.Scripts.Enemies
 {
@@ -8,10 +10,8 @@ namespace Assets.Scripts.Enemies
         public GameObject currentHealthBar;
 
         private  float currentHealth;
-        private GameObject player;
-        private GameObject player_body;
         private Rigidbody2D rigidBody2D;
-    
+
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -21,14 +21,17 @@ namespace Assets.Scripts.Enemies
 
         // Su dung de xu ly di chuyen
         private Vector3 Velocity = Vector3.zero;
+        // private GameObject attackTarget;
 
         void Awake()
         {
             currentHealth = health;
-
-            player = GameObject.FindGameObjectWithTag("player");
-            player_body = GameObject.FindGameObjectWithTag("player_body");
+            //player = GameObject.FindGameObjectWithTag("player");
+            //player_body = GameObject.FindGameObjectWithTag("player_body");
             rigidBody2D = GetComponentInParent<Rigidbody2D>();
+
+            attackTarget = FindAttackTarget();
+
         }
 
         void Start()
@@ -38,12 +41,14 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
+            attackTarget = FindAttackTarget();
             Move();
         }
 
         private void Move()
         {
-            if (player == null || player.activeSelf == false)
+            //if (player == null || player.activeSelf == false)
+            if(attackTarget == null)
             {
                 self.GetComponent<Animation>().Play("Mon_T_Jump");
                 return;
@@ -52,11 +57,10 @@ namespace Assets.Scripts.Enemies
             // Neu het mau thi khong the tan cong duoc nua
             if (currentHealth <= 0) return;
             // Neu dang tan cong thi khong chay animation va k tan cong nua, doi den khi 1 luot danh thanh cong
-            if (self.GetComponent<Animation>().IsPlaying("Mon_T_Attack")) return; 
+            if (self.GetComponent<Animation>().IsPlaying("Mon_T_Attack")) return;
 
-            
-            float distanceBetweenPlayer = Vector2.Distance(player_body.transform.position, transform.position);
-            if (distanceBetweenPlayer >= 7)
+            float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
+            if (distanceBetweenAttackTarget >= 7)
             {
                 CancelInvoke("Attack");
                 self.GetComponent<Animation>().Play("Mon_T_Run");
@@ -85,7 +89,8 @@ namespace Assets.Scripts.Enemies
         private void HandleMove()
         {
 
-            if (player == null) return;
+            //if (player == null) return;
+            if (attackTarget == null) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
@@ -93,13 +98,12 @@ namespace Assets.Scripts.Enemies
 
         private void HandleAttack()
         {
-            if (player == null) return;
+            if (player == null || player.activeSelf == false || attackTarget == null) return;
             if (currentHealth <= 0) return;
-            float distanceBetweenPlayer = Vector2.Distance(player_body.transform.position, transform.position);
+            float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
 
             if (self.GetComponent<Animation>().IsPlaying("Mon_T_Attack")) return;
-            // self.GetComponent<Animation>("aa")
-            else if (distanceBetweenPlayer < 7)
+            else if (distanceBetweenAttackTarget < 7)
             {
                 self.GetComponent<Animation>().Play("Mon_T_Attack");
                 //Invoke("AwaitPlayerTakeDamage", .3f);
@@ -118,7 +122,7 @@ namespace Assets.Scripts.Enemies
 
         private bool IsFlip()
         {
-            if (player_body.transform.position.x - transform.position.x > 0)
+            if(attackTarget.transform.position.x - transform.position.x > 0)
             {
                 return true;
             }
@@ -135,7 +139,6 @@ namespace Assets.Scripts.Enemies
         {
             Bullet bullet = collider.GetComponent<Bullet>();
           
-            // Bi trung dan tu player
             if (bullet != null)
             {
                 currentHealth -= bullet.damage;
@@ -157,5 +160,43 @@ namespace Assets.Scripts.Enemies
         {
             throw new System.NotImplementedException();
         }
+
+        //private GameObject FindAttackTarget()
+        //{
+            
+        //    GameObject attackTarget = null;
+        //    List<GameObject> allies = new List<GameObject>();
+        //    GameObject playerTarget;
+        //    // Key - value equivalent gameObject with distance between enemy
+        //    Dictionary<GameObject, float> alliesDictionary = new Dictionary<GameObject, float>();
+
+        //    playerTarget = GameObject.FindGameObjectWithTag("player_body");
+        //    //playerTarget = GameObject.FindGameObjectWithTag("player");
+        //    if (player == null || player.activeSelf == false) return null;
+        //    allies.Add(playerTarget);
+
+        //    // get all allies
+        //    GameObject[] alliesArray = GameObject.FindGameObjectsWithTag("allies");
+        //    for(int i = 0; i  < alliesArray.Length; i++)
+        //    {
+        //        allies.Add(alliesArray[i]);
+        //    }
+        //    float shortestAttackTargetDistance;
+            
+        //    shortestAttackTargetDistance  = Vector2.Distance(playerTarget.transform.position, transform.position);
+           
+        //    foreach (GameObject alliesGameObject in allies)
+        //    {
+        //        float distance = Vector2.Distance(alliesGameObject.transform.position, transform.position);
+        //        if(shortestAttackTargetDistance >= distance)
+        //        {
+        //            shortestAttackTargetDistance = distance;
+        //        }
+        //        alliesDictionary.Add(alliesGameObject, distance);
+        //    };
+
+        //    attackTarget = alliesDictionary.FirstOrDefault(x => x.Value <= shortestAttackTargetDistance).Key;
+        //    return attackTarget;
+        //}
     }
 }

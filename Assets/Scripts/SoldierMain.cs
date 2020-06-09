@@ -25,6 +25,7 @@ public class SoldierMain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Physics2D.IgnoreLayerCollision(10, 10);
         healthyBar.fillAmount = SoliderHealth / maxHealthy;
         if (SoliderHealth <= 0)
             Destroy(gameObject);

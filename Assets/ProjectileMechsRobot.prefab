@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9148420510458863007
 Transform:
   m_ObjectHideFlags: 0
@@ -18901,10 +18901,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e105d21f1654181ab866cd3b0a7c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackTarget: {fileID: 0}
   self: {fileID: 3362129674876686541}
   explosion: {fileID: 44638681371700126}
   player: {fileID: 0}
   firePoint: {fileID: 9717767676926091, guid: 02ab16d93226a4dd19027ac241178740, type: 3}
+  isFlip: 0
   speed: 20
 --- !u!50 &6372717305520959595
 Rigidbody2D:
@@ -47284,7 +47286,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6456685137090136665
 Transform:
   m_ObjectHideFlags: 0

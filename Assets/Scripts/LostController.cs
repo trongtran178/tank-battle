@@ -58,16 +58,16 @@ public class LostController : MonoBehaviour
 
 
 
-        //if (tank == null)
-        //{
-        //    lostScreen.SetActive(true);
+        if (tank == null)
+        {
+            lostScreen.SetActive(true);
 
 
-        //}
-        //if (ememy == null && ememy1 == null && ememy2 == null && ememy3 == null && ememy4 == null && plane1 == null && soldier == null)
-        //{
-        //    WinScreen.SetActive(true);
-        //}
+        }
+        if (ememy == null && ememy1 == null && ememy2 == null && ememy3 == null && ememy4 == null && plane1 == null && soldier == null)
+        {
+            WinScreen.SetActive(true);
+        }
     }
 
     public void ResumeGame()

@@ -38,6 +38,7 @@ public class Projectile : MonoBehaviour
     {       
         if(other.CompareTag("player2"))
         {
+            Debug.Log("asdsadasddasdsa");
             Instantiate(explosion, other.transform.position, other.transform.rotation);
             
             DestroyProjectile();

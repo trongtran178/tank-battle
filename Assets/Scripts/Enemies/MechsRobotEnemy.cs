@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Assets.Scripts.Enemies
 {
     public class MechsRobotEnemy : Enemy
     {
-        public float minimumDistanceIndicatorBetweenPlayer = 24;
+        public float minimumDistanceIndicatorBetweenAttackTarget = 24;
 
         public GameObject self;
         public GameObject currentHealthBar;
@@ -23,10 +24,13 @@ namespace Assets.Scripts.Enemies
         private Animator weaponRightAnimator;
 
         private float currentHealth;
+        /// <summary>
+        ///  If horizontalMove negative, enemy will moving in left side,
+        ///  else if horizontalMove is positive, enemy will moving in right side,
+        ///  else enemy will Idle
+        /// </summary>
         private float horizontalMove = 0;
 
-        private GameObject player;
-        private GameObject player_body;
         private Rigidbody2D rigidBody2D;
 
         // Su dung de xu ly di chuyen
@@ -34,21 +38,20 @@ namespace Assets.Scripts.Enemies
 
         void Awake()
         {
+
             currentHealth = health;
             rigidBody2D = GetComponentInParent<Rigidbody2D>();
-
-            player = GameObject.FindGameObjectWithTag("player");
-            player_body = GameObject.FindGameObjectWithTag("player_body");
 
             animator = GetComponentInParent<Animator>();
             weaponLeftAnimator = weaponLeft.GetComponent<Animator>();
             weaponRightAnimator = weaponRight.GetComponent<Animator>();
-
+            minimumDistanceIndicatorBetweenAttackTarget = GetRandomMinimumDistance(minimumDistanceIndicatorBetweenAttackTarget);
         }
 
         // Start is called before the first frame update
         void Start()
         {
+            attackTarget = FindAttackTarget();
             animator.Play("Walk");
             weaponLeftAnimator.Play("Idle");
             weaponRightAnimator.Play("Idle");
@@ -58,6 +61,7 @@ namespace Assets.Scripts.Enemies
         // Update is called once per frame
         void Update()
         {
+            attackTarget = FindAttackTarget();
             if (currentHealth > 0) Move();
             if (!player) CancelInvoke("HandleAttack");
         }
@@ -74,30 +78,42 @@ namespace Assets.Scripts.Enemies
             //  Neu enemy het mau thi khong the di chuyen duoc
             else if (currentHealth <= 0) return;
             else if (player.activeSelf)
-            {
-                float distanceBetweenPlayer = Vector2.Distance(player.transform.position, self.transform.position);
-                if (distanceBetweenPlayer >= (minimumDistanceIndicatorBetweenPlayer - 8) && Vector2.Distance(player.transform.position, self.transform.position) <= (minimumDistanceIndicatorBetweenPlayer + 8))
+            { 
+                float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
+                if (distanceBetweenAttackTarget >= (minimumDistanceIndicatorBetweenAttackTarget - 8)
+                    && distanceBetweenAttackTarget <= (minimumDistanceIndicatorBetweenAttackTarget + 8))
                 {
-                    // Attack here
+                    // Attack!!! 
                     horizontalMove = 0;
                     animator.Play("Idle");
                     weaponLeftAnimator.Play("Shoot");
                     weaponRightAnimator.Play("Shoot");
                 }
-                else if (distanceBetweenPlayer > minimumDistanceIndicatorBetweenPlayer + 8)
+                else if (distanceBetweenAttackTarget > minimumDistanceIndicatorBetweenAttackTarget + 8)
                 {
-                    horizontalMove = -1 * moveSpeed;
+                    horizontalMove = moveSpeed * (IsFlip() ? 1 : -1) ;
                     animator.Play("Walk");
+
                     weaponLeftAnimator.Play("Idle");
                     weaponRightAnimator.Play("Idle");
                 }
-                else if (distanceBetweenPlayer < minimumDistanceIndicatorBetweenPlayer - 8)
+                else if (distanceBetweenAttackTarget < minimumDistanceIndicatorBetweenAttackTarget - 8)
                 {
-                    horizontalMove = moveSpeed;
-                    animator.Play("Walk");
-                    weaponLeftAnimator.Play("Idle");
-                    weaponRightAnimator.Play("Idle");
+                    //horizontalMove = moveSpeed;
+                    horizontalMove = 0;
+                    animator.Play("Idle");
+                    weaponLeftAnimator.Play("Shoot");
+                    weaponRightAnimator.Play("Shoot");
                 }
+                if (IsFlip())
+                {
+                    self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, 90, self.transform.eulerAngles.z);
+                }
+                else
+                {
+                    self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, -90, self.transform.eulerAngles.z);
+                }
+
             }
         }
 
@@ -109,12 +125,14 @@ namespace Assets.Scripts.Enemies
                 return;
             }
 
-            float distanceBetweenPlayer = Vector2.Distance(player.transform.position, self.transform.position);
-            if (distanceBetweenPlayer >= (minimumDistanceIndicatorBetweenPlayer - 8) && Vector2.Distance(player.transform.position, self.transform.position) <= (minimumDistanceIndicatorBetweenPlayer + 8))
+            float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
+            if (distanceBetweenAttackTarget < minimumDistanceIndicatorBetweenAttackTarget + 8)
             {
                 GameObject _projectile = projectile;
-                _projectile.SetActive(true);
+                projectile.GetComponentInChildren<MechsRobotProjectileMove>().attackTarget = attackTarget;
+                projectile.GetComponentInChildren<MechsRobotProjectileMove>().isFlip = IsFlip();
 
+                _projectile.SetActive(true);
                 Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
                 _projectile.transform.localRotation = firePoint.transform.localRotation;
             }
@@ -122,13 +140,12 @@ namespace Assets.Scripts.Enemies
 
         private void FixedUpdate()
         {
-
             HandleMove();
         }
 
         private void HandleMove()
         {
-            if (player == null) return;
+            if (attackTarget == null) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
@@ -136,7 +153,7 @@ namespace Assets.Scripts.Enemies
 
         private bool IsFlip()
         {
-            if (player_body.transform.position.x - transform.position.x > 0)
+            if (attackTarget.transform.position.x - transform.position.x > 0)
             {
                 return true;
             }
@@ -165,7 +182,6 @@ namespace Assets.Scripts.Enemies
                 {
                     effectDamaged.SetActive(true);
                 }
-
             }
         }
 
@@ -182,12 +198,18 @@ namespace Assets.Scripts.Enemies
 
         private double getAttackCorner()
         {
-            if (!player) return -1;
-            float x = Mathf.Abs(Mathf.Abs(self.transform.position.x) - Mathf.Abs(player.transform.position.x));
-            float y = Mathf.Abs(Mathf.Abs(self.transform.position.y) - Mathf.Abs(player.transform.position.y));
+            if (!attackTarget) return -1;
+            float x = Mathf.Abs(Mathf.Abs(self.transform.position.x) - Mathf.Abs(attackTarget.transform.position.x));
+            float y = Mathf.Abs(Mathf.Abs(self.transform.position.y) - Mathf.Abs(attackTarget.transform.position.y));
             return (Mathf.Atan(y / x) * (180 / 3.14));
         }
 
+
+        public float GetRandomMinimumDistance(float distance)
+        {
+            System.Random random = new System.Random();
+            return (float)random.NextDouble() * ((distance + 2.0f) - (distance - 2.0f)) + (distance - 2.0f);
+        }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
         {
@@ -198,6 +220,9 @@ namespace Assets.Scripts.Enemies
         {
             throw new System.NotImplementedException();
         }
+
+
+
 
     }
 }

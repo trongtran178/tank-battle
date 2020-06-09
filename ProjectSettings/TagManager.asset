@@ -13,6 +13,8 @@ TagManager:
   - player_body
   - enemy_frog
   - enemy_controller
+  - enemy
+  - allies
   layers:
   - Default
   - TransparentFX

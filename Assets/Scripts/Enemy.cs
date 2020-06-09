@@ -63,11 +63,12 @@ public class Enemy : MonoBehaviour
         if (doLonKc > distanceMax)
         {
             velx = -speed;
-            Debug.Log("vo kl");
+            Debug.Log("lui");
         }
         else if (doLonKc < distanceMin)
         {
             velx = speed;
+            Debug.Log("tien");
 
         }
         else velx = 0;

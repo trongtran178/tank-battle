@@ -4,24 +4,26 @@ using UnityEngine;
 
 public class MechsRobotProjectileMove : MonoBehaviour
 {
+    public GameObject attackTarget;
     public GameObject self;
     public GameObject explosion;
     public GameObject player;
     public GameObject firePoint;
+    public bool isFlip = false;
     public float speed;
-
-    private Vector2 target;
+    
+    private Vector2 attackTargetVector;
     private GameObject player_body;
     private float initializationTime;
+    
     // Start is called before the first frame update
     void Start()
     {
-           // edit tag, hard code
+        // edit tag, hard code
         player = GameObject.FindGameObjectWithTag("player");
         player_body = GameObject.FindGameObjectWithTag("player_body");
-        
-        if (player) {
-            target = new Vector2(-1000.0f, firePoint.transform.position.y);
+        if (attackTarget) {
+            attackTargetVector = new Vector2(1000.0f * (isFlip ? 1 : -1), firePoint.transform.position.y);
         }
         initializationTime = Time.timeSinceLevelLoad;
     }
@@ -37,26 +39,29 @@ public class MechsRobotProjectileMove : MonoBehaviour
             return;
         }
 
-        self.transform.position = Vector2.MoveTowards(self.transform.position, target, speed * Time.deltaTime);
+        self.transform.position = Vector2.MoveTowards(self.transform.position, attackTargetVector, speed * Time.deltaTime);
+        //self.transform.position = Vector2.MoveTowards(self.transform.position, attac, speed * Time.deltaTime);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log(collision.name);
-        if (collision.CompareTag("player") || collision.name == "GroundGrass")
+        if(collision.CompareTag("player") || collision.CompareTag("allies"))
         {
-            // player.GetComponent<TankController2>().TakeDamage(20);
+            player.GetComponent<TankController2>().TakeDamage(0);
+            DestroyProjectile();
+        }
+        else if (collision.name == "GroundGrass")
+        {
             DestroyProjectile();
         }   
-        else
-        {
-
-        }
+        
     }
 
     void DestroyProjectile()
     {
-        Instantiate(explosion, transform.position, transform.rotation);
+        // Instantiate(explosion, transform.position, transform.rotation);
         Destroy(self);
     }
 }

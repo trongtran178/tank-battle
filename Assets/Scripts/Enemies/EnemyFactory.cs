@@ -13,25 +13,26 @@ namespace Assets.Scripts.Enemies
         public GameObject self;
         public GameObject mechsRobot;
         public GameObject frog;
+        public GameObject boss;
 
         private float currentHealth;
         private float generateEnemyTime = 10.0f;
         private static ArrayList enemies;
         private System.Random random = new System.Random();
-        private GameObject player;
+        //private GameObject player;
         private bool flag = false;
 
         void Awake()
         {
             currentHealth = 100;
             enemies = new ArrayList();
-            player = GameObject.FindGameObjectWithTag("player");
         }
 
         // Start is called before the first frame update
         private void Start()
         {
             InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
+            //Invoke("GenerateEnemy", 1.0f);
         }
 
         private void Update()
@@ -47,8 +48,6 @@ namespace Assets.Scripts.Enemies
 
                 }
                 flag = true;
-                
-               
             }
         }
 
@@ -116,6 +115,7 @@ namespace Assets.Scripts.Enemies
             }
             int randomVal = random.Next(1, 10);
             CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+            //CreateEnemies(EnemyType.MECHS_ROBOT);
             //CreateEnemies(EnemyType.FROG);
         }
 
