@@ -52,7 +52,7 @@ public class dog : MonoBehaviour
             float doLonKc = Mathf.Sqrt((kc.x * kc.x) + (kc.y * kc.y));
 
             //Debug.Log(doLonKc);
-            if (doLonKc < 10)
+            if (doLonKc < 15)
             {
                 //Debug.Log("da vao");
                 velx = 0;

@@ -28,7 +28,6 @@ namespace Assets.Scripts.Enemies
             enemies = new ArrayList();
         }
 
-        // Start is called before the first frame update
         private void Start()
         {
             InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
@@ -38,11 +37,11 @@ namespace Assets.Scripts.Enemies
         private void Update()
         {
             if (!player) CancelInvoke("GenerateEnemy");
-            if(currentHealth <= 60)
+            if (currentHealth <= 60)
             {
-                if(flag == false)
+                if (flag == false)
                 {
-                    generateEnemyTime = 2.0f;
+                    generateEnemyTime = 6.0f;
                     CancelInvoke("GenerateEnemy");
                     InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
 
@@ -55,7 +54,6 @@ namespace Assets.Scripts.Enemies
         {
             switch (enemyType)
             {
-
                 case EnemyType.FROG:
                     {
                         GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 20, self.transform.position.y), frog.transform.rotation);
@@ -78,12 +76,19 @@ namespace Assets.Scripts.Enemies
                     {
                         break;
                     }
+                case EnemyType.BOSS:
+                    {
+                        GameObject bossInit = Instantiate(boss, new Vector3(self.transform.position.x - 20, self.transform.position.y), mechsRobot.transform.rotation);
+                        bossInit.SetActive(true);
+                        enemies.Add(bossInit);
+                        break;
+                    }
                 default:
                     throw new Exception(message: "Error");
             }
         }
 
-        public void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
             Bullet bullet = collision.GetComponent<Bullet>();
             Debug.Log(bullet);
@@ -91,15 +96,22 @@ namespace Assets.Scripts.Enemies
             if (bullet != null)
             {
                 // Take damage
-                currentHealth -= 10;
+                currentHealth -= 30;
                 currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
 
                 if (currentHealth <= 0)
                 {
-                    effectDestroy.SetActive(true);
-                    Destroy(self);
+                    CreateEnemies(EnemyType.BOSS);
+                    Invoke("DestroyEnemyFactory", .2f);
                 }
             }
+        }
+
+        private void DestroyEnemyFactory()
+        { 
+            effectDestroy.SetActive(true);
+            Destroy(self);
+            CancelInvoke("GenerateEnemy");
         }
 
         private void GenerateEnemy()
@@ -110,11 +122,15 @@ namespace Assets.Scripts.Enemies
                 if (enemy != null)
                 {
                     count++;
-
                 }
             }
-            int randomVal = random.Next(1, 10);
-            CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+            if(currentHealth > 0)
+            {
+                int randomVal = random.Next(1, 10);
+                CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+            }
+           
+            
             //CreateEnemies(EnemyType.MECHS_ROBOT);
             //CreateEnemies(EnemyType.FROG);
         }
@@ -129,6 +145,21 @@ namespace Assets.Scripts.Enemies
         {
             // DO NOTHING
             throw new System.NotImplementedException();
+        }
+
+        public override void ReceiveHealthBumpFromBoss()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetCurrentHealth(float currentHealth)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override float GetCurrentHealth()
+        {
+            throw new NotImplementedException();
         }
     }
 }

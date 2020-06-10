@@ -13,7 +13,6 @@ public class MechsRobotProjectileMove : MonoBehaviour
     public float speed;
     
     private Vector2 attackTargetVector;
-    private GameObject player_body;
     private float initializationTime;
     
     // Start is called before the first frame update
@@ -21,7 +20,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
     {
         // edit tag, hard code
         player = GameObject.FindGameObjectWithTag("player");
-        player_body = GameObject.FindGameObjectWithTag("player_body");
+      
         if (attackTarget) {
             attackTargetVector = new Vector2(1000.0f * (isFlip ? 1 : -1), firePoint.transform.position.y);
         }
@@ -38,10 +37,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
             DestroyProjectile();
             return;
         }
-
         self.transform.position = Vector2.MoveTowards(self.transform.position, attackTargetVector, speed * Time.deltaTime);
-        //self.transform.position = Vector2.MoveTowards(self.transform.position, attac, speed * Time.deltaTime);
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

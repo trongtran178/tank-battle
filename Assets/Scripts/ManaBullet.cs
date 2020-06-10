@@ -35,7 +35,7 @@ public class ManaBullet : MonoBehaviour
         if (manaBullet < maxBullet)
         {
             manaBullet += 2f * Time.deltaTime;
-            Debug.Log(manaBullet + ":" + trajectoryScript.block1);
+            // Debug.Log(manaBullet + ":" + trajectoryScript.block1);
         }
         if (manaBullet > maxBullet)
         {

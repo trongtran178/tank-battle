@@ -6,12 +6,13 @@ namespace Assets.Scripts.Enemies
 {
     public class FrogEnemy : Enemy
     {
-        public GameObject self;
         public GameObject currentHealthBar;
+        public GameObject effectBuff;
+        public GameObject self;
 
-        private  float currentHealth;
+        private float currentHealth;
         private Rigidbody2D rigidBody2D;
-
+        private new Animation animation;
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -25,13 +26,11 @@ namespace Assets.Scripts.Enemies
 
         void Awake()
         {
-            currentHealth = health;
-            //player = GameObject.FindGameObjectWithTag("player");
-            //player_body = GameObject.FindGameObjectWithTag("player_body");
-            rigidBody2D = GetComponentInParent<Rigidbody2D>();
-
+            animation = self.GetComponent<Animation>();
             attackTarget = FindAttackTarget();
-
+            currentHealth = health;
+            effectBuff.SetActive(false);
+            rigidBody2D = GetComponentInParent<Rigidbody2D>();
         }
 
         void Start()
@@ -47,10 +46,9 @@ namespace Assets.Scripts.Enemies
 
         private void Move()
         {
-            //if (player == null || player.activeSelf == false)
             if(attackTarget == null)
             {
-                self.GetComponent<Animation>().Play("Mon_T_Jump");
+                animation.Play("Mon_T_Jump");
                 return;
             }
 
@@ -63,7 +61,7 @@ namespace Assets.Scripts.Enemies
             if (distanceBetweenAttackTarget >= 7)
             {
                 CancelInvoke("Attack");
-                self.GetComponent<Animation>().Play("Mon_T_Run");
+                animation.Play("Mon_T_Run");
                 if (IsFlip())
                 {
                     self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, 90, self.transform.eulerAngles.z);
@@ -88,8 +86,6 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-
-            //if (player == null) return;
             if (attackTarget == null) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
@@ -102,10 +98,10 @@ namespace Assets.Scripts.Enemies
             if (currentHealth <= 0) return;
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
 
-            if (self.GetComponent<Animation>().IsPlaying("Mon_T_Attack")) return;
+            if (animation.IsPlaying("Mon_T_Attack")) return;
             else if (distanceBetweenAttackTarget < 7)
             {
-                self.GetComponent<Animation>().Play("Mon_T_Attack");
+                animation.Play("Mon_T_Attack");
                 //Invoke("AwaitPlayerTakeDamage", .3f);
                 /////////////////////////////////////////
                 /////////// IMPORTANT CODE //////////////
@@ -134,7 +130,6 @@ namespace Assets.Scripts.Enemies
             Destroy(self);
         }
 
-
         private void OnTriggerEnter2D(Collider2D collider)
         {
             Bullet bullet = collider.GetComponent<Bullet>();
@@ -145,10 +140,26 @@ namespace Assets.Scripts.Enemies
                 currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
                 if (currentHealth <= 0)
                 {
-                    self.GetComponent<Animation>().Play("Mon_T_Dead");
+                    animation.Play("Mon_T_Dead");
                     Invoke("Death", 2);
                 }
             }
+        }
+
+        private void ReceiveBuff()
+        {
+            currentHealth += 10;
+            effectBuff.SetActive(true);
+        }
+
+
+        public override void SetCurrentHealth(float currentHealth)
+        {
+            this.currentHealth = currentHealth;
+        }
+        public override float GetCurrentHealth()
+        {
+            return currentHealth;
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -161,42 +172,13 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        //private GameObject FindAttackTarget()
-        //{
-            
-        //    GameObject attackTarget = null;
-        //    List<GameObject> allies = new List<GameObject>();
-        //    GameObject playerTarget;
-        //    // Key - value equivalent gameObject with distance between enemy
-        //    Dictionary<GameObject, float> alliesDictionary = new Dictionary<GameObject, float>();
-
-        //    playerTarget = GameObject.FindGameObjectWithTag("player_body");
-        //    //playerTarget = GameObject.FindGameObjectWithTag("player");
-        //    if (player == null || player.activeSelf == false) return null;
-        //    allies.Add(playerTarget);
-
-        //    // get all allies
-        //    GameObject[] alliesArray = GameObject.FindGameObjectsWithTag("allies");
-        //    for(int i = 0; i  < alliesArray.Length; i++)
-        //    {
-        //        allies.Add(alliesArray[i]);
-        //    }
-        //    float shortestAttackTargetDistance;
-            
-        //    shortestAttackTargetDistance  = Vector2.Distance(playerTarget.transform.position, transform.position);
-           
-        //    foreach (GameObject alliesGameObject in allies)
-        //    {
-        //        float distance = Vector2.Distance(alliesGameObject.transform.position, transform.position);
-        //        if(shortestAttackTargetDistance >= distance)
-        //        {
-        //            shortestAttackTargetDistance = distance;
-        //        }
-        //        alliesDictionary.Add(alliesGameObject, distance);
-        //    };
-
-        //    attackTarget = alliesDictionary.FirstOrDefault(x => x.Value <= shortestAttackTargetDistance).Key;
-        //    return attackTarget;
-        //}
+        public override void ReceiveHealthBumpFromBoss()
+        {
+            currentHealth += 30;
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            Debug.Log("166 - co avo daay");
+            effectBuff.SetActive(true);
+            effectBuff.GetComponentInChildren<ParticleSystem>().Play();
+        }
     }
 }

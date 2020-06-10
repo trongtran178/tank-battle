@@ -15,8 +15,9 @@ namespace Assets.Scripts.Enemies
         public GameObject weaponRight;
         public GameObject projectile;
         public GameObject effectTakeDamage;
-        public GameObject effectDestroy;
+        public GameObject effectBuff;
         public GameObject effectDamaged;
+        public GameObject effectDestroy;
         public GameObject firePoint;
 
         private Animator animator; // include jump, idle, attack, fall back.
@@ -38,14 +39,13 @@ namespace Assets.Scripts.Enemies
 
         void Awake()
         {
-
-            currentHealth = health;
-            rigidBody2D = GetComponentInParent<Rigidbody2D>();
-
             animator = GetComponentInParent<Animator>();
+            currentHealth = health;
+            effectBuff.SetActive(false);
+            minimumDistanceIndicatorBetweenAttackTarget = GetRandomMinimumDistance(minimumDistanceIndicatorBetweenAttackTarget);
+            rigidBody2D = GetComponentInParent<Rigidbody2D>();
             weaponLeftAnimator = weaponLeft.GetComponent<Animator>();
             weaponRightAnimator = weaponRight.GetComponent<Animator>();
-            minimumDistanceIndicatorBetweenAttackTarget = GetRandomMinimumDistance(minimumDistanceIndicatorBetweenAttackTarget);
         }
 
         // Start is called before the first frame update
@@ -204,11 +204,20 @@ namespace Assets.Scripts.Enemies
             return (Mathf.Atan(y / x) * (180 / 3.14));
         }
 
-
         public float GetRandomMinimumDistance(float distance)
         {
             System.Random random = new System.Random();
             return (float)random.NextDouble() * ((distance + 2.0f) - (distance - 2.0f)) + (distance - 2.0f);
+        }
+
+
+        public override void SetCurrentHealth(float currentHealth)
+        {
+            this.currentHealth = currentHealth;
+        }
+        public override float GetCurrentHealth()
+        {
+            return currentHealth;
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -221,8 +230,12 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-
-
-
+        public override void ReceiveHealthBumpFromBoss()
+        {
+            currentHealth += 30;
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            effectBuff.SetActive(true);
+            effectBuff.GetComponentInChildren<ParticleSystem>().Play();
+        }
     }
 }
