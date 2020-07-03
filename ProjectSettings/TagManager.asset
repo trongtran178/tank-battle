@@ -10,6 +10,11 @@ TagManager:
   - bullet
   - enemy
   - soldier
+  - Doorway
+  - enemy_controller
+  - house_fire
+  - player_body
+  - allies
   layers:
   - Default
   - TransparentFX

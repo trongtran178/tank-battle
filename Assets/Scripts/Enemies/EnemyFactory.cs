@@ -66,15 +66,17 @@ namespace Assets.Scripts.Enemies
             {
                 case EnemyType.FROG:
                     {
-                        GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 20, self.transform.position.y), frog.transform.rotation);
+                        GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 20, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
                         frogInit.SetActive(true);
+                        frogInit.transform.localScale = new Vector3((float)1.5, (float) 1.5, (float) 1.5);
                         enemies.Add(frogInit);
                         break;
                     }
                 case EnemyType.MECHS_ROBOT:
                     {
-                        GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 20, self.transform.position.y), mechsRobot.transform.rotation);
+                        GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 20, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
+                        mechsRobotInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
                         enemies.Add(mechsRobotInit);
                         break;
                     }
@@ -88,8 +90,9 @@ namespace Assets.Scripts.Enemies
                     }
                 case EnemyType.BOSS:
                     {
-                        GameObject bossInit = Instantiate(boss, new Vector3(self.transform.position.x - 20, self.transform.position.y), mechsRobot.transform.rotation);
+                        GameObject bossInit = Instantiate(boss, new Vector3(self.transform.position.x - 20, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
                         bossInit.SetActive(true);
+                        bossInit.transform.localScale = new Vector3((float)2.5, (float)4, (float)2.5);
                         enemies.Add(bossInit);
                         break;
                     }
@@ -133,8 +136,12 @@ namespace Assets.Scripts.Enemies
         {
             CreateEnemies(EnemyType.BOSS);
             effectDestroy.SetActive(true);
+            effectDestroy.GetComponentInChildren<ParticleSystem>().Play();
+            //GameObject ga= Instantiate(effectDestroy, transform.position, transform.rotation);
             Destroy(self);
             CancelInvoke("GenerateEnemy");
+
+          
         }
 
         private void GenerateEnemy()

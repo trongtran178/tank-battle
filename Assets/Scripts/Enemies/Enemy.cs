@@ -35,7 +35,7 @@ namespace Assets.Scripts.Enemies
 
         protected GameObject FindAttackTarget()
         {
-            GameObject attackTarget = null, playerTarget = null;
+            GameObject _attackTarget = null, playerTarget = null;
             List<GameObject> allies = new List<GameObject>();
 
             // Key - value equivalent gameObject with distance between enemy
@@ -73,10 +73,9 @@ namespace Assets.Scripts.Enemies
                     shortestAttackTargetDistance = distance;
                 }
                 alliesDictionary.Add(alliesGameObject, distance);
-            };
-
-            attackTarget = alliesDictionary.FirstOrDefault(x => x.Value <= shortestAttackTargetDistance).Key;
-            return attackTarget;
+            }
+            _attackTarget = alliesDictionary.FirstOrDefault(x => x.Value <= shortestAttackTargetDistance).Key;
+            return _attackTarget;
         }
     }
 }
