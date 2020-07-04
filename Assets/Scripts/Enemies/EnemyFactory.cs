@@ -74,7 +74,7 @@ namespace Assets.Scripts.Enemies
                     }
                 case EnemyType.MECHS_ROBOT:
                     {
-                        GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 20, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
+                        GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 20, self.transform.position.y + 10, self.transform.position.z), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
                         mechsRobotInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
                         enemies.Add(mechsRobotInit);
@@ -90,7 +90,7 @@ namespace Assets.Scripts.Enemies
                     }
                 case EnemyType.BOSS:
                     {
-                        GameObject bossInit = Instantiate(boss, new Vector3(self.transform.position.x - 20, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
+                        GameObject bossInit = Instantiate(boss, new Vector3(self.transform.position.x, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
                         bossInit.SetActive(true);
                         bossInit.transform.localScale = new Vector3((float)2.5, (float)4, (float)2.5);
                         enemies.Add(bossInit);
@@ -157,13 +157,14 @@ namespace Assets.Scripts.Enemies
             if (currentHealth > 0)
             {
                 int randomVal = random.Next(1, 10);
-                CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+                //CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+                // CreateEnemies( EnemyType.MECHS_ROBOT );
             }
         }
 
         public override void Death()
         {
-            Debug.Log("ENEMY FACTORY DEATH");
+            Debug.Log("ENEMY FACTORY DEATH");   
             // throw new NotImplementedException();
         }
 

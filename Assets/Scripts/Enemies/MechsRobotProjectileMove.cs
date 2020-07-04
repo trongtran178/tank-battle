@@ -17,13 +17,12 @@ public class MechsRobotProjectileMove : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {   
         // edit tag, hard code
         player = GameObject.FindGameObjectWithTag("player");
-
         if (attackTarget)
         {
-            attackTargetVector = new Vector2(1000.0f * (isFlip ? 1 : -1), firePoint.transform.position.y);
+            attackTargetVector = new Vector3(1000.0f * (isFlip ? 1 : -1), firePoint.transform.position.y);
         }
         initializationTime = Time.timeSinceLevelLoad;
     }
@@ -38,16 +37,16 @@ public class MechsRobotProjectileMove : MonoBehaviour
             DestroyProjectile();
             return;
         }
-        self.transform.position = Vector2.MoveTowards(self.transform.position, attackTargetVector, speed * Time.deltaTime);
+        self.transform.position = Vector3.MoveTowards(self.transform.position, attackTargetVector, speed * Time.deltaTime);
+        self.transform.localRotation = firePoint.transform.localRotation;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //if (collision.CompareTag("player") || collision.CompareTag("allies"))
         {
-
+            Debug.Log(collision.tag);
             switch (collision.tag)
-            {
+            {           
                 case "player":
                     {
                         player.GetComponent<TankController2>().TakeDamage(20);
