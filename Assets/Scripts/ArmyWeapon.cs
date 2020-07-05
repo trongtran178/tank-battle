@@ -30,7 +30,7 @@ public class ArmyWeapon : MonoBehaviour
             enemy1.TakeDamage(damage);
         if (collision.name.Equals("Enemy_Controller"))
             collision.GetComponent<Assets.Scripts.Enemies.Enemy>().TakeDamage(damage);
-        if (collision.name.Equals("EnemyHouseController"))
+        if (collision.name.Equals("Enemy_House_Controller"))
             collision.GetComponent<Assets.Scripts.Enemies.Enemy>().TakeDamage(damage);
     }
 }

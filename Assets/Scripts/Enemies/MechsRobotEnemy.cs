@@ -135,8 +135,11 @@ namespace Assets.Scripts.Enemies
                 projectile.GetComponentInChildren<MechsRobotProjectileMove>().isFlip = IsFlip();
 
                 _projectile.SetActive(true);
-                Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
-                _projectile.transform.localRotation = firePoint.transform.localRotation;
+                //Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
+                Instantiate(_projectile, firePoint.transform.position, firePoint.transform.rotation);
+
+                //_projectile.transform.localRotation = firePoint.transform.localRotation;
+                //_projectile.transform.localPosition = firePoint.transform.localPosition;
             }
         }
 
