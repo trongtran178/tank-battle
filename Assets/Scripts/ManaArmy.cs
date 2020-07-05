@@ -43,7 +43,7 @@ public class ManaArmy : MonoBehaviour
                 vector3.y = 90;
                 vector3.x = 0;
                 projectile = Instantiate(projectileGame, location.transform.position,Quaternion.Euler(vector3));
-
+                projectile.SetActive(true);
             }
             projectile = null;
         }

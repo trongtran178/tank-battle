@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SWNetwork;
 
 public class TankController2 : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class TankController2 : MonoBehaviour
     public GameObject vfx_destroy;
 
     public GameObject location;
+    NetworkID networkID;
 
 
     // Start is called before the first frame update
@@ -21,31 +23,40 @@ public class TankController2 : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         Rb = GetComponent<Rigidbody2D>();
+        networkID = GetComponent<NetworkID>();
+        if (networkID.IsMine)
+        {
+            Camera camera = Camera.main;
+           
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        Physics2D.IgnoreLayerCollision(8, 9);
-        velx = Input.GetAxis("Horizontal");
-        vely = Rb.velocity.y;
-        Rb.velocity = new Vector2(velx*speed,vely);
-
-
-        //Debug.Log(Rb.position);
-        if(velx == 0)
+        if (networkID.IsMine)
         {
-            anim.SetBool("isRunning", false);
+            Physics2D.IgnoreLayerCollision(8, 9);
+            Physics2D.IgnoreLayerCollision(8, 8);
+            velx = Input.GetAxis("Horizontal");
+            vely = Rb.velocity.y;
+            Rb.velocity = new Vector2(velx * speed, vely);
 
-        }
-        else
-            anim.SetBool("isRunning", true);
 
-        if (health <= 0)
-        {
+            //Debug.Log(Rb.position);
+            if (velx == 0)
+            {
+                anim.SetBool("isRunning", false);
 
-            Destroy(gameObject);
+            }
+            else
+                anim.SetBool("isRunning", true);
+
+            if (health <= 0)
+            {
+
+                Destroy(gameObject);
+            }
         }
     }
 
