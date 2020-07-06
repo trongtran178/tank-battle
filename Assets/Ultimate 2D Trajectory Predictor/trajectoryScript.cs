@@ -25,7 +25,7 @@ public class trajectoryScript : MonoBehaviour {
 	private float idleTimer = 7f;				//How long the initial inactivity period will need to be before the Help Gesture shows up
 	private bool ballIsClicked = false;			//If the cursor is hovering over the "Ball Click Area"
 	private bool ballIsClicked2 = false;		//If the finger/cursor is pressing down in the "Ball Click Area" to activate the shot
-	private GameObject ballClick;				//The area which the player needs to click in to activate a shot
+	
 	public float shootingPowerX;				//The amount of power which can be applied in the X direction
 	public float shootingPowerY;				//The amount of power which can be applied in the Y direction
 	public bool usingHelpGesture;				//If you want to use the Help Gesture
@@ -75,16 +75,11 @@ public class trajectoryScript : MonoBehaviour {
 
 	void Start ()
     {
-        //networkID = GetComponent<NetworkID>();
-        //if (networkID.IsMine)
-        //{
+        
             ball = gameObject;                                          //Script has to be applied to the "ball"
-            ballClick = GameObject.Find("Ball Click Area");         //BALL CLICK AREA MUST HAVE THE SAME NAME IN HIERARCHY AS IT DOES HERE OTHERWISE SHOOTING WON'T BE POSSIBLE AND OTHER ERRORS MAY OCCUR
+          
             trajectoryDots = GameObject.Find("Trajectory Dots");        //TRAJECTORY DOTS MUST HAVE THE SAME NAME IN HIERARCHY AS IT DOES HERE
-            //if (usingHelpGesture == true)
-            //{                               //If you're using the Help Gesture
-            //    helpGesture = GameObject.Find("Help Gesture");          //HELP GESTURE MUST HAVE THE SAME NAME IN HIERARCHY AS IT DOES HERE IF usingHelpGesture is true
-            //}
+          
             ballRB = GetComponent<Rigidbody2D>();                       //"Ball"'s Rigidbody2D is applied to ballRB
 
             trajectoryDots.transform.localScale = new Vector3(initialDotSize, initialDotSize, trajectoryDots.transform.localScale.z); //Initial size of trajectoryDots is applied
@@ -106,7 +101,7 @@ public class trajectoryScript : MonoBehaviour {
             block1 = true;
             block2 = true;
             block3 = true;
-        //}
+       
 
     }
 	
@@ -115,8 +110,7 @@ public class trajectoryScript : MonoBehaviour {
 
 	void Update () {
 
-        //if (networkID.IsMine)
-        //{
+        
             Vector3 diffrence = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
             float rotZ = Mathf.Atan2(diffrence.y, diffrence.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
@@ -231,8 +225,7 @@ public class trajectoryScript : MonoBehaviour {
                 }
 
 
-                //if (flagShoot)
-                //{
+               
                 if (Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     if (flag == false)
@@ -304,8 +297,7 @@ public class trajectoryScript : MonoBehaviour {
                     }
                 }
             }
-        //}
-        //}
+        
     }
 
 	public IEnumerator explode(){											//The explode function

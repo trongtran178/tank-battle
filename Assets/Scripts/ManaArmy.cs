@@ -12,8 +12,11 @@ public class ManaArmy : MonoBehaviour
     private bool flagMana = true;
 
     private GameObject projectile;
-    public GameObject projectileGame;
+    public GameObject projectileGame1;
+    public Vector3 vector3;
+
     public GameObject location;
+    public KeyCode key;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,16 +38,17 @@ public class ManaArmy : MonoBehaviour
         else
         {
             manaArmy = maxArmy;
-            if (Input.GetKey(KeyCode.Z))
+            if (Input.GetKey(key))
             {
                 manaArmy = 0;
-                Vector3 vector3;
-                vector3.z = 0;
-                vector3.y = 90;
-                vector3.x = 0;
-                projectile = Instantiate(projectileGame, location.transform.position,Quaternion.Euler(vector3));
+                
+                //vector3.z = 0;
+                //vector3.y = 90;
+                //vector3.x = 0;
+                projectile = Instantiate(projectileGame1, location.transform.position,Quaternion.Euler(vector3));
                 projectile.SetActive(true);
             }
+            
             projectile = null;
         }
 

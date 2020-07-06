@@ -21,6 +21,8 @@ public class GunEnemy : MonoBehaviour
     public float timeGun = 3.0f;
     public bool flagGun;
 
+    private GameObject[] enemy;
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,19 +35,18 @@ public class GunEnemy : MonoBehaviour
     {
 
 
-        if (tank != null)
+        GameObject k = findEnemy();
+        if (k != null)
         {
-
-            kc = tank.transform.position - transform.position;
-
-            doLonKc = Mathf.Sqrt((kc.x * kc.x) + (kc.y * kc.y));
+            kc = k.transform.position - gameObject.transform.position;
+            float doLonKc = Mathf.Sqrt((kc.x * kc.x) + (kc.y * kc.y));
             v = Mathf.Sqrt((float)((doLonKc * g) / Mathf.Sin(2 * goc)));
 
             velx = v * Mathf.Cos(goc);
 
             vely = v * Mathf.Sin(goc);
 
-            shotForce = new Vector2(-velx, vely);
+            shotForce = new Vector2(velx, vely);
             //if (trajectoryScript.flagShoot == false)
             //{
                 timeGun -= Time.deltaTime;
@@ -85,6 +86,29 @@ public class GunEnemy : MonoBehaviour
                 }
             //}
         }
+
+    }
+
+
+    GameObject findEnemy()
+    {
+        enemy = GameObject.FindGameObjectsWithTag("enemy");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject e in enemy)
+        {
+            Vector3 diff = e.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = e;
+                distance = curDistance;
+
+            }
+        }
+        return closest;
+
 
     }
 }

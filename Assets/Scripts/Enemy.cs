@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour
     public Image healthyBar;
     public float maxHealthy = 100f;
     public float health;
+
+    private GameObject[] enemy;
     GunEnemy gunEnemy;
     // Start is called before the first frame update
     void Start()
@@ -38,40 +40,47 @@ public class Enemy : MonoBehaviour
     {
         
         healthyBar.fillAmount = health / maxHealthy;
-        if (tank != null)
+        //if (tank != null)
+        //{
+        //    kc = tank.transform.position - transform.position;
+        //}
+        //float doLonKc = Mathf.Sqrt((kc.x * kc.x) + (kc.y * kc.y));
+
+        GameObject k = findEnemy();
+        if (k != null)
         {
-            kc = tank.transform.position - transform.position;
-        }
+            kc = k.transform.position - gameObject.transform.position;
             float doLonKc = Mathf.Sqrt((kc.x * kc.x) + (kc.y * kc.y));
-    
-        vely = rb.velocity.y;
-        rb.velocity = new Vector2(velx, vely);
-        if (velx == 0)
-        {
-            anim.SetBool("isRunning", false);
-            
-        }
-        else
-        {
-            anim.SetBool("isRunning", true);
-           
+            vely = rb.velocity.y;
+            rb.velocity = new Vector2(velx, vely);
+
+            if (doLonKc < 30)
+            {
+                velx = 0;
+                anim.SetBool("isRunning", false);
+
+            }
+            else {
+                velx = speed;
+                anim.SetBool("isRunning", true);
+            }
         }
 
         //&& trajectoryScript.flagShoot == false
         //if (GunEnemy.timeGun > 0)
         //{
-        if (doLonKc > distanceMax)
-        {
-            velx = -speed;
-            Debug.Log("lui");
-        }
-        else if (doLonKc < distanceMin)
-        {
-            velx = speed;
-            Debug.Log("tien");
+        //if (doLonKc > distanceMax)
+        //{
+        //    velx = -speed;
+        //    Debug.Log("lui");
+        //}
+        //else if (doLonKc < distanceMin)
+        //{
+        //    velx = speed;
+        //    Debug.Log("tien");
 
-        }
-        else velx = 0;
+        //}
+        //else velx = 0;
         //}
         //else
         //{
@@ -97,5 +106,27 @@ public class Enemy : MonoBehaviour
         health -= damage;
    
         projectile = null;
+    }
+
+    GameObject findEnemy()
+    {
+        enemy = GameObject.FindGameObjectsWithTag("enemy");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject e in enemy)
+        {
+            Vector3 diff = e.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = e;
+                distance = curDistance;
+
+            }
+        }
+        return closest;
+
+
     }
 }
