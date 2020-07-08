@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Assets.Scripts.Enemy;
 
 namespace Assets.Scripts.Enemies
 {
@@ -61,6 +62,11 @@ namespace Assets.Scripts.Enemies
         // Update is called once per frame
         void Update()
         {
+            if(currentHealth <= 0)
+            {
+                Death();
+                return;
+            }
             attackTarget = FindAttackTarget();
             if (currentHealth > 0) Move();
             if (!attackTarget) CancelInvoke("HandleAttack");
@@ -114,8 +120,6 @@ namespace Assets.Scripts.Enemies
                     weaponLeftAnimator.Play("Shoot");
                     weaponRightAnimator.Play("Shoot");
                 }
-
-
             }
         }
 
@@ -126,20 +130,17 @@ namespace Assets.Scripts.Enemies
                 CancelInvoke("HandleAttack");
                 return;
             }
+            if (attackTarget != null) { 
+                float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
+                if (distanceBetweenAttackTarget < minimumDistanceIndicatorBetweenAttackTarget + 8)
+                {
+                    GameObject _projectile = projectile;
+                    projectile.GetComponentInChildren<MechsRobotProjectileMove>().attackTarget = attackTarget;
+                    projectile.GetComponentInChildren<MechsRobotProjectileMove>().isFlip = IsFlip();
 
-            float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
-            if (distanceBetweenAttackTarget < minimumDistanceIndicatorBetweenAttackTarget + 8)
-            {
-                GameObject _projectile = projectile;
-                projectile.GetComponentInChildren<MechsRobotProjectileMove>().attackTarget = attackTarget;
-                projectile.GetComponentInChildren<MechsRobotProjectileMove>().isFlip = IsFlip();
-
-                _projectile.SetActive(true);
-                //Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
-                Instantiate(_projectile, firePoint.transform.position, firePoint.transform.rotation);
-
-                //_projectile.transform.localRotation = firePoint.transform.localRotation;
-                //_projectile.transform.localPosition = firePoint.transform.localPosition;
+                    _projectile.SetActive(true);
+                    Instantiate(_projectile, firePoint.transform.position, firePoint.transform.rotation);
+                }
             }
         }
 
@@ -154,6 +155,11 @@ namespace Assets.Scripts.Enemies
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
+        }
+
+        public void HandleCurrentHealthBar()
+        {
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
         }
 
         private bool IsFlip()
@@ -206,6 +212,7 @@ namespace Assets.Scripts.Enemies
 
         private void DestroySelf()
         {
+            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
 
@@ -254,6 +261,11 @@ namespace Assets.Scripts.Enemies
             return currentHealth;
         }
 
+        public override EnemyType GetEnemyType()
+        {
+            return EnemyType.MECHS_ROBOT;
+        }
+
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
         {
             throw new System.NotImplementedException();
@@ -263,6 +275,12 @@ namespace Assets.Scripts.Enemies
         {
             throw new System.NotImplementedException();
         }
+
+        public override GameObject GetSelf()
+        {
+            return self;
+        }
+
 
 
     }

@@ -86,11 +86,11 @@ public class Enemy : MonoBehaviour
     }
 
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
 
  
-        projectile=Instantiate(vfx_destroy, location.transform.position, location.transform.rotation) as GameObject;
+        projectile = Instantiate(vfx_destroy, location.transform.position, location.transform.rotation) as GameObject;
         //projectile.transform.position = transform.position;
 
         

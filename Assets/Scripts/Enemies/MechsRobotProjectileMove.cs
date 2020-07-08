@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class MechsRobotProjectileMove : MonoBehaviour
 {
     public GameObject attackTarget;
@@ -30,7 +31,9 @@ public class MechsRobotProjectileMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (!self) return;
+
         float timeSinceInitialization = Time.timeSinceLevelLoad - initializationTime;
         if (timeSinceInitialization >= 4)
         {
@@ -55,8 +58,13 @@ public class MechsRobotProjectileMove : MonoBehaviour
                     }
                 case "allies":
                     {
-                        attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
-                        DestroyProjectile();
+                        if(attackTarget != null)
+                        {
+                            if (attackTarget.GetComponentInChildren<Dogcollider>() != null) { 
+                                attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+                            }
+                            DestroyProjectile();
+                        }
                         break;
                     }
             }

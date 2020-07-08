@@ -228,7 +228,16 @@ public class trajectoryScript : MonoBehaviour {
                     projectile1.GetComponent<Rigidbody2D>().isKinematic = true;
 
                     projectile1.SetActive(false);
+
+                    GameObject tankPlayer = GameObject.FindGameObjectWithTag("player");
+
+                    tankPlayer.GetComponent<AudioSource>().Play();
+                    //AudioSource _audio = (AudioSource)Instantiate(Resources.Load("gun-cocking-01.mp3"));
+                    //_audio.Play();
+
                 }
+
+
                 flagMouse = true;
                 projectile1.SetActive(false);
                 ballIsClicked2 = false;                                         //Aiming is no longer happening
