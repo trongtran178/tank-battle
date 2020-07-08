@@ -25,7 +25,7 @@ public class Bullet : MonoBehaviour
     {
         Debug.Log(collision.name);
         PlaneCollider plane = collision.GetComponent<PlaneCollider>();
-        Enemy enemy= collision.GetComponent<Enemy>();
+        EnemyTu enemy= collision.GetComponent<EnemyTu>();
         TankController2 tank = collision.GetComponent<TankController2>();
 
         Dogcollider dog = collision.GetComponent<Dogcollider>();

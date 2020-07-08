@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SWNetwork;
 
 public class TankController2 : MonoBehaviour
 {
@@ -15,27 +14,26 @@ public class TankController2 : MonoBehaviour
     public GameObject vfx_destroy;
 
     public GameObject location;
-    NetworkID networkID;
-
+    
 
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         Rb = GetComponent<Rigidbody2D>();
-        networkID = GetComponent<NetworkID>();
-        if (networkID.IsMine)
-        {
+   
+        //if (networkID.IsMine)
+        //{
             Camera camera = Camera.main;
            
-        }
+        //}
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (networkID.IsMine)
-        {
+        //if (networkID.IsMine)
+        //{
             Physics2D.IgnoreLayerCollision(8, 9);
             Physics2D.IgnoreLayerCollision(8, 8);
             velx = Input.GetAxis("Horizontal");
@@ -57,7 +55,7 @@ public class TankController2 : MonoBehaviour
 
                 Destroy(gameObject);
             }
-        }
+        //}
     }
 
     public void TakeDamage(int damage)

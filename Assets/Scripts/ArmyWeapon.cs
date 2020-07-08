@@ -23,7 +23,7 @@ public class ArmyWeapon : MonoBehaviour
     {
         Debug.Log(collision.name);
         SoldierMain soldier = collision.GetComponent<SoldierMain>();
-        Enemy enemy1 = collision.GetComponent<Enemy>();
+        EnemyTu enemy1 = collision.GetComponent<EnemyTu>();
         if (collision.ToString().Trim().Equals("Soldier (UnityEngine.BoxCollider2D)"))
             soldier.TakeDamage(damage);
         if (collision.ToString() == "enemy (UnityEngine.PolygonCollider2D)")

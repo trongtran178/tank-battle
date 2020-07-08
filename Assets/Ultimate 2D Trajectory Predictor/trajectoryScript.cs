@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using SWNetwork;
+
 
 public class trajectoryScript : MonoBehaviour {
 
-    NetworkID networkID;
 	public Sprite dotSprite;					//All of the dots will become the sprite assigned to this if this has a sprite assigned to it and changeSpriteAfterStart is true
 	public bool changeSpriteAfterStart;			//When enabled, you will be able to change the above in the update loop. (it's less efficient)
 	public float initialDotSize;				//The intial size of the trajectoryDots gameobject
@@ -38,9 +37,7 @@ public class trajectoryScript : MonoBehaviour {
     public GameObject bullet1;
     public GameObject bullet2;
     public GameObject bullet3;
-    public Image bulletMana1;
-    public Image bulletMana2;
-    public Image bulletMana3;
+   
     public static float mana;
     public float manaBullet1;
     public float manaBullet2;
@@ -180,20 +177,7 @@ public class trajectoryScript : MonoBehaviour {
                     ballIsClicked2 = true;                                              //Final step of activation is complete
 
                     flagMouse = false;
-                    //Debug.Log(block1);
-
-                    //if (flag == false)
-                    //{
-                    //    flag = true;
-
-                    //    projectile1 = Instantiate(projectile, transform.position, transform.rotation) as GameObject;
-
-
-                    //    projectile1.GetComponent<Rigidbody2D>().isKinematic = true;
-
-                    //    projectile1.SetActive(false);
-                    //}
-
+                   
 
                     fingerPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 80f));   //The position of your finger/cursor is found
                                                                                                                                   // fingerPos = Input.mousePosition;

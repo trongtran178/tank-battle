@@ -23,7 +23,7 @@ public class GunPlane : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        target = new Vector2(tank.transform.position.x, tank.transform.position.y);
+        //target = new Vector2(tank.transform.position.x, tank.transform.position.y);
        // shotForce = new Vector2(-10, -20);
     }
 
