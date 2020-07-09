@@ -101,127 +101,147 @@ public class trajectoryScript : MonoBehaviour {
        
 
     }
-	
-
-		
-
-	void Update () {
-
-        
-            Vector3 diffrence = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-            float rotZ = Mathf.Atan2(diffrence.y, diffrence.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 
 
-            if (numberOfDots > 40)
+
+
+    void Update()
+    {
+
+
+        Vector3 diffrence = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+        float rotZ = Mathf.Atan2(diffrence.y, diffrence.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
+
+
+        if (numberOfDots > 40)
+        {
+            numberOfDots = 40;
+        }
+
+
+
+        ballPos = ball.transform.position;                                      //ballPos is updated to the position of the "ball"
+
+        if (changeSpriteAfterStart == true)
+        {                                   //If you've allowed the sprite to be continiously changed...
+            for (int k = 0; k < numberOfDots; k++)
             {
-                numberOfDots = 40;
+                if (dotSprite != null)
+                {                                       //If a sprite is applied to dotSprite
+                    dots[k].GetComponent<SpriteRenderer>().sprite = dotSprite;//Change all points' sprite to the dotSprite sprite
+                }
             }
+        }
+
+        if (block1 && flagMouse)
+        {
+            if (projectile == bullet1)
+                flagCheckGun = true;
+            if (Input.GetKey(KeyCode.Alpha1) && ManaTank.manaTank >= manaBullet1)
+            {
+                projectile = bullet1;
+                //block1 = false;
+
+            }
+        }
+
+        if (block2 && flagMouse)
+        {
+            if (projectile == bullet2)
+                flagCheckGun = true;
+            if (Input.GetKey(KeyCode.Alpha2) && ManaTank.manaTank >= manaBullet2)
+            {
+                projectile = bullet2;
+                //block2 = false;
+
+            }
+        }
+
+        if (block3 && flagMouse)
+        {
+            if (projectile == bullet3)
+                flagCheckGun = true;
+            if (Input.GetKey(KeyCode.Alpha3) && ManaTank.manaTank >= manaBullet3)
+            {
+                projectile = bullet3;
+                //block3 = false;
 
 
+            }
+        }
+        //flagShoot&&
+        if (flagCheckGun && projectile != null)
+        {
+            if ((Input.GetKey(KeyCode.Mouse0)))
+            {   //If player has activated a shot										//when you press down
+                ballIsClicked2 = true;                                              //Final step of activation is complete
 
-            ballPos = ball.transform.position;                                      //ballPos is updated to the position of the "ball"
+                flagMouse = false;
 
-            if (changeSpriteAfterStart == true)
-            {                                   //If you've allowed the sprite to be continiously changed...
+
+                fingerPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 80f));   //The position of your finger/cursor is found
+                                                                                                                              // fingerPos = Input.mousePosition;
+
+
+                Vector3 ballFingerDiff1 = ballPos - fingerPos;
+
+                // if(Mathf.Sqrt((ballFingerDiff1.x*ballFingerDiff1.x)+(ballFingerDiff1.y*ballFingerDiff1.y))>maxDistance)
+
+                ballFingerDiff = ballFingerDiff1;
+
+                shotForce = new Vector2(ballFingerDiff.x * shootingPowerX, ballFingerDiff.y * shootingPowerY);  //The velocity of the shot is found
+
+                if ((Mathf.Sqrt((ballFingerDiff.x * ballFingerDiff.x) + (ballFingerDiff.y * ballFingerDiff.y)) > (0.4f)))
+                { //If the distance between the finger/cursor and the "ball" is big enough...
+                    trajectoryDots.SetActive(true);                             //Display the trajectory
+                }
+                else
+                {
+                    trajectoryDots.SetActive(false);
+                }
+
                 for (int k = 0; k < numberOfDots; k++)
-                {
-                    if (dotSprite != null)
-                    {                                       //If a sprite is applied to dotSprite
-                        dots[k].GetComponent<SpriteRenderer>().sprite = dotSprite;//Change all points' sprite to the dotSprite sprite
-                    }
+                {                           //Each point of the trajectory will be given its position
+                    x1 = (ballPos.x) + shotForce.x * Time.fixedDeltaTime * (dotSeparation * k + dotShift);  //X position for each point is found
+                    y1 = (ballPos.y) + shotForce.y * Time.fixedDeltaTime * (dotSeparation * k + dotShift) - (-Physics2D.gravity.y / 2f * Time.fixedDeltaTime * Time.fixedDeltaTime * (dotSeparation * k + dotShift) * (dotSeparation * k + dotShift));  //Y position for each point is found
+                    dots[k].transform.position = new Vector3(x1, y1, dots[k].transform.position.z); //Position is applied to each point
                 }
             }
 
-            if (block1 && flagMouse)
+
+
+            if (Input.GetKeyUp(KeyCode.Mouse0))
             {
-                if (projectile == bullet1)
-                    flagCheckGun = true;
-                if (Input.GetKey(KeyCode.Alpha1) && ManaTank.manaTank >= manaBullet1)
+                if (flag == false)
                 {
-                    projectile = bullet1;
-                    //block1 = false;
+                    flag = true;
 
-                }
-            }
-
-            if (block2 && flagMouse)
-            {
-                if (projectile == bullet2)
-                    flagCheckGun = true;
-                if (Input.GetKey(KeyCode.Alpha2) && ManaTank.manaTank >= manaBullet2)
-                {
-                    projectile = bullet2;
-                    //block2 = false;
-
-                }
-            }
-
-            if (block3 && flagMouse)
-            {
-                if (projectile == bullet3)
-                    flagCheckGun = true;
-                if (Input.GetKey(KeyCode.Alpha3) && ManaTank.manaTank >= manaBullet3)
-                {
-                    projectile = bullet3;
-                    //block3 = false;
+                    projectile1 = Instantiate(projectile, transform.position, transform.rotation) as GameObject;
 
 
-                }
-            }
-            //flagShoot&&
-            if (flagCheckGun && projectile != null)
-            {
-                if ((Input.GetKey(KeyCode.Mouse0)))
-                {   //If player has activated a shot										//when you press down
-                    ballIsClicked2 = true;                                              //Final step of activation is complete
+                    projectile1.GetComponent<Rigidbody2D>().isKinematic = true;
 
-                    flagMouse = false;
-                   
+                    projectile1.SetActive(false);
 
-                    fingerPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 80f));   //The position of your finger/cursor is found
-                                                                                                                                  // fingerPos = Input.mousePosition;
+                    GameObject tankPlayer = GameObject.FindGameObjectWithTag("player");
 
+                    tankPlayer.GetComponent<AudioSource>().Play();
+                    //AudioSource _audio = (AudioSource)Instantiate(Resources.Load("gun-cocking-01.mp3"));
+                    //_audio.Play();
 
-                    Vector3 ballFingerDiff1 = ballPos - fingerPos;
-
-                    // if(Mathf.Sqrt((ballFingerDiff1.x*ballFingerDiff1.x)+(ballFingerDiff1.y*ballFingerDiff1.y))>maxDistance)
-
-                    ballFingerDiff = ballFingerDiff1;
-
-                    shotForce = new Vector2(ballFingerDiff.x * shootingPowerX, ballFingerDiff.y * shootingPowerY);  //The velocity of the shot is found
-
-                    if ((Mathf.Sqrt((ballFingerDiff.x * ballFingerDiff.x) + (ballFingerDiff.y * ballFingerDiff.y)) > (0.4f)))
-                    { //If the distance between the finger/cursor and the "ball" is big enough...
-                        trajectoryDots.SetActive(true);                             //Display the trajectory
-                    }
-                    else
-                    {
-                        trajectoryDots.SetActive(false);
-                    }
-
-                    for (int k = 0; k < numberOfDots; k++)
-                    {                           //Each point of the trajectory will be given its position
-                        x1 = (ballPos.x) + shotForce.x * Time.fixedDeltaTime * (dotSeparation * k + dotShift);  //X position for each point is found
-                        y1 = (ballPos.y) + shotForce.y * Time.fixedDeltaTime * (dotSeparation * k + dotShift) - (-Physics2D.gravity.y / 2f * Time.fixedDeltaTime * Time.fixedDeltaTime * (dotSeparation * k + dotShift) * (dotSeparation * k + dotShift));  //Y position for each point is found
-                        dots[k].transform.position = new Vector3(x1, y1, dots[k].transform.position.z); //Position is applied to each point
-                    }
                 }
 
 
-               
-                if (Input.GetKeyUp(KeyCode.Mouse0))
-                {
-                    if (flag == false)
-                    {
-                        flag = true;
+                flagMouse = true;
+                projectile1.SetActive(false);
+                ballIsClicked2 = false;                                         //Aiming is no longer happening
 
-                        projectile1 = Instantiate(projectile, transform.position, transform.rotation) as GameObject;
-
-
-                        projectile1.GetComponent<Rigidbody2D>().isKinematic = true;
-
-                        projectile1.SetActive(false);
+                if (trajectoryDots.activeInHierarchy)
+                {                           //If the player was aiming...
+                    if (explodeEnabled == true)
+                    {                                   //If the player was shooting and explodeEnabled is true...
+                        StartCoroutine(explode());                                  //The "explode" coroutine will start
                     }
                     flagMouse = true;
                     projectile1.SetActive(false);
@@ -281,55 +301,68 @@ public class trajectoryScript : MonoBehaviour {
                     }
                 }
             }
-        
+
+        }
+
+    }
+    public IEnumerator explode()
+    {                                           //The explode function
+        yield return new WaitForSeconds(Time.fixedDeltaTime * (dotSeparation * (numberOfDots - 1f)));   //Nothing will happen until the time it takes for the projectile to reach the last point of the trajectory passes
+        Debug.Log("exploded");
+
+
+        //Insert what happens when the time it takes for the projectile to reach the last point of the trajectory expires, (explodeEnabled has to be true)
+
     }
 
-	public IEnumerator explode(){											//The explode function
-		yield return new WaitForSeconds (Time.fixedDeltaTime * (dotSeparation * (numberOfDots - 1f)));	//Nothing will happen until the time it takes for the projectile to reach the last point of the trajectory passes
-		Debug.Log ("exploded");
-	
+    public void collided(GameObject dot)
+    {
 
-	//Insert what happens when the time it takes for the projectile to reach the last point of the trajectory expires, (explodeEnabled has to be true)
+        for (int k = 0; k < numberOfDots; k++)
+        {
+            if (dot.name == "Dot (" + k + ")")
+            {
 
-	}
+                for (int i = k + 1; i < numberOfDots; i++)
+                {
 
-	public void collided(GameObject dot){
+                    dots[i].gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                }
 
-		for (int k = 0; k < numberOfDots; k++) {
-			if (dot.name == "Dot (" + k + ")") {
-				
-				for (int i = k + 1; i < numberOfDots; i++) {
-					
-					dots [i].gameObject.GetComponent<SpriteRenderer> ().enabled = false;
-				}
+            }
 
-			}
+        }
+    }
+    public void uncollided(GameObject dot)
+    {
+        for (int k = 0; k < numberOfDots; k++)
+        {
+            if (dot.name == "Dot (" + k + ")")
+            {
 
-		}
-	}
-	public void uncollided(GameObject dot){
-		for (int k = 0; k < numberOfDots; k++) {
-			if (dot.name == "Dot (" + k + ")") {
+                for (int i = k - 1; i > 0; i--)
+                {
 
-				for (int i = k-1; i > 0; i--) {
-				
-					if (dots [i].gameObject.GetComponent<SpriteRenderer> ().enabled == false) {
-						Debug.Log ("nigggssss");
-						return;
-					}
-				}
+                    if (dots[i].gameObject.GetComponent<SpriteRenderer>().enabled == false)
+                    {
+                        Debug.Log("nigggssss");
+                        return;
+                    }
+                }
 
-				if (dots [k].gameObject.GetComponent<SpriteRenderer> ().enabled == false) {
-					for (int i = k; i > 0; i--) {
-						
-						dots [i].gameObject.GetComponent<SpriteRenderer> ().enabled = true;
+                if (dots[k].gameObject.GetComponent<SpriteRenderer>().enabled == false)
+                {
+                    for (int i = k; i > 0; i--)
+                    {
 
-					}
+                        dots[i].gameObject.GetComponent<SpriteRenderer>().enabled = true;
 
-				}
-			}
+                    }
 
-		}
-	}
+                }
+            }
+
+        }
+    }
 }
 

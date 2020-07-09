@@ -2,9 +2,11 @@
 using System.Linq;
 using System;
 using UnityEngine;
+using Assets.Scripts.Enemy;
 
 namespace Assets.Scripts.Enemies
 {
+   
     public class FrogEnemy : Enemy
     {
         public GameObject currentHealthBar;
@@ -41,6 +43,11 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
+            if(currentHealth <= 0)
+            {
+                Death();
+                return;
+            }
             attackTarget = FindAttackTarget();
             Move();
         }
@@ -96,6 +103,11 @@ namespace Assets.Scripts.Enemies
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
         }
 
+        public void HandleCurrentHealthBar()
+        {
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+        }
+
         private void HandleAttack()
         {
             //if (player == null || player.activeSelf == false || attackTarget == null) return;
@@ -129,8 +141,6 @@ namespace Assets.Scripts.Enemies
             }
         }
 
-
-
         private bool IsFlip()
         {
             if (attackTarget.transform.position.x > transform.position.x)
@@ -139,8 +149,6 @@ namespace Assets.Scripts.Enemies
             }
             return false;
         }
-
-
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
@@ -173,14 +181,16 @@ namespace Assets.Scripts.Enemies
 
         private void DestroySelf()
         {
+            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
 
-        private void TakeDamage()
-        {
+        //private void TakeDamage()
+        //{
 
-        }
+        //}
 
+      
         public override void SetCurrentHealth(float currentHealth)
         {
             this.currentHealth = currentHealth;
@@ -188,6 +198,11 @@ namespace Assets.Scripts.Enemies
         public override float GetCurrentHealth()
         {
             return currentHealth;
+        }
+
+        public override EnemyType GetEnemyType()
+        {
+            return EnemyType.FROG;
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -214,6 +229,11 @@ namespace Assets.Scripts.Enemies
                 effectBuff.SetActive(true);
                 effectBuff.GetComponentInChildren<ParticleSystem>().Play();
             }
+        }
+
+        public override GameObject GetSelf()
+        {
+            return self;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Assets.Scripts.Enemies
 {
     public class EnemyFactory : Enemy
     {
+
         public GameObject currentHealthBar;
         public GameObject effectDestroy;
         public GameObject self;
@@ -16,17 +17,22 @@ namespace Assets.Scripts.Enemies
         public GameObject boss;
         public GameObject takeDamagePoint;
 
+
+        public static ArrayList enemies;
+
         private float currentHealth;
         private float generateEnemyTime = 10.0f;
         private bool isBurn = false;
+
+        // If flag is true, generateEnemyTime will be decrease, ...
         private bool flag = false;
+
         private GameObject[] effectBurnArray;
         private System.Random random = new System.Random();
-        public static ArrayList enemies;
 
         void Awake()
         {
-            enemies = new ArrayList();
+            enemies = new ArrayList();  
             currentHealth = maxHealth;
             effectBurnArray = GameObject.FindGameObjectsWithTag("house_fire");
             foreach (GameObject effectBurn in effectBurnArray)
@@ -47,6 +53,15 @@ namespace Assets.Scripts.Enemies
             {
                 BurnEnemyFactory();
             }
+            else if (currentHealth > 30 && isBurn)
+            {
+                BurnEnemyFactory();
+            }
+            else if(currentHealth > 30 && !isBurn)
+            {
+                // DO NOTHING
+            }
+
             if (currentHealth <= 50)
             {
                 if (flag == false)
@@ -103,13 +118,29 @@ namespace Assets.Scripts.Enemies
 
         private void BurnEnemyFactory()
         {
-            if (isBurn) return;
-            isBurn = true;
-            Debug.Log(effectBurnArray.Length);
-            foreach (GameObject effectBurn in effectBurnArray)
+            if(!isBurn)
             {
-                effectBurn.GetComponent<ParticleSystem>().Play();
+                Debug.Log(123);
+                isBurn = true;
+                foreach (GameObject effectBurn in effectBurnArray)
+                {
+                    effectBurn.GetComponent<ParticleSystem>().Play();
+                }
+                
             }
+            else
+            {
+                Debug.Log(134);
+                isBurn = false;
+                foreach (GameObject effectBurn in effectBurnArray)
+                {
+                    effectBurn.GetComponent<ParticleSystem>().Stop();
+                }
+                
+            }
+
+            
+            
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -137,13 +168,21 @@ namespace Assets.Scripts.Enemies
             CreateEnemies(EnemyType.BOSS);
             effectDestroy.SetActive(true);
             effectDestroy.GetComponentInChildren<ParticleSystem>().Play();
-
-            Destroy(self);
+            self.SetActive(false);
             CancelInvoke("GenerateEnemy");
+        }
+
+        public void HandleCurrentHealthBar()
+        {
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+        }
+
+        public void HandleBurnHouse()
+        {
 
         }
 
-        private void GenerateEnemy()
+        private void GenerateEnemy()    
         {
             int count = 0;
             foreach (GameObject enemy in enemies)
@@ -160,11 +199,55 @@ namespace Assets.Scripts.Enemies
             }
         }
 
+
+        public ArrayList getEnemies()
+        {
+            return enemies;
+        }
+
+        public void setEnemies(ArrayList listEnemies)
+        {
+            enemies = listEnemies;
+        }
+
+        public bool IsBurn()
+        {
+            return isBurn;
+        }
+
+        public void SetBurn(bool isBurn)
+        {
+            this.isBurn = isBurn;
+        }
+
+        public bool GetFlag()
+        {
+            return flag;
+        }
+
+        public void SetFlag(bool flag)
+        {
+            this.flag = flag;
+        }
+
+        public float GetGenerateEnemyTime()
+        {
+            return generateEnemyTime;
+        }
+
+        public void SetGenerateEnemyTime(float generateEnemyTime) 
+        {
+            this.generateEnemyTime = generateEnemyTime;
+        }
+
+        ///////////////////////////////////
+        ////////// OVERRIDE AREA //////////
+        ///////////////////////////////////
         public override void Death()
         {
             // DO NOTHING
             Debug.Log("ENEMY FACTORY DEATH");   
-            // throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -185,16 +268,24 @@ namespace Assets.Scripts.Enemies
             throw new NotImplementedException();
         }
 
+        public override EnemyType GetEnemyType()
+        {
+            return EnemyType.FACTORY;
+        }
+
         public override void SetCurrentHealth(float currentHealth)
         {
-            // DO NOTHING
-            throw new NotImplementedException();
+            this.currentHealth = currentHealth;
         }
 
         public override float GetCurrentHealth()
         {
-            // DO NOTHING
-            throw new NotImplementedException();
+            return currentHealth;
+        }
+
+        public override GameObject GetSelf()
+        {
+            return self;
         }
     }
 }

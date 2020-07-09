@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Enemy;
 using UnityEngine;
 
 namespace Assets.Scripts.Enemies
 {
+    
     public class EnemyBoss : Enemy
     {
         public GameObject self;
@@ -42,7 +44,11 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
-            if (currentHealth <= 0) return;
+            if (currentHealth <= 0)
+            {
+                Death();
+                return;
+            }
             attackTarget = FindAttackTarget();
             Move();
             HandleBumpBloodForTeammates();
@@ -79,7 +85,6 @@ namespace Assets.Scripts.Enemies
             {
                 CancelInvoke("HandleAttack");
                 animator.Play("move_forward");
-
             }
             else
             {
@@ -99,6 +104,11 @@ namespace Assets.Scripts.Enemies
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
+        }
+
+        public void HandleCurrentHealthBar()
+        {
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
         }
 
         private void HandleAttack()
@@ -179,6 +189,7 @@ namespace Assets.Scripts.Enemies
 
         private void DestroySelf()
         {
+            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
 
@@ -224,6 +235,7 @@ namespace Assets.Scripts.Enemies
             }
         }
 
+
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
         {
             throw new System.NotImplementedException();
@@ -238,5 +250,16 @@ namespace Assets.Scripts.Enemies
         {
             throw new System.NotImplementedException();
         }
+
+        public override EnemyType GetEnemyType()
+        {
+            return EnemyType.BOSS;
+        }
+
+        public override GameObject GetSelf()
+        {
+            return self;
+        }
+
     }
 }
