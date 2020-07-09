@@ -207,7 +207,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleReceiveHealthBumpFromBoss()
         {
-            if (currentHealth <= 30)
+            if (currentHealth <= 30 && currentHealth > 0)
             {
                 currentHealth += 30;
                 currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);

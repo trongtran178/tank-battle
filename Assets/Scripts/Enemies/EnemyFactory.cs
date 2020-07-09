@@ -137,11 +137,10 @@ namespace Assets.Scripts.Enemies
             CreateEnemies(EnemyType.BOSS);
             effectDestroy.SetActive(true);
             effectDestroy.GetComponentInChildren<ParticleSystem>().Play();
-            //GameObject ga= Instantiate(effectDestroy, transform.position, transform.rotation);
+
             Destroy(self);
             CancelInvoke("GenerateEnemy");
 
-          
         }
 
         private void GenerateEnemy()
@@ -157,13 +156,13 @@ namespace Assets.Scripts.Enemies
             if (currentHealth > 0)
             {
                 int randomVal = random.Next(1, 10);
-                //CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
-                // CreateEnemies( EnemyType.MECHS_ROBOT );
+                CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
             }
         }
 
         public override void Death()
         {
+            // DO NOTHING
             Debug.Log("ENEMY FACTORY DEATH");   
             // throw new NotImplementedException();
         }
@@ -182,16 +181,19 @@ namespace Assets.Scripts.Enemies
 
         public override void ReceiveHealthBumpFromBoss()
         {
+            // DO NOTHING
             throw new NotImplementedException();
         }
 
         public override void SetCurrentHealth(float currentHealth)
         {
+            // DO NOTHING
             throw new NotImplementedException();
         }
 
         public override float GetCurrentHealth()
         {
+            // DO NOTHING
             throw new NotImplementedException();
         }
     }
