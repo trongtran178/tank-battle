@@ -133,8 +133,19 @@ namespace Assets.Scripts.Enemies
 
         private void AttackTargetTakeDamage()
         {
+            if (attackTarget == null) return;
             if (attackTarget.tag.Equals("allies"))
-                attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+            {
+                if (attackTarget.GetComponentInChildren<Dogcollider>() != null)
+                {
+                    attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+                }
+                else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null)
+                {
+                    attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(20);
+                }
+            }
+                
             else
                 player.GetComponent<TankController2>().TakeDamage(20);
 
@@ -261,5 +272,9 @@ namespace Assets.Scripts.Enemies
             return self;
         }
 
+        public override bool IsShortRangeStrike()
+        {
+            return true;
+        }
     }
 }

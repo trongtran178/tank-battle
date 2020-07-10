@@ -245,6 +245,7 @@ namespace Assets.Scripts.Enemies
         ///////////////////////////////////
         public override void Death()
         {
+            // DO NOTHING
             Debug.Log("ENEMY FACTORY DEATH");   
             throw new NotImplementedException();
         }
@@ -263,6 +264,7 @@ namespace Assets.Scripts.Enemies
 
         public override void ReceiveHealthBumpFromBoss()
         {
+            // DO NOTHING
             throw new NotImplementedException();
         }
 
@@ -284,6 +286,11 @@ namespace Assets.Scripts.Enemies
         public override GameObject GetSelf()
         {
             return self;
+        }
+
+        public override bool IsShortRangeStrike()
+        {
+            throw new NotImplementedException();
         }
     }
 }

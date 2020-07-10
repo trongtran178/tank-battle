@@ -10,39 +10,47 @@ public class MechsRobotProjectileMove : MonoBehaviour
     public GameObject explosion;
     public GameObject player;
     public GameObject firePoint;
+    public Vector3 moveDir;
     public bool isFlip = false;
     public float speed;
 
-    private Vector2 attackTargetVector;
+    private Vector3 attackTargetVector;
     private float initializationTime;
+    private bool hasArrived = false;
 
-    // Start is called before the first frame update
     void Start()
     {   
         // edit tag, hard code
         player = GameObject.FindGameObjectWithTag("player");
         if (attackTarget)
         {
-            attackTargetVector = new Vector3(1000.0f * (isFlip ? 1 : -1), firePoint.transform.position.y);
+            //attackTargetVector = new Vector3(attackTarget.transform.position.x, attackTarget.transform.position.y, attackTarget.transform.position.z);
+            // attackTargetVector = (attackTarget.transform.position - self.transform.position).normalized;
+            moveDir = (attackTarget.transform.position - self.transform.position).normalized;
         }
         initializationTime = Time.timeSinceLevelLoad;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-
         if (!self) return;
+
+        self.transform.position += moveDir * speed * Time.deltaTime;
+        self.transform.localRotation = firePoint.transform.localRotation;
 
         float timeSinceInitialization = Time.timeSinceLevelLoad - initializationTime;
         if (timeSinceInitialization >= 4)
         {
             DestroyProjectile();
             return;
-        }
-        self.transform.position = Vector3.MoveTowards(self.transform.position, attackTargetVector, speed * Time.deltaTime);
-        self.transform.localRotation = firePoint.transform.localRotation;
+        }        
     }
+
+    //private void FixedUpdate()
+    //{
+        
+    //}
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -57,12 +65,18 @@ public class MechsRobotProjectileMove : MonoBehaviour
                         break;
                     }
                 case "allies":
+                case "allies_collider":
                     {
                         if(attackTarget != null)
                         {
-                            if (attackTarget.GetComponentInChildren<Dogcollider>() != null) { 
+                            if (attackTarget.GetComponentInChildren<Dogcollider>() != null)
+                            {
                                 attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
                             }
+                            else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null) {
+                                attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(20);
+                            }
+                            Debug.Log("Destroy projectile");
                             DestroyProjectile();
                         }
                         break;
