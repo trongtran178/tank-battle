@@ -2,6 +2,6 @@
 {
     public enum EnemyType
     {
-        FROG, MECHS_ROBOT, SOLDIER, SPACECRAFT, BOSS
+        FROG, MECHS_ROBOT, SOLDIER, SPACECRAFT, BOSS, FACTORY
     }
 }

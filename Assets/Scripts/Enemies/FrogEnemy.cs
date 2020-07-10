@@ -2,9 +2,11 @@
 using System.Linq;
 using System;
 using UnityEngine;
+using Assets.Scripts.Enemy;
 
 namespace Assets.Scripts.Enemies
 {
+   
     public class FrogEnemy : Enemy
     {
         public GameObject currentHealthBar;
@@ -41,6 +43,11 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
+            if(currentHealth <= 0)
+            {
+                Death();
+                return;
+            }
             attackTarget = FindAttackTarget();
             Move();
         }
@@ -96,6 +103,11 @@ namespace Assets.Scripts.Enemies
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
         }
 
+        public void HandleCurrentHealthBar()
+        {
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+        }
+
         private void HandleAttack()
         {
             //if (player == null || player.activeSelf == false || attackTarget == null) return;
@@ -119,17 +131,21 @@ namespace Assets.Scripts.Enemies
         private void AttackTargetTakeDamage()
         {
             if (attackTarget == null) return;
-            if (attackTarget.tag.Equals("allies"))
+            if (attackTarget.tag.Equals("allies") || attackTarget.tag.Equals("allies_collider"))
             {
-                attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+                if (attackTarget.GetComponentInChildren<Dogcollider>() != null) { 
+                    attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+                }
+                else if(attackTarget.GetComponentInChildren<EnemyTu>() != null)
+                {
+                    attackTarget.GetComponentInChildren<EnemyTu>().TakeDamage(20);
+                }
             }
             else
             {
                 player.GetComponent<TankController2>().TakeDamage(20);
             }
         }
-
-
 
         private bool IsFlip()
         {
@@ -139,8 +155,6 @@ namespace Assets.Scripts.Enemies
             }
             return false;
         }
-
-
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
@@ -167,27 +181,29 @@ namespace Assets.Scripts.Enemies
             currentHealth = 0;
             currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
             animation.Play("Mon_T_Dead");
-            Invoke("DestroySelf", 2);
+            Invoke("DestroySelf", 1);
             // Destroy(self);
         }
 
         private void DestroySelf()
         {
+            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
-
-        private void TakeDamage()
-        {
-
-        }
-
+      
         public override void SetCurrentHealth(float currentHealth)
         {
             this.currentHealth = currentHealth;
         }
+
         public override float GetCurrentHealth()
         {
             return currentHealth;
+        }
+
+        public override EnemyType GetEnemyType()
+        {
+            return EnemyType.FROG;
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -207,13 +223,23 @@ namespace Assets.Scripts.Enemies
 
         private void HandleReceiveHealthBumpFromBoss()
         {
-            if (currentHealth <= 30)
+            if (currentHealth <= 30 && currentHealth > 0)
             {
                 currentHealth += 30;
                 currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
                 effectBuff.SetActive(true);
                 effectBuff.GetComponentInChildren<ParticleSystem>().Play();
             }
+        }
+
+        public override GameObject GetSelf()
+        {
+            return self;
+        }
+
+        public override bool IsShortRangeStrike()
+        {
+            return true;
         }
     }
 }
