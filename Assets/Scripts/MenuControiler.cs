@@ -12,6 +12,8 @@ public class MenuControiler : MonoBehaviour
 
     public GameObject pauseMenu;
 
+    // ENEMY AREA
+
     public GameObject enemyHouse;
 
     public GameObject mechsRobot;
@@ -19,6 +21,18 @@ public class MenuControiler : MonoBehaviour
     public GameObject frog; 
 
     public GameObject boss;
+
+    // END OF ENEMY AREA
+
+    // ALLIES AREA
+
+    public GameObject alliesDog;
+
+    public GameObject alliesTank;
+
+    public GameObject alliesPlane;
+
+    // END OF ALLIES AREA
 
     public bool isPaused;
     
@@ -78,7 +92,7 @@ public class MenuControiler : MonoBehaviour
     public void SaveGame()
     {
         Debug.Log(enemyHouse.GetComponentInChildren<EnemyFactory>());
-        SaveSystem.SaveEnemiesFactory(enemyHouse.GetComponentInChildren<EnemyFactory>());
+        SaveSystem.SaveGameFactory(enemyHouse.GetComponentInChildren<EnemyFactory>());
 
     }
 
@@ -89,6 +103,13 @@ public class MenuControiler : MonoBehaviour
         {       
             Destroy(enemy);
         }
+
+        // Clear all allies
+        foreach (GameObject allies in GameObject.FindGameObjectsWithTag("allies"))
+        {
+            Destroy(allies);
+        }
+
         EnemyFactory.enemies.Clear();
 
         EnemyFactoryData enemyFactoryData = SaveSystem.LoadEnemyFactory();
@@ -98,6 +119,7 @@ public class MenuControiler : MonoBehaviour
         enemyHouse.GetComponentInChildren<EnemyFactory>().SetBurn(!enemyFactoryData.IsBurn);
         enemyHouse.GetComponentInChildren<EnemyFactory>().HandleCurrentHealthBar();
 
+        //RE-INITIALIZE ENEMIES
         foreach (EnemyData enemyData in enemyFactoryData.EnemiesData)
         {
             switch(enemyData.Type)
@@ -134,6 +156,40 @@ public class MenuControiler : MonoBehaviour
                 }
             }
         }
+
+
+        //RE-INITIALIZE ALLIES
+        ArrayList alliesData = SaveSystem.LoadAllies();
+        foreach (AlliesObjectData alliesObjectData in alliesData)
+        {
+            switch (alliesObjectData.Type)
+            {
+                case AlliesType.DOG:
+                    {
+                        GameObject alliesDogInit = Instantiate(alliesDog, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesDog.transform.rotation);
+                        alliesDogInit.SetActive(true);
+                        alliesDogInit.GetComponentInChildren<Dogcollider>().health = alliesObjectData.CurrentHeath;
+                        break;
+                    }
+                case AlliesType.PLANE:
+                    {
+                        GameObject alliesPlaneInit = Instantiate(alliesPlane, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesPlane.transform.rotation);
+                        alliesPlaneInit.SetActive(true);
+                        alliesPlaneInit.GetComponentInChildren<PlaneCollider>().PlaneHealth = alliesObjectData.CurrentHeath;
+                        break;
+                    }
+                case AlliesType.TANK:
+                    {
+                        GameObject alliesTankInit = Instantiate(alliesTank, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesTank.transform.rotation);
+                        alliesTankInit.SetActive(true);
+                        alliesTankInit.GetComponentInChildren<EnemyTu>().health = alliesObjectData.CurrentHeath;
+                        break;
+                    }
+            }
+        }
+
+        Debug.Log(alliesData.Count);
+
 
     }
 }

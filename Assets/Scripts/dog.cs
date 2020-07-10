@@ -22,9 +22,6 @@ public class dog : MonoBehaviour
     {
         ami = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-
-
-
     }
 
     // Update is called once per frame

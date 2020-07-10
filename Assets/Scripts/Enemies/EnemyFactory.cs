@@ -287,5 +287,10 @@ namespace Assets.Scripts.Enemies
         {
             return self;
         }
+
+        public override bool IsShortRangeStrike()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

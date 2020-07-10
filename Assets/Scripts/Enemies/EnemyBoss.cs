@@ -261,5 +261,9 @@ namespace Assets.Scripts.Enemies
             return self;
         }
 
+        public override bool IsShortRangeStrike()
+        {
+            return true;
+        }
     }
 }

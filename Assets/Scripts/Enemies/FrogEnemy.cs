@@ -131,9 +131,15 @@ namespace Assets.Scripts.Enemies
         private void AttackTargetTakeDamage()
         {
             if (attackTarget == null) return;
-            if (attackTarget.tag.Equals("allies"))
+            if (attackTarget.tag.Equals("allies") || attackTarget.tag.Equals("allies_collider"))
             {
-                attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+                if (attackTarget.GetComponentInChildren<Dogcollider>() != null) { 
+                    attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+                }
+                else if(attackTarget.GetComponentInChildren<EnemyTu>() != null)
+                {
+                    attackTarget.GetComponentInChildren<EnemyTu>().TakeDamage(20);
+                }
             }
             else
             {
@@ -175,7 +181,7 @@ namespace Assets.Scripts.Enemies
             currentHealth = 0;
             currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
             animation.Play("Mon_T_Dead");
-            Invoke("DestroySelf", 2);
+            Invoke("DestroySelf", 1);
             // Destroy(self);
         }
 
@@ -184,17 +190,12 @@ namespace Assets.Scripts.Enemies
             EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
-
-        //private void TakeDamage()
-        //{
-
-        //}
-
       
         public override void SetCurrentHealth(float currentHealth)
         {
             this.currentHealth = currentHealth;
         }
+
         public override float GetCurrentHealth()
         {
             return currentHealth;
@@ -234,6 +235,11 @@ namespace Assets.Scripts.Enemies
         public override GameObject GetSelf()
         {
             return self;
+        }
+
+        public override bool IsShortRangeStrike()
+        {
+            return true;
         }
     }
 }

@@ -20,12 +20,13 @@ namespace Assets.Scripts.Enemies
         public abstract void Death();
         public abstract void TakeDamage(int damage);
         public abstract void ReceiveHealthBumpFromBoss();
-        public abstract EnemyType GetEnemyType();
         public abstract void SetCurrentHealth(float currentHealth);
         public abstract float GetCurrentHealth();
         public abstract GameObject GetSelf();
+        public abstract EnemyType GetEnemyType();
+        public abstract bool IsShortRangeStrike();
 
-        // Detect collision with other enemy, enemy should go through other enemy
+        // Detect collision with other enemy, enemy should go through another enemy
         private void OnEnable()
         {
             player = GameObject.FindGameObjectWithTag("player");
@@ -61,6 +62,10 @@ namespace Assets.Scripts.Enemies
             GameObject[] alliesArray = GameObject.FindGameObjectsWithTag("allies");
             for (int i = 0; i < alliesArray.Length; i++)
             {
+                // If enemy attack form is short range strike and target is plane, then ignore it :) 
+                if (IsShortRangeStrike() && alliesArray[i].GetComponentInChildren<PlaneCollider>() != null) {
+                    continue;
+                }
                 allies.Add(alliesArray[i]);
             }
 

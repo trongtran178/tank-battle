@@ -224,9 +224,9 @@ public class trajectoryScript : MonoBehaviour {
 
                     projectile1.SetActive(false);
 
-                    GameObject tankPlayer = GameObject.FindGameObjectWithTag("player");
+                    // GameObject tankPlayer = GameObject.FindGameObjectWithTag("player");
 
-                    tankPlayer.GetComponent<AudioSource>().Play();
+                    // tankPlayer.GetComponent<AudioSource>().Play();
                     //AudioSource _audio = (AudioSource)Instantiate(Resources.Load("gun-cocking-01.mp3"));
                     //_audio.Play();
 

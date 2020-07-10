@@ -137,7 +137,7 @@ namespace Assets.Scripts.Enemies
                     GameObject _projectile = projectile;
                     projectile.GetComponentInChildren<MechsRobotProjectileMove>().attackTarget = attackTarget;
                     projectile.GetComponentInChildren<MechsRobotProjectileMove>().isFlip = IsFlip();
-
+                    //weaponLeft.transform.SetPositionAndRotation(weaponLeft.transform.position, new Quaternion())
                     _projectile.SetActive(true);
                     Instantiate(_projectile, firePoint.transform.position, firePoint.transform.rotation);
                 }
@@ -282,6 +282,10 @@ namespace Assets.Scripts.Enemies
         }
 
 
+        public override bool IsShortRangeStrike()
+        {
+            return false;
+        }
 
     }
 }
