@@ -1,12 +1,16 @@
 ﻿using System;
-public class InitBulletTimeData
+namespace Assets.Scripts.SaveSystem
 {
-    public InitBulletTimeData(int bulletOrder, float bulletMana)
+    [Serializable]
+    public class InitBulletTimeData
     {
-        BulletOrder = bulletOrder;
-        BulletMana = bulletMana;
-    }
+        public int BulletOrder { get; set; }
+        public float BulletMana { get; set; }
 
-    public int BulletOrder { get; set; }
-    public float BulletMana { get; set; }
+        public InitBulletTimeData(int bulletOrder, float bulletMana)
+        {
+            BulletOrder = bulletOrder;
+            BulletMana = bulletMana;
+        }
+    }
 }

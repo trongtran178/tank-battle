@@ -18,7 +18,7 @@ public class MenuControiler : MonoBehaviour
 
     public GameObject mechsRobot;
 
-    public GameObject frog; 
+    public GameObject frog;
 
     public GameObject boss;
 
@@ -34,15 +34,15 @@ public class MenuControiler : MonoBehaviour
 
     // END OF ALLIES AREA
 
+    public GameObject player;
 
     public GameObject manageRecoveryTime;
 
     public bool isPaused;
-    
+
     private GameObject gun;
 
-    private GameObject tank;
-
+   
     // Start is called before the first frame update
     void Start()
     {
@@ -56,7 +56,7 @@ public class MenuControiler : MonoBehaviour
         //tank = GameObject.Find("Tank2");
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if(isPaused)
+            if (isPaused)
             {
 
                 ResumeGame();
@@ -74,7 +74,7 @@ public class MenuControiler : MonoBehaviour
         //if(tank==null)
         //{
         //    pauseMenu.SetActive(true);
-            
+
         //}
     }
 
@@ -94,41 +94,57 @@ public class MenuControiler : MonoBehaviour
 
     public void SaveGame()
     {
-        Debug.Log(enemyHouse.GetComponentInChildren<EnemyFactory>());
-        SaveSystem.SaveGameFactory(enemyHouse.GetComponentInChildren<EnemyFactory>(), manageRecoveryTime);
-
+        SaveSystem.SaveGameFactory(player, enemyHouse.GetComponentInChildren<EnemyFactory>(), manageRecoveryTime);
     }
 
     public void LoadGame()
     {
-        // Clear all enemies
-        foreach(GameObject enemy in EnemyFactory.enemies)
-        {       
+        // Destroy all enemies
+        foreach (GameObject enemy in EnemyFactory.enemies)
+        {
             Destroy(enemy);
         }
 
-        // Clear all allies
+        // Destroy all allies
         foreach (GameObject allies in GameObject.FindGameObjectsWithTag("allies"))
         {
             Destroy(allies);
         }
+
+        // Destroy player
+        GameObject currentPlayerObject = GameObject.FindGameObjectWithTag("player");
+        // Destroy(currentPlayerObject);
+
+        // GET PREVIOUS USER DATA
+        PlayerData playerData = SaveSystem.LoadPlayer();
+
+        currentPlayerObject.transform.position = new Vector3(playerData.PositionX, playerData.PositionY, playerData.PositionZ);
+        currentPlayerObject.GetComponentInChildren<TankController2>().health = (int) playerData.CurrentHealth;
+
+        HealthBarTank.healthTank = playerData.CurrentHealth;
+        ManaTank.manaTank = playerData.CurrentMana;
+        // GameObject previousPlayer = Instantiate(player, new Vector3(playerData.PositionX, playerData.PositionY, playerData.PositionZ), player.transform.rotation);
+
+
 
         EnemyFactory.enemies.Clear();
 
         EnemyFactoryData enemyFactoryData = SaveSystem.LoadEnemyFactory();
 
         enemyHouse.SetActive(enemyFactoryData.IsActive);
-        enemyHouse.GetComponentInChildren<EnemyFactory>().SetCurrentHealth(enemyFactoryData.CurrentHealth);
-        enemyHouse.GetComponentInChildren<EnemyFactory>().SetBurn(!enemyFactoryData.IsBurn);
-        enemyHouse.GetComponentInChildren<EnemyFactory>().HandleCurrentHealthBar();
+
+        EnemyFactory enemyFactoryScript = enemyHouse.GetComponentInChildren<EnemyFactory>();
+        enemyFactoryScript.SetCurrentHealth(enemyFactoryData.CurrentHealth);
+        enemyFactoryScript.SetBurn(!enemyFactoryData.IsBurn);
+        enemyFactoryScript.HandleCurrentHealthBar();
 
         //RE-INITIALIZE ENEMIES
         foreach (EnemyData enemyData in enemyFactoryData.EnemiesData)
         {
-            switch(enemyData.Type)
+            switch (enemyData.Type)
             {
                 case Assets.Scripts.Enemy.EnemyType.BOSS:
-                {
+                    {
                         GameObject bossInit = Instantiate(boss, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), boss.transform.rotation);
                         bossInit.SetActive(true);
                         bossInit.transform.localScale = new Vector3((float)2.5, (float)4, (float)2.5);
@@ -136,9 +152,9 @@ public class MenuControiler : MonoBehaviour
                         bossInit.GetComponentInChildren<EnemyBoss>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(bossInit);
                         break;
-                }
+                    }
                 case Assets.Scripts.Enemy.EnemyType.FROG:
-                {
+                    {
                         GameObject frogInit = Instantiate(frog, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), frog.transform.rotation);
                         frogInit.SetActive(true);
                         frogInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
@@ -146,9 +162,9 @@ public class MenuControiler : MonoBehaviour
                         frogInit.GetComponentInChildren<FrogEnemy>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(frogInit);
                         break;
-                }
+                    }
                 case Assets.Scripts.Enemy.EnemyType.MECHS_ROBOT:
-                {
+                    {
                         GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
                         mechsRobotInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
@@ -156,7 +172,7 @@ public class MenuControiler : MonoBehaviour
                         mechsRobotInit.GetComponentInChildren<MechsRobotEnemy>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(mechsRobotInit);
                         break;
-                }
+                    }
             }
         }
 
@@ -192,11 +208,11 @@ public class MenuControiler : MonoBehaviour
         }
 
 
-        //RE-INITIALIZE RECOVERY ALLIES TIME
+        // RE-INITIALIZE RECOVERY ALLIES TIME
         ArrayList initAlliesTimes = SaveSystem.LoadInitAlliesTimes();
         foreach (InitAlliesTimeData initAlliesTimeData in initAlliesTimes)
         {
-            switch(initAlliesTimeData.Type)
+            switch (initAlliesTimeData.Type)
             {
                 case AlliesType.DOG:
                     {
@@ -228,8 +244,32 @@ public class MenuControiler : MonoBehaviour
                         break;
                     }
             }
-          
+
         }
 
+        // RE-INITIALIZE RECOVERY BULLET TIME
+        ArrayList initBulletTimes = SaveSystem.LoadInitBulletTimes();
+        ManaBullet[] manaBullets = manageRecoveryTime.GetComponentsInChildren<ManaBullet>();
+        for (int bulletOrder = 0; bulletOrder < initBulletTimes.Count; bulletOrder++)
+        {
+            switch (bulletOrder)
+            {
+                case 0:
+                    {
+                        manaBullets[bulletOrder].manaBullet = (initBulletTimes[bulletOrder] as InitBulletTimeData).BulletMana;
+                        break;
+                    }
+                case 1:
+                    {
+                        manaBullets[bulletOrder].manaBullet = (initBulletTimes[bulletOrder] as InitBulletTimeData).BulletMana;
+                        break;
+                    }
+                case 2:
+                    {
+                        manaBullets[bulletOrder].manaBullet = (initBulletTimes[bulletOrder] as InitBulletTimeData).BulletMana;
+                        break;
+                    }
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Assets.Scripts.SaveSystem
         private static string initBulletTimePath = Application.persistentDataPath + "/init_bullet_time.fun";
         private static string playerPath = Application.persistentDataPath + "/player.fun";
 
-        public static void SaveGameFactory(EnemyFactory enemyFactory, GameObject manageRecoveryTime)
+        public static void SaveGameFactory(GameObject playerGameObject, EnemyFactory enemyFactory, GameObject manageRecoveryTime)
         {
 
             BinaryFormatter formatter = new BinaryFormatter();
@@ -24,17 +24,19 @@ namespace Assets.Scripts.SaveSystem
             FileStream enemiesStream = new FileStream(enemiesPath, FileMode.Create);
             FileStream alliesStream = new FileStream(alliesPath, FileMode.Create);
             FileStream initAlliesTimeStream = new FileStream(initAlliesTimePath, FileMode.Create);
-            // FileStream initBulletTimeStream = new FileStream(initBulletTimePath, FileMode.Create);
-            // FileStream playerStream = new FileStream(playerPath, FileMode.Create);
+            FileStream initBulletTimeStream = new FileStream(initBulletTimePath, FileMode.Create);
+            FileStream playerStream = new FileStream(playerPath, FileMode.Create);
 
             EnemyFactoryData enemyFactoryData = new EnemyFactoryData(enemyFactory);
 
-            GameObject[] alliesObjects = GameObject.FindGameObjectsWithTag("allies");
-
-
+            PlayerData playerDataSerializable = new PlayerData();
 
             ArrayList alliesObjectsSerializable = new ArrayList();
             ArrayList initAlliesTimesSerializable = new ArrayList();
+            ArrayList initBulletTimesSerializable = new ArrayList();
+
+
+            GameObject[] alliesObjects = GameObject.FindGameObjectsWithTag("allies");
 
             foreach (GameObject alliesObject in alliesObjects)
             {
@@ -72,54 +74,65 @@ namespace Assets.Scripts.SaveSystem
                                                             alliesObject.transform.position.y,
                                                             alliesObject.transform.position.z);
                     alliesObjectsSerializable.Add(alliesObjectData);
-                    Debug.Log("69 - save tank allies");
-
                 }
             }
 
 
-            // ?
-            ManaArmy[] scripts = manageRecoveryTime.GetComponentsInChildren<ManaArmy>();
+            // SAVE RECOVERY INITIALIZE TIME OF ALLIES !
+            ManaArmy[] manaArmyArray = manageRecoveryTime.GetComponentsInChildren<ManaArmy>();
 
-            for(int i = 0; i < scripts.Length; i++)
+            for(int i = 0; i < manaArmyArray.Length; i++)
             {
-                if(scripts[i].alliesObject.GetComponentInChildren<Dogcollider>() != null)
+                if(manaArmyArray[i].alliesObject.GetComponentInChildren<Dogcollider>() != null)
                 {
                     // DOG
-                    InitAlliesTimeData initDogTimeData = new InitAlliesTimeData(AlliesType.DOG, scripts[i].manaArmy);
+                    InitAlliesTimeData initDogTimeData = new InitAlliesTimeData(AlliesType.DOG, manaArmyArray[i].manaArmy);
                     initAlliesTimesSerializable.Add(initDogTimeData);
                 }
-                if (scripts[i].alliesObject.GetComponentInChildren<PlaneCollider>() != null)
+                if (manaArmyArray[i].alliesObject.GetComponentInChildren<PlaneCollider>() != null)
                 {
                     // PLANE
-                    InitAlliesTimeData initPlaneTimeData = new InitAlliesTimeData(AlliesType.PLANE, scripts[i].manaArmy);
+                    InitAlliesTimeData initPlaneTimeData = new InitAlliesTimeData(AlliesType.PLANE, manaArmyArray[i].manaArmy);
                     initAlliesTimesSerializable.Add(initPlaneTimeData);
 
                 }
-                if (scripts[i].alliesObject.GetComponentInChildren<EnemyTu>() != null)
+                if (manaArmyArray[i].alliesObject.GetComponentInChildren<EnemyTu>() != null)
                 {
                     // TANK
-                    InitAlliesTimeData initTankTimeData = new InitAlliesTimeData(AlliesType.TANK, scripts[i].manaArmy);
+                    InitAlliesTimeData initTankTimeData = new InitAlliesTimeData(AlliesType.TANK, manaArmyArray[i].manaArmy);
                     initAlliesTimesSerializable.Add(initTankTimeData);
                 }
             }
-                
 
+
+            // SAVE RECOVERY TIME OF BULLET !
+            ManaBullet[] manaBulletArray = manageRecoveryTime.GetComponentsInChildren<ManaBullet>();
+            for (int i = 0; i < manaBulletArray.Length; i++)
+            {
+                // Bullet order start from 0, 1, 2, 3, 4, 5 ...
+                InitBulletTimeData initBulletTimeData = new InitBulletTimeData(i, manaBulletArray[i].manaBullet);
+                initBulletTimesSerializable.Add(initBulletTimeData);
+            }
+
+            playerDataSerializable.CurrentHealth = playerGameObject.GetComponentInChildren<TankController2>().health;
+            playerDataSerializable.CurrentMana = ManaTank.manaTank;
+            playerDataSerializable.PositionX = playerGameObject.transform.position.x;
+            playerDataSerializable.PositionY = playerGameObject.transform.position.y;
+            playerDataSerializable.PositionZ = playerGameObject.transform.position.z;
 
 
             formatter.Serialize(enemiesStream, enemyFactoryData);
             formatter.Serialize(alliesStream, alliesObjectsSerializable);
             formatter.Serialize(initAlliesTimeStream, initAlliesTimesSerializable);
+            formatter.Serialize(initBulletTimeStream, initBulletTimesSerializable);
+            formatter.Serialize(playerStream, playerDataSerializable);
 
             enemiesStream.Close();
             alliesStream.Close();
             initAlliesTimeStream.Close();
-            //playerStream.Close();
-
+            initBulletTimeStream.Close();
+            playerStream.Close();
         }
-
-
-
 
         public static EnemyFactoryData LoadEnemyFactory()
         {
@@ -146,7 +159,6 @@ namespace Assets.Scripts.SaveSystem
                 BinaryFormatter formatter = new BinaryFormatter();
                 FileStream stream = new FileStream(alliesPath, FileMode.Open);
                 ArrayList alliesData = formatter.Deserialize(stream) as ArrayList;
-
 
                 stream.Close();
                 return alliesData;
@@ -178,30 +190,40 @@ namespace Assets.Scripts.SaveSystem
 
         public static ArrayList LoadInitBulletTimes()
         {
-            return null;
+            if (File.Exists(initBulletTimePath))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(initBulletTimePath, FileMode.Open);
+                ArrayList initBulletTimes = formatter.Deserialize(stream) as ArrayList;
+
+                stream.Close();
+                return initBulletTimes;
+            }
+            else
+            {
+                Debug.Log("Error: Save file not found!");
+                return null;
+            }
         }
 
-        //public static EnemyFactoryData LoadPlayer()
-        //{
+        public static PlayerData LoadPlayer()
+        {
+            string playerPath = Application.persistentDataPath + "/player.fun";
+            if (File.Exists(playerPath))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(playerPath, FileMode.Open);
+                PlayerData playerData = formatter.Deserialize(stream) as PlayerData;
 
-
-        //    string playerPath = Application.persistentDataPath + "/player.fun";
-        //    if (File.Exists(playerPath))
-        //    {
-        //        BinaryFormatter formatter = new BinaryFormatter();
-        //        FileStream stream = new FileStream(playerPath, FileMode.Open);
-        //        EnemyFactoryData enemyFactoryData = formatter.Deserialize(stream) as EnemyFactoryData;
-
-
-        //        stream.Close();
-        //        return enemyFactoryData;
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("Error: Save file not found!");
-        //        return null;
-        //    }
-        //}
+                stream.Close();
+                return playerData;
+            }
+            else
+            {
+                Debug.Log("Error: Save file not found!");
+                return null;
+            }
+        }
 
     }
 }
