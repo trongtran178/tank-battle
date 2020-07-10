@@ -45,6 +45,15 @@ public class TankController3D : MonoBehaviour
             anim.SetBool("isMoveBack", false);
             speed = 0;
         }
+        
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    anim.SetBool("isHit", true);
+        //}
+        //if (Input.GetKeyUp(KeyCode.Space))
+        //{
+        //    anim.SetBool("isHit", false);
 
+        //}
     }
 }
