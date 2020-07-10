@@ -10,27 +10,33 @@ namespace Assets.Scripts.SaveSystem
 {
     public static class SaveSystem
     {
-        public static void SaveGameFactory(EnemyFactory enemyFactory)
+        private static string enemiesPath = Application.persistentDataPath + "/enemies.fun";
+        private static string alliesPath = Application.persistentDataPath + "/allies.fun";
+        private static string initAlliesTimePath = Application.persistentDataPath + "/init_allies_time.fun";
+        private static string initBulletTimePath = Application.persistentDataPath + "/init_bullet_time.fun";
+        private static string playerPath = Application.persistentDataPath + "/player.fun";
+
+        public static void SaveGameFactory(EnemyFactory enemyFactory, GameObject manageRecoveryTime)
         {
 
             BinaryFormatter formatter = new BinaryFormatter();
 
-            string enemiesPath = Application.persistentDataPath + "/enemies.fun";
-            string alliesPath = Application.persistentDataPath + "/allies.fun";
-            string playerPath = Application.persistentDataPath + "/player.fun";
-
             FileStream enemiesStream = new FileStream(enemiesPath, FileMode.Create);
             FileStream alliesStream = new FileStream(alliesPath, FileMode.Create);
-            FileStream playerStream = new FileStream(playerPath, FileMode.Create);
+            FileStream initAlliesTimeStream = new FileStream(initAlliesTimePath, FileMode.Create);
+            // FileStream initBulletTimeStream = new FileStream(initBulletTimePath, FileMode.Create);
+            // FileStream playerStream = new FileStream(playerPath, FileMode.Create);
 
             EnemyFactoryData enemyFactoryData = new EnemyFactoryData(enemyFactory);
 
             GameObject[] alliesObjects = GameObject.FindGameObjectsWithTag("allies");
 
-            
-            ArrayList alliesObjectsSerializable = new ArrayList();
 
-            foreach(GameObject alliesObject in alliesObjects)
+
+            ArrayList alliesObjectsSerializable = new ArrayList();
+            ArrayList initAlliesTimesSerializable = new ArrayList();
+
+            foreach (GameObject alliesObject in alliesObjects)
             {
                 if (alliesObject.GetComponentInChildren<Dogcollider>() != null)
                 {
@@ -72,22 +78,51 @@ namespace Assets.Scripts.SaveSystem
             }
 
 
+            // ?
+            ManaArmy[] scripts = manageRecoveryTime.GetComponentsInChildren<ManaArmy>();
+
+            for(int i = 0; i < scripts.Length; i++)
+            {
+                if(scripts[i].alliesObject.GetComponentInChildren<Dogcollider>() != null)
+                {
+                    // DOG
+                    InitAlliesTimeData initDogTimeData = new InitAlliesTimeData(AlliesType.DOG, scripts[i].manaArmy);
+                    initAlliesTimesSerializable.Add(initDogTimeData);
+                }
+                if (scripts[i].alliesObject.GetComponentInChildren<PlaneCollider>() != null)
+                {
+                    // PLANE
+                    InitAlliesTimeData initPlaneTimeData = new InitAlliesTimeData(AlliesType.PLANE, scripts[i].manaArmy);
+                    initAlliesTimesSerializable.Add(initPlaneTimeData);
+
+                }
+                if (scripts[i].alliesObject.GetComponentInChildren<EnemyTu>() != null)
+                {
+                    // TANK
+                    InitAlliesTimeData initTankTimeData = new InitAlliesTimeData(AlliesType.TANK, scripts[i].manaArmy);
+                    initAlliesTimesSerializable.Add(initTankTimeData);
+                }
+            }
+                
+
+
+
             formatter.Serialize(enemiesStream, enemyFactoryData);
             formatter.Serialize(alliesStream, alliesObjectsSerializable);
-            //formatter.Serialize(playerStream, enemyFactoryData);
+            formatter.Serialize(initAlliesTimeStream, initAlliesTimesSerializable);
 
             enemiesStream.Close();
             alliesStream.Close();
+            initAlliesTimeStream.Close();
             //playerStream.Close();
 
         }
 
+
+
+
         public static EnemyFactoryData LoadEnemyFactory()
         {
-           
-            string enemiesPath = Application.persistentDataPath + "/enemies.fun";
-            //string alliesPath = Application.persistentDataPath + "/allies.fun";
-
             if (File.Exists(enemiesPath))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
@@ -106,8 +141,6 @@ namespace Assets.Scripts.SaveSystem
 
         public static ArrayList LoadAllies()
         {
-            string alliesPath = Application.persistentDataPath + "/allies.fun";
-
             if (File.Exists(alliesPath))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
@@ -123,6 +156,29 @@ namespace Assets.Scripts.SaveSystem
                 Debug.Log("Error: Save file not found!");
                 return null;
             }
+        }
+
+        public static ArrayList LoadInitAlliesTimes()
+        {
+            if (File.Exists(initAlliesTimePath))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(initAlliesTimePath, FileMode.Open);
+                ArrayList initAlliesTimes = formatter.Deserialize(stream) as ArrayList;
+
+                stream.Close();
+                return initAlliesTimes;
+            }
+            else
+            {
+                Debug.Log("Error: Save file not found!");
+                return null;
+            }
+        }
+
+        public static ArrayList LoadInitBulletTimes()
+        {
+            return null;
         }
 
         //public static EnemyFactoryData LoadPlayer()

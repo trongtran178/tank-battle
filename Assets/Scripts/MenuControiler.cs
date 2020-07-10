@@ -4,7 +4,7 @@ using Assets.Scripts.Enemies;
 using Assets.Scripts.SaveSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using System.Linq;
 public class MenuControiler : MonoBehaviour
 {
 
@@ -33,6 +33,9 @@ public class MenuControiler : MonoBehaviour
     public GameObject alliesPlane;
 
     // END OF ALLIES AREA
+
+
+    public GameObject manageRecoveryTime;
 
     public bool isPaused;
     
@@ -92,7 +95,7 @@ public class MenuControiler : MonoBehaviour
     public void SaveGame()
     {
         Debug.Log(enemyHouse.GetComponentInChildren<EnemyFactory>());
-        SaveSystem.SaveGameFactory(enemyHouse.GetComponentInChildren<EnemyFactory>());
+        SaveSystem.SaveGameFactory(enemyHouse.GetComponentInChildren<EnemyFactory>(), manageRecoveryTime);
 
     }
 
@@ -188,8 +191,45 @@ public class MenuControiler : MonoBehaviour
             }
         }
 
-        Debug.Log(alliesData.Count);
 
+        //RE-INITIALIZE RECOVERY ALLIES TIME
+        ArrayList initAlliesTimes = SaveSystem.LoadInitAlliesTimes();
+        foreach (InitAlliesTimeData initAlliesTimeData in initAlliesTimes)
+        {
+            switch(initAlliesTimeData.Type)
+            {
+                case AlliesType.DOG:
+                    {
+                        ManaArmy dogManaArmy = manageRecoveryTime
+                            .GetComponentsInChildren<ManaArmy>()
+                            .Where(manaArmy => manaArmy.alliesObject.GetComponentInChildren<Dogcollider>() != null).ToArray()[0];
+
+                        dogManaArmy.manaArmy = initAlliesTimeData.ManaArmy;
+
+                        break;
+                    }
+                case AlliesType.PLANE:
+                    {
+                        ManaArmy planeManaArmy = manageRecoveryTime
+                            .GetComponentsInChildren<ManaArmy>()
+                            .Where(manaArmy => manaArmy.alliesObject.GetComponentInChildren<PlaneCollider>() != null).ToArray()[0];
+
+                        planeManaArmy.manaArmy = initAlliesTimeData.ManaArmy;
+
+                        break;
+                    }
+                case AlliesType.TANK:
+                    {
+                        ManaArmy tankManaArmy = manageRecoveryTime
+                            .GetComponentsInChildren<ManaArmy>()
+                            .Where(manaArmy => manaArmy.alliesObject.GetComponentInChildren<EnemyTu>() != null).ToArray()[0];
+
+                        tankManaArmy.manaArmy = initAlliesTimeData.ManaArmy;
+                        break;
+                    }
+            }
+          
+        }
 
     }
 }

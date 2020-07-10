@@ -3,7 +3,7 @@ using Assets.Scripts.Enemy;
 
 namespace Assets.Scripts.SaveSystem
 {
-    [System.Serializable]
+    [Serializable]
     public class EnemyData
     {
         private EnemyType type;
