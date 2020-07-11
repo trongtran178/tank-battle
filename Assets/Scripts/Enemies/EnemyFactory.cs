@@ -17,11 +17,11 @@ namespace Assets.Scripts.Enemies
         public GameObject boss;
         public GameObject takeDamagePoint;
 
-
         public static ArrayList enemies;
 
         private float currentHealth;
         private float generateEnemyTime = 10.0f;
+        private double takeDamageRatio = .07;
         private bool isBurn = false;
 
         // If flag is true, generateEnemyTime will be decrease, ...
@@ -154,6 +154,7 @@ namespace Assets.Scripts.Enemies
 
         public override void TakeDamage(int damage)
         {
+            damage = (int) ((float)damage * takeDamageRatio);
             currentHealth -= damage;
             currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
 

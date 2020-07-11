@@ -14,6 +14,7 @@ namespace Assets.Scripts.Enemies
         public GameObject self;
 
         private float currentHealth;
+        private double takeDamageRatio = .3;
         private Rigidbody2D rigidBody2D;
         private new Animation animation;
         /// <summary>

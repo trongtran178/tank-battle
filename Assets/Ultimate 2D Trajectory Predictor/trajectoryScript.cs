@@ -124,11 +124,13 @@ public class trajectoryScript : MonoBehaviour {
         ballPos = ball.transform.position;                                      //ballPos is updated to the position of the "ball"
 
         if (changeSpriteAfterStart == true)
-        {                                   //If you've allowed the sprite to be continiously changed...
+        {
+            // If you've allowed the sprite to be continiously changed...
             for (int k = 0; k < numberOfDots; k++)
             {
                 if (dotSprite != null)
-                {                                       //If a sprite is applied to dotSprite
+                {
+                    //If a sprite is applied to dotSprite
                     dots[k].GetComponent<SpriteRenderer>().sprite = dotSprite;//Change all points' sprite to the dotSprite sprite
                 }
             }

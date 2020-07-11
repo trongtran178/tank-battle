@@ -5,7 +5,9 @@ using Assets.Scripts.SaveSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
-public class MenuControiler : MonoBehaviour
+using System;
+
+public class MenuController : MonoBehaviour
 {
 
     public string menu;
@@ -52,9 +54,7 @@ public class MenuControiler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        //tank = GameObject.Find("Tank2");
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
             {
@@ -94,7 +94,14 @@ public class MenuControiler : MonoBehaviour
 
     public void SaveGame()
     {
-        SaveSystem.SaveGameFactory(player, enemyHouse.GetComponentInChildren<EnemyFactory>(), manageRecoveryTime);
+        try { 
+            SaveSystem.SaveGameFactory(player, enemyHouse.GetComponentInChildren<EnemyFactory>(), manageRecoveryTime);
+            ResumeGame();
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e.Message);
+        }
     }
 
     public void LoadGame()
@@ -123,9 +130,6 @@ public class MenuControiler : MonoBehaviour
 
         HealthBarTank.healthTank = playerData.CurrentHealth;
         ManaTank.manaTank = playerData.CurrentMana;
-        // GameObject previousPlayer = Instantiate(player, new Vector3(playerData.PositionX, playerData.PositionY, playerData.PositionZ), player.transform.rotation);
-
-
 
         EnemyFactory.enemies.Clear();
 
@@ -272,5 +276,7 @@ public class MenuControiler : MonoBehaviour
                     }
             }
         }
+
+        ResumeGame();
     }
 }

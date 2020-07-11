@@ -16,6 +16,7 @@ namespace Assets.Scripts.Enemies
         private float currentHealth;
         private float minimumDistanceIndicatorBetweenAttackTarget = 10;
         private Rigidbody2D rigidBody2D;
+        private double takeDamageRatio = .3;
         private bool isDeath = false;
         private GameObject enemyNeedBumpHealth;
         /// <summary>
@@ -138,16 +139,20 @@ namespace Assets.Scripts.Enemies
             {
                 if (attackTarget.GetComponentInChildren<Dogcollider>() != null)
                 {
-                    attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
+                    attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(60);
                 }
                 else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null)
                 {
-                    attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(20);
+                    attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(60);
+                }
+                else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
+                {
+                    attackTarget.GetComponentInChildren<EnemyTu>().TakeDamage(60);
                 }
             }
                 
             else
-                player.GetComponent<TankController2>().TakeDamage(20);
+                player.GetComponent<TankController2>().TakeDamage(60);
 
         }
 
@@ -226,6 +231,7 @@ namespace Assets.Scripts.Enemies
         public override void TakeDamage(int damage)
         {
             if (currentHealth <= 0 || isDeath) return;
+            damage = (int)((float)damage * takeDamageRatio);
             currentHealth -= damage;
 
             currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);

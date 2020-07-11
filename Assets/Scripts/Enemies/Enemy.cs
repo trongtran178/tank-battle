@@ -64,14 +64,13 @@ namespace Assets.Scripts.Enemies
             {
                 // If enemy attack form is short range strike and target is plane, then ignore it :) 
                 if (IsShortRangeStrike() && alliesArray[i].GetComponentInChildren<PlaneCollider>() != null) {
+                    Debug.Log(GetEnemyType());
                     continue;
                 }
                 allies.Add(alliesArray[i]);
             }
 
-            float shortestAttackTargetDistance;
-
-            shortestAttackTargetDistance = Vector2.Distance(playerTarget.transform.position, transform.position);
+            float shortestAttackTargetDistance = Vector2.Distance(playerTarget.transform.position, transform.position);
 
             foreach (GameObject alliesGameObject in allies)
             {
