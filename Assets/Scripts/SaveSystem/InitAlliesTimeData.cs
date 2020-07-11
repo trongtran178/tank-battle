@@ -12,8 +12,6 @@ namespace Assets.Scripts.SaveSystem
         {
             Type = type;
             ManaArmy = manaArmy;
-        }
-
-       
+        }  
     }
 }

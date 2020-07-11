@@ -6,24 +6,20 @@ public class TriggerEvent : MonoBehaviour
 {
     public Canvas detectSaveGameState;
 
-    private bool isShow = false;
-    public bool IsShow { get => isShow; set => isShow = value; }
+   
+    public GameObject menuGame;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(Globals.IsNewGame == false)
+        {
+            Invoke("LoadPreviousGameState", (float) 0.02);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void LoadPreviousGameState()
     {
-        if(Input.GetKeyUp(KeyCode.Escape))
-        {
-            IsShow = !IsShow;
-            if(IsShow)
-            {
-            }
-        }
+        menuGame.GetComponentInChildren<MenuController>().LoadGame();
     }
 }

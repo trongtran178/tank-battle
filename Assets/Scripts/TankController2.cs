@@ -21,7 +21,7 @@ public class TankController2 : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         Rb = GetComponent<Rigidbody2D>();
-   
+        
         //if (networkID.IsMine)
         //{
             Camera camera = Camera.main;

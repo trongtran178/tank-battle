@@ -76,6 +76,10 @@ public class MechsRobotProjectileMove : MonoBehaviour
                             else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null) {
                                 attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(20);
                             }
+                            else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
+                            {
+                                attackTarget.GetComponentInChildren<EnemyTu>().TakeDamage(20);
+                            }
                             Debug.Log("Destroy projectile");
                             DestroyProjectile();
                         }
