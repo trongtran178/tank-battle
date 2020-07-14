@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.Enemy;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Enemies
 {
@@ -14,14 +16,16 @@ namespace Assets.Scripts.Enemies
         public GameObject self;
         public GameObject mechsRobot;
         public GameObject frog;
-        public GameObject boss;
+        public GameObject bossLevel1;
+        public GameObject bossLevel2;
+        public GameObject bossLevel3;
         public GameObject takeDamagePoint;
 
         public static ArrayList enemies;
 
         private float currentHealth;
         private float generateEnemyTime = 10.0f;
-        private double takeDamageRatio = .07;
+        private float takeDamageRatio = 1f;
         private bool isBurn = false;
 
         // If flag is true, generateEnemyTime will be decrease, ...
@@ -32,7 +36,7 @@ namespace Assets.Scripts.Enemies
 
         void Awake()
         {
-            enemies = new ArrayList();  
+            enemies = new ArrayList();
             currentHealth = maxHealth;
             effectBurnArray = GameObject.FindGameObjectsWithTag("house_fire");
             foreach (GameObject effectBurn in effectBurnArray)
@@ -43,6 +47,7 @@ namespace Assets.Scripts.Enemies
 
         private void Start()
         {
+            Globals.CurrentLevel = SceneManager.GetActiveScene().name;
             InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
         }
 
@@ -57,7 +62,7 @@ namespace Assets.Scripts.Enemies
             {
                 BurnEnemyFactory();
             }
-            else if(currentHealth > 30 && !isBurn)
+            else if (currentHealth > 30 && !isBurn)
             {
                 // DO NOTHING
             }
@@ -81,15 +86,15 @@ namespace Assets.Scripts.Enemies
             {
                 case EnemyType.FROG:
                     {
-                        GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 20, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
+                        GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
                         frogInit.SetActive(true);
-                        frogInit.transform.localScale = new Vector3((float)1.5, (float) 1.5, (float) 1.5);
+                        frogInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
                         enemies.Add(frogInit);
                         break;
                     }
                 case EnemyType.MECHS_ROBOT:
                     {
-                        GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 20, self.transform.position.y + 10, self.transform.position.z), mechsRobot.transform.rotation);
+                        GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
                         mechsRobotInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
                         enemies.Add(mechsRobotInit);
@@ -103,12 +108,28 @@ namespace Assets.Scripts.Enemies
                     {
                         break;
                     }
-                case EnemyType.BOSS:
+                case EnemyType.BOSS_LEVEL_1:
                     {
-                        GameObject bossInit = Instantiate(boss, new Vector3(self.transform.position.x, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
-                        bossInit.SetActive(true);
-                        bossInit.transform.localScale = new Vector3((float)2.5, (float)4, (float)2.5);
-                        enemies.Add(bossInit);
+                        GameObject bossLevel1Init = Instantiate(bossLevel1, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel1.transform.rotation);
+                        bossLevel1Init.SetActive(true);
+                        bossLevel1Init.transform.localScale = new Vector3(2.5f, 4.0f, 2.5f);
+                        enemies.Add(bossLevel1Init);
+                        break;
+                    }
+                case EnemyType.BOSS_LEVEL_2:
+                    {
+                        GameObject bossLevel2Init = Instantiate(bossLevel2, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel2.transform.rotation);
+                        bossLevel2Init.SetActive(true);
+                        bossLevel2Init.transform.localScale = new Vector3(120, 120, 120);
+                        enemies.Add(bossLevel2Init);
+                        break;
+                    }
+                case EnemyType.BOSS_LEVEL_3:
+                    {
+                        GameObject bossLevel3Init = Instantiate(bossLevel3, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel3.transform.rotation);
+                        bossLevel3Init.SetActive(true);
+                        bossLevel3Init.transform.localScale = new Vector3(.7f, .7f, .7f);
+                        enemies.Add(bossLevel3Init);
                         break;
                     }
                 default:
@@ -118,29 +139,51 @@ namespace Assets.Scripts.Enemies
 
         private void BurnEnemyFactory()
         {
-            if(!isBurn)
+            if (!isBurn)
             {
-                Debug.Log(123);
                 isBurn = true;
                 foreach (GameObject effectBurn in effectBurnArray)
                 {
                     effectBurn.GetComponent<ParticleSystem>().Play();
+
                 }
-                
+                switch (Globals.CurrentLevel)
+                {
+                    case "Level1":
+                        {
+                            if (GameObject.FindGameObjectsWithTag("enemy")
+                                         .FirstOrDefault(x => x.GetComponentInChildren<Enemy>()?.GetEnemyType() == EnemyType.BOSS_LEVEL_1) == null)
+                                CreateEnemies(EnemyType.BOSS_LEVEL_1);
+                            break;
+                        }
+                    case "Level2":
+                        {
+                            if (GameObject.FindGameObjectsWithTag("enemy")
+                                         .FirstOrDefault(x => x.GetComponentInChildren<Enemy>()?.GetEnemyType() == EnemyType.BOSS_LEVEL_2) == null)
+                                CreateEnemies(EnemyType.BOSS_LEVEL_2);
+                            break;
+                        }
+                    case "Level3":
+                        {
+                            if (GameObject.FindGameObjectsWithTag("enemy")
+                                         .FirstOrDefault(x => x.GetComponentInChildren<Enemy>()?.GetEnemyType() == EnemyType.BOSS_LEVEL_3) == null)
+
+                                CreateEnemies(EnemyType.BOSS_LEVEL_3);
+                            break;
+                        }
+                }
+
             }
             else
             {
-                Debug.Log(134);
                 isBurn = false;
                 foreach (GameObject effectBurn in effectBurnArray)
                 {
                     effectBurn.GetComponent<ParticleSystem>().Stop();
                 }
-                
+
             }
 
-            
-            
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -152,11 +195,11 @@ namespace Assets.Scripts.Enemies
             }
         }
 
-        public override void TakeDamage(int damage)
+        public override void TakeDamage(float damage)
         {
-            damage = (int) ((float)damage * takeDamageRatio);
+            damage = (float)(damage * takeDamageRatio);
             currentHealth -= damage;
-            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
 
             if (currentHealth <= 0)
             {
@@ -166,7 +209,7 @@ namespace Assets.Scripts.Enemies
 
         private void DestroyEnemyFactory()
         {
-            CreateEnemies(EnemyType.BOSS);
+            // CreateEnemies(EnemyType.BOSS_LEVEL_1);
             effectDestroy.SetActive(true);
             effectDestroy.GetComponentInChildren<ParticleSystem>().Play();
             self.SetActive(false);
@@ -175,7 +218,7 @@ namespace Assets.Scripts.Enemies
 
         public void HandleCurrentHealthBar()
         {
-            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
         }
 
         public void HandleBurnHouse()
@@ -183,7 +226,7 @@ namespace Assets.Scripts.Enemies
 
         }
 
-        private void GenerateEnemy()    
+        private void GenerateEnemy()
         {
             int count = 0;
             foreach (GameObject enemy in enemies)
@@ -236,7 +279,7 @@ namespace Assets.Scripts.Enemies
             return generateEnemyTime;
         }
 
-        public void SetGenerateEnemyTime(float generateEnemyTime) 
+        public void SetGenerateEnemyTime(float generateEnemyTime)
         {
             this.generateEnemyTime = generateEnemyTime;
         }
@@ -246,9 +289,9 @@ namespace Assets.Scripts.Enemies
         ///////////////////////////////////
         public override void Death()
         {
-            // DO NOTHING
-            Debug.Log("ENEMY FACTORY DEATH");   
-            throw new NotImplementedException();
+            //// DO NOTHING
+            //Debug.Log("ENEMY FACTORY DEATH");   
+            //throw new NotImplementedException();
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -266,7 +309,7 @@ namespace Assets.Scripts.Enemies
         public override void ReceiveHealthBumpFromBoss()
         {
             // DO NOTHING
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public override EnemyType GetEnemyType()

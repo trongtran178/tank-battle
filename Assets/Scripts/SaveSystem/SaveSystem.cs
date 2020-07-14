@@ -1,10 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Assets.Scripts.Enemies;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.SaveSystem
 {
@@ -114,6 +113,7 @@ namespace Assets.Scripts.SaveSystem
                 initBulletTimesSerializable.Add(initBulletTimeData);
             }
 
+            playerDataSerializable.CurrentLevel = SceneManager.GetActiveScene().name; // Level1, Level2
             playerDataSerializable.CurrentHealth = playerGameObject.GetComponentInChildren<TankController2>().health;
             playerDataSerializable.CurrentMana = ManaTank.manaTank;
             playerDataSerializable.PositionX = playerGameObject.transform.position.x;

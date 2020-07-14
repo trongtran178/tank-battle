@@ -10,7 +10,7 @@ public class ManaBullet : MonoBehaviour
     public float maxBullet;
     public float manaBullet;
     private bool flagMana=true;
-  
+    public bool isLock = false;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +22,7 @@ public class ManaBullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isLock) return;
         bullet.fillAmount = manaBullet / maxBullet;
         if (flagMana)
         {
@@ -41,20 +42,16 @@ public class ManaBullet : MonoBehaviour
         {
             if (maxBullet == 10)
             {
-                Debug.Log(44 + ", " + trajectoryScript.block1);
                 trajectoryScript.block1 = true;
                 //flagMB1 = true;
             }
             if (maxBullet == 20)
             {
-                Debug.Log(50 + ", " + trajectoryScript.block2);
-
                 trajectoryScript.block2 = true;
                 //flagMB2 = true;
             }
             if (maxBullet == 30)
-            {
-                Debug.Log(57 + ", " + trajectoryScript.block3);
+            { 
                 trajectoryScript.block3 = true;
                 //flagMB3 = true;
             }

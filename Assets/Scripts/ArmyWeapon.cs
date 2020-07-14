@@ -21,7 +21,6 @@ public class ArmyWeapon : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.name);
         SoldierMain soldier = collision.GetComponent<SoldierMain>();
         EnemyTu enemy1 = collision.GetComponent<EnemyTu>();
         if (collision.ToString().Trim().Equals("Soldier (UnityEngine.BoxCollider2D)"))

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.SaveSystem {
 
-    [System.Serializable]
+    [Serializable]
     public class EnemyFactoryData
     {
         private float currentHealth;
@@ -14,8 +14,6 @@ namespace Assets.Scripts.SaveSystem {
         private bool flag = false;
         private bool isActive;
         private ArrayList enemiesData;
-        //private GameObject[] effectBurnArray;
-        //private System.Random random = new System.Random();
 
 
         public EnemyFactoryData(EnemyFactory enemyFactory)

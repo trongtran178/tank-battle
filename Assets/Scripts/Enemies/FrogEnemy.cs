@@ -14,7 +14,7 @@ namespace Assets.Scripts.Enemies
         public GameObject self;
 
         private float currentHealth;
-        private double takeDamageRatio = .3;
+        private float takeDamageRatio = 1.0f;
         private Rigidbody2D rigidBody2D;
         private new Animation animation;
         /// <summary>
@@ -106,7 +106,7 @@ namespace Assets.Scripts.Enemies
 
         public void HandleCurrentHealthBar()
         {
-            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
         }
 
         private void HandleAttack()
@@ -166,11 +166,12 @@ namespace Assets.Scripts.Enemies
             }
         }
 
-        public override void TakeDamage(int damage)
+        public override void TakeDamage(float damage)
         {
             Debug.Log(damage);
+            damage = (float)(damage * takeDamageRatio);
             currentHealth -= damage;
-            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
             if (currentHealth <= 0)
             {
                 Death();
@@ -219,7 +220,7 @@ namespace Assets.Scripts.Enemies
 
         public override void ReceiveHealthBumpFromBoss()
         {
-            Invoke("HandleReceiveHealthBumpFromBoss", 3.0f);
+            Invoke("HandleReceiveHealthBumpFromBoss", 1.5f);
         }
 
         private void HandleReceiveHealthBumpFromBoss()
@@ -227,7 +228,7 @@ namespace Assets.Scripts.Enemies
             if (currentHealth <= 30 && currentHealth > 0)
             {
                 currentHealth += 30;
-                currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+                currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
                 effectBuff.SetActive(true);
                 effectBuff.GetComponentInChildren<ParticleSystem>().Play();
             }

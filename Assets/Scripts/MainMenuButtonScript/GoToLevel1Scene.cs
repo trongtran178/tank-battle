@@ -15,7 +15,7 @@ namespace Assets.Scripts.MainMenuButtonScript
 		void GoToLevel1()
 		{
 			Globals.IsNewGame = true;
-			SceneManager.LoadScene("Main");
+			SceneManager.LoadScene("Level1");
 		}
 	}
 }

@@ -26,6 +26,7 @@ namespace Assets.Scripts.Enemies
         private Animator weaponRightAnimator;
 
         private float currentHealth;
+        private float takeDamageRatio = 1;
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -159,7 +160,7 @@ namespace Assets.Scripts.Enemies
 
         public void HandleCurrentHealthBar()
         {
-            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
         }
 
         private bool IsFlip()
@@ -176,19 +177,19 @@ namespace Assets.Scripts.Enemies
             Bullet bullet = collision.GetComponent<Bullet>();
             if (bullet != null)
             {
-                Debug.Log(170);
                 TakeDamage(bullet.damage);
             }
         }
 
 
-        public override void TakeDamage(int damage)
+        public override void TakeDamage(float damage)
         {
             rigidBody2D.constraints = RigidbodyConstraints2D.FreezeAll;
             StartCoroutine(FreezeRotation(.1f));
+            damage = (float)(damage * takeDamageRatio);
             currentHealth -= damage;
 
-            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
             if (currentHealth <= 0)
             {
                 Death();
@@ -246,7 +247,7 @@ namespace Assets.Scripts.Enemies
             if (currentHealth <= 30 && currentHealth > 0)
             {
                 currentHealth += 30;
-                currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+                currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
                 effectBuff.SetActive(true);
                 effectBuff.GetComponentInChildren<ParticleSystem>().Play();
             }
@@ -256,6 +257,7 @@ namespace Assets.Scripts.Enemies
         {
             this.currentHealth = currentHealth;
         }
+
         public override float GetCurrentHealth()
         {
             return currentHealth;

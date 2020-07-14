@@ -14,9 +14,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
     public bool isFlip = false;
     public float speed;
 
-    private Vector3 attackTargetVector;
     private float initializationTime;
-    private bool hasArrived = false;
 
     void Start()
     {   
@@ -24,8 +22,6 @@ public class MechsRobotProjectileMove : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("player");
         if (attackTarget)
         {
-            //attackTargetVector = new Vector3(attackTarget.transform.position.x, attackTarget.transform.position.y, attackTarget.transform.position.z);
-            // attackTargetVector = (attackTarget.transform.position - self.transform.position).normalized;
             moveDir = (attackTarget.transform.position - self.transform.position).normalized;
         }
         initializationTime = Time.timeSinceLevelLoad;

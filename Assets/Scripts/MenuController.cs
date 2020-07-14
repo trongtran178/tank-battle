@@ -22,7 +22,13 @@ public class MenuController : MonoBehaviour
 
     public GameObject frog;
 
-    public GameObject boss;
+    public GameObject bossLevel1;
+
+    public GameObject bossLevel2;
+
+    public GameObject bossLevel2_Child;
+
+    public GameObject bossLevel3;
 
     // END OF ENEMY AREA
 
@@ -128,7 +134,7 @@ public class MenuController : MonoBehaviour
         currentPlayerObject.transform.position = new Vector3(playerData.PositionX, playerData.PositionY, playerData.PositionZ);
         currentPlayerObject.GetComponentInChildren<TankController2>().health = (int) playerData.CurrentHealth;
 
-        HealthBarTank.healthTank = playerData.CurrentHealth;
+        HealthBarTank.healthTank = (float) playerData.CurrentHealth;
         ManaTank.manaTank = playerData.CurrentMana;
 
         EnemyFactory.enemies.Clear();
@@ -148,16 +154,6 @@ public class MenuController : MonoBehaviour
         {
             switch (enemyData.Type)
             {
-                case Assets.Scripts.Enemy.EnemyType.BOSS:
-                    {
-                        GameObject bossInit = Instantiate(boss, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), boss.transform.rotation);
-                        bossInit.SetActive(true);
-                        bossInit.transform.localScale = new Vector3((float)2.5, (float)4, (float)2.5);
-                        bossInit.GetComponentInChildren<EnemyBoss>().SetCurrentHealth(enemyData.CurrentHeath);
-                        bossInit.GetComponentInChildren<EnemyBoss>().HandleCurrentHealthBar();
-                        EnemyFactory.enemies.Add(bossInit);
-                        break;
-                    }
                 case Assets.Scripts.Enemy.EnemyType.FROG:
                     {
                         GameObject frogInit = Instantiate(frog, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), frog.transform.rotation);
@@ -178,6 +174,47 @@ public class MenuController : MonoBehaviour
                         EnemyFactory.enemies.Add(mechsRobotInit);
                         break;
                     }
+                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_1:
+                    {
+                        GameObject bossLevle1Init = Instantiate(bossLevel1, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel1.transform.rotation);
+                        bossLevle1Init.SetActive(true);
+                        bossLevle1Init.transform.localScale = new Vector3((float)2.5, (float)4, (float)2.5);
+                        bossLevle1Init.GetComponentInChildren<EnemyBoss_Level1>().SetCurrentHealth(enemyData.CurrentHeath);
+                        bossLevle1Init.GetComponentInChildren<EnemyBoss_Level1>().HandleCurrentHealthBar();
+                        EnemyFactory.enemies.Add(bossLevle1Init);
+                        break;
+                    }
+                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_2:
+                    {
+                        GameObject bossLevel2Init = Instantiate(bossLevel2, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2.transform.rotation);
+                        bossLevel2Init.SetActive(true);
+                        bossLevel2Init.transform.localScale = new Vector3(120, 120, 120);
+                        bossLevel2Init.GetComponentInChildren<EnemyBoss_Level2>().SetCurrentHealth(enemyData.CurrentHeath);
+                        bossLevel2Init.GetComponentInChildren<EnemyBoss_Level2>().HandleCurrentHealthBar();
+                        EnemyFactory.enemies.Add(bossLevel2Init);
+                        break;
+                    }
+                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_2_CHILD:
+                    {
+                        GameObject bossLevel2ChildInit = Instantiate(bossLevel2, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2_Child.transform.rotation);
+                        bossLevel2ChildInit.SetActive(true);
+                        bossLevel2ChildInit.transform.localScale = new Vector3(2, 2, 2);
+                        bossLevel2ChildInit.GetComponentInChildren<EnemyBoss_Level2_Child>().SetCurrentHealth(enemyData.CurrentHeath);
+                        bossLevel2ChildInit.GetComponentInChildren<EnemyBoss_Level2_Child>().HandleCurrentHealthBar();
+                        EnemyFactory.enemies.Add(bossLevel2ChildInit);
+                        break;
+                    }
+                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_3:
+                    {
+                        GameObject bossLevel3Init = Instantiate(bossLevel3, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel3.transform.rotation);
+                        bossLevel3Init.SetActive(true);
+                        bossLevel3Init.transform.localScale = new Vector3(.7f, .7f, .7f);
+                        bossLevel3Init.GetComponentInChildren<EnemyBoss_Level3>().SetCurrentHealth(enemyData.CurrentHeath);
+                        bossLevel3Init.GetComponentInChildren<EnemyBoss_Level3>().HandleCurrentHealthBar();
+                        EnemyFactory.enemies.Add(bossLevel3Init);
+                        break;
+                    }
+
             }
         }
 
@@ -192,21 +229,21 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject alliesDogInit = Instantiate(alliesDog, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesDog.transform.rotation);
                         alliesDogInit.SetActive(true);
-                        alliesDogInit.GetComponentInChildren<Dogcollider>().health = alliesObjectData.CurrentHeath;
+                        alliesDogInit.GetComponentInChildren<Dogcollider>().health = (float) alliesObjectData.CurrentHeath;
                         break;
                     }
                 case AlliesType.PLANE:
                     {
                         GameObject alliesPlaneInit = Instantiate(alliesPlane, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesPlane.transform.rotation);
                         alliesPlaneInit.SetActive(true);
-                        alliesPlaneInit.GetComponentInChildren<PlaneCollider>().PlaneHealth = alliesObjectData.CurrentHeath;
+                        alliesPlaneInit.GetComponentInChildren<PlaneCollider>().PlaneHealth = (float) alliesObjectData.CurrentHeath;
                         break;
                     }
                 case AlliesType.TANK:
                     {
                         GameObject alliesTankInit = Instantiate(alliesTank, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesTank.transform.rotation);
                         alliesTankInit.SetActive(true);
-                        alliesTankInit.GetComponentInChildren<EnemyTu>().health = alliesObjectData.CurrentHeath;
+                        alliesTankInit.GetComponentInChildren<EnemyTu>().health = (float) alliesObjectData.CurrentHeath;
                         break;
                     }
             }

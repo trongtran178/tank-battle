@@ -85,6 +85,23 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    //public void Dizzy()
+    //{
+    //    isDizzy = true;
+    //    rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+    //    ami.SetBool("isWalk", false);
+    //    ami.SetBool("isAttack", false);
+    //    Invoke("DizzyFinished", 4.0f);
+    //}
+
+    //private void DizzyFinished()
+    //{
+    //    isDizzy = false;
+    //    rb.constraints = RigidbodyConstraints2D.None;
+    //    ami.SetBool("isWalk", true);
+    //    ami.SetBool("isAttack", false);
+    //}
+
 
     public void TakeDamage(float damage)
     {
