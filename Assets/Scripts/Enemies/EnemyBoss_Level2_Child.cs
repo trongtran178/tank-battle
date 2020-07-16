@@ -158,7 +158,10 @@ namespace Assets.Scripts.Enemies
             }
 
             else
-                player.GetComponent<TankController2>().TakeDamage(20);
+            {
+                player.GetComponent<TankController2>()?.TakeDamage(30);
+                // player.GetComponent<TankController3D>()?.TakeDamage(30);
+            }
 
         }
 
