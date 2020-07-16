@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 
 namespace Assets.Scripts.SaveSystem
 {

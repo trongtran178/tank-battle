@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 using UnityEngine;
 namespace Assets.Scripts.Enemies
 {
@@ -83,6 +83,11 @@ namespace Assets.Scripts.Enemies
             }
             _attackTarget = alliesDictionary.FirstOrDefault(x => x.Value <= shortestAttackTargetDistance).Key;
             return _attackTarget;
+        }
+
+        public GameObject GetPlayer()
+        {
+            return player;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 using UnityEngine;
 
 namespace Assets.Scripts.Enemies
@@ -57,8 +57,9 @@ namespace Assets.Scripts.Enemies
 
         private void Move()
         {
-            if (attackTarget == null)
+            if (attackTarget == null || player == null)
             {
+                CancelInvoke("HandleAttack");
                 animator.Play("idle_normal");
                 return;
             }
@@ -101,7 +102,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null) return;
+            if (attackTarget == null || player == null) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);

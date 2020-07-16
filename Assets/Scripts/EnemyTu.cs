@@ -28,13 +28,16 @@ public class EnemyTu : MonoBehaviour
     private GameObject[] enemy;
 
     // Start is called before the first frame update
+    void Awake()
+    {
+        health = maxHealthy;
+    }
+
     void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        health = maxHealthy;
-
-        
+        //health = maxHealthy;
     }
 
     // Update is called once per frame
