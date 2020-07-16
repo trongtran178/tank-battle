@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 using UnityEngine;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 
 namespace Assets.Scripts.Enemies
 {

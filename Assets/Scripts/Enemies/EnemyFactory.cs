@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -82,7 +82,7 @@ namespace Assets.Scripts.Enemies
 
         public void CreateEnemies(EnemyType enemyType)
         {
-            if (enemies.Count >= 20) return;
+            if (enemies.Count >= 15) return;
             switch (enemyType)
             {
                 case EnemyType.FROG:

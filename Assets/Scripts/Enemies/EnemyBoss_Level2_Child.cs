@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 using UnityEngine;
 
 namespace Assets.Scripts.Enemies
