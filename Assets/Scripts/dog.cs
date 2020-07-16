@@ -11,7 +11,7 @@ public class dog : MonoBehaviour
     private float velx = 5;
     private float vely = 0;
     private Vector3 kc;
-
+    public bool isDizzy = false;
 
     private GameObject[] enemy;
 
@@ -22,9 +22,6 @@ public class dog : MonoBehaviour
     {
         ami = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-
-
-
     }
 
     // Update is called once per frame
@@ -35,6 +32,11 @@ public class dog : MonoBehaviour
         vely = rb.velocity.y;
         rb.velocity = new Vector2(velx, vely);
         checkflag = GameObject.Find("colliderDog");
+
+        if (isDizzy)
+        {
+            return;
+        }
         if (checkflag == null)
         {
             Destroy(gameObject);
@@ -46,7 +48,7 @@ public class dog : MonoBehaviour
         }
 
         GameObject k = findEnemy();
-        if(k!=null)
+        if (k != null)
         {
             kc = k.transform.position - gameObject.transform.position;
             float doLonKc = Mathf.Sqrt((kc.x * kc.x) + (kc.y * kc.y));
@@ -93,6 +95,25 @@ public class dog : MonoBehaviour
         //}
 
     }
+
+    public void Dizzy()
+    {
+        isDizzy = true;
+        if (rb != null)
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX;
+        ami.SetBool("isWalk", false);
+        ami.SetBool("isAttack", false);
+        Invoke("DizzyFinished", 4.0f);
+    }
+
+    private void DizzyFinished()
+    {
+        isDizzy = false;
+        rb.constraints = RigidbodyConstraints2D.None;
+        ami.SetBool("isWalk", true);
+        ami.SetBool("isAttack", false);
+    }
+
     GameObject findEnemy()
     {
         enemy = GameObject.FindGameObjectsWithTag("enemy");
@@ -111,7 +132,5 @@ public class dog : MonoBehaviour
             }
         }
         return closest;
-
-
     }
 }

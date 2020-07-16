@@ -15,16 +15,18 @@ public class EnemyTu : MonoBehaviour
     public GameObject vfx_destroy;
     public GameObject location;
     public GameObject tank;
+    public GameObject gunObject;
     private Vector3 kc;
     public float distanceMax;
     public float distanceMin;
+    public bool isDizzy = false;
 
     public Image healthyBar;
     public float maxHealthy = 100f;
     public float health;
 
     private GameObject[] enemy;
-    GunEnemy gunEnemy;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +40,7 @@ public class EnemyTu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isDizzy) return;
         healthyBar.fillAmount = health / maxHealthy;
         //if (tank != null)
         //{
@@ -94,6 +96,23 @@ public class EnemyTu : MonoBehaviour
         }
     }
 
+    public void Dizzy()
+    {
+        isDizzy = true;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX;
+        anim.SetBool("isRunning", false);
+        gunObject.GetComponent<GunEnemy>().enabled = false;
+        Invoke("DizzyFinished", 4.0f);
+    }
+
+    private void DizzyFinished()
+    {
+        isDizzy = false;
+        rb.constraints = RigidbodyConstraints2D.None;
+        anim.SetBool("isRunning", true);
+        gunObject.GetComponent<GunEnemy>().enabled = true;
+
+    }
 
     public void TakeDamage(int damage)
     {

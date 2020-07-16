@@ -12,11 +12,13 @@ public class ManaArmy : MonoBehaviour
     private bool flagMana = true;
 
     private GameObject projectile;
-    public GameObject projectileGame1;
+    // Rename projectileGame1 -> alliesObject
+    public GameObject alliesObject; // tank, dog, plane
     public Vector3 vector3;
 
     public GameObject location;
     public KeyCode key;
+    public bool isLock = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +28,7 @@ public class ManaArmy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isLock) return;
         army.fillAmount = manaArmy  / maxArmy;
 
 
@@ -45,7 +48,7 @@ public class ManaArmy : MonoBehaviour
                 //vector3.z = 0;
                 //vector3.y = 90;
                 //vector3.x = 0;
-                projectile = Instantiate(projectileGame1, location.transform.position,Quaternion.Euler(vector3));
+                projectile = Instantiate(alliesObject, location.transform.position,Quaternion.Euler(vector3));
                 projectile.SetActive(true);
             }
             

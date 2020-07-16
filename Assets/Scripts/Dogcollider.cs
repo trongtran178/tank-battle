@@ -29,6 +29,7 @@ public class Dogcollider : MonoBehaviour
     }
 
 
+
 	public void TakeDamage(int damage)
 	{
 
@@ -40,6 +41,11 @@ public class Dogcollider : MonoBehaviour
 		health -= damage;
 
 		projectile = null;
+	}
+
+	public void RepaintHealthBar()
+	{
+		healthyBar.fillAmount = health / maxHealthy;
 	}
 
 }

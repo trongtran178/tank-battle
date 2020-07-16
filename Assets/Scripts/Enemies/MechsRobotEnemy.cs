@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Assets.Scripts.Enemy;
 
 namespace Assets.Scripts.Enemies
 {
@@ -25,6 +26,7 @@ namespace Assets.Scripts.Enemies
         private Animator weaponRightAnimator;
 
         private float currentHealth;
+        private float takeDamageRatio = 1;
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -61,6 +63,11 @@ namespace Assets.Scripts.Enemies
         // Update is called once per frame
         void Update()
         {
+            if(currentHealth <= 0)
+            {
+                Death();
+                return;
+            }
             attackTarget = FindAttackTarget();
             if (currentHealth > 0) Move();
             if (!attackTarget) CancelInvoke("HandleAttack");
@@ -114,8 +121,6 @@ namespace Assets.Scripts.Enemies
                     weaponLeftAnimator.Play("Shoot");
                     weaponRightAnimator.Play("Shoot");
                 }
-
-
             }
         }
 
@@ -126,20 +131,17 @@ namespace Assets.Scripts.Enemies
                 CancelInvoke("HandleAttack");
                 return;
             }
-
-            float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
-            if (distanceBetweenAttackTarget < minimumDistanceIndicatorBetweenAttackTarget + 8)
-            {
-                GameObject _projectile = projectile;
-                projectile.GetComponentInChildren<MechsRobotProjectileMove>().attackTarget = attackTarget;
-                projectile.GetComponentInChildren<MechsRobotProjectileMove>().isFlip = IsFlip();
-
-                _projectile.SetActive(true);
-                //Instantiate(_projectile, firePoint.transform.position, Quaternion.Euler((float)getAttackCorner(), 90, firePoint.transform.rotation.z));
-                Instantiate(_projectile, firePoint.transform.position, firePoint.transform.rotation);
-
-                //_projectile.transform.localRotation = firePoint.transform.localRotation;
-                //_projectile.transform.localPosition = firePoint.transform.localPosition;
+            if (attackTarget != null) { 
+                float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
+                if (distanceBetweenAttackTarget < minimumDistanceIndicatorBetweenAttackTarget + 8)
+                {
+                    GameObject _projectile = projectile;
+                    projectile.GetComponentInChildren<MechsRobotProjectileMove>().attackTarget = attackTarget;
+                    projectile.GetComponentInChildren<MechsRobotProjectileMove>().isFlip = IsFlip();
+                    //weaponLeft.transform.SetPositionAndRotation(weaponLeft.transform.position, new Quaternion())
+                    _projectile.SetActive(true);
+                    Instantiate(_projectile, firePoint.transform.position, firePoint.transform.rotation);
+                }
             }
         }
 
@@ -156,6 +158,11 @@ namespace Assets.Scripts.Enemies
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
         }
 
+        public void HandleCurrentHealthBar()
+        {
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
+        }
+
         private bool IsFlip()
         {
             if (attackTarget.transform.position.x - transform.position.x > 0)
@@ -170,19 +177,19 @@ namespace Assets.Scripts.Enemies
             Bullet bullet = collision.GetComponent<Bullet>();
             if (bullet != null)
             {
-                Debug.Log(170);
                 TakeDamage(bullet.damage);
             }
         }
 
 
-        public override void TakeDamage(int damage)
+        public override void TakeDamage(float damage)
         {
             rigidBody2D.constraints = RigidbodyConstraints2D.FreezeAll;
             StartCoroutine(FreezeRotation(.1f));
+            damage = (float)(damage * takeDamageRatio);
             currentHealth -= damage;
 
-            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
             if (currentHealth <= 0)
             {
                 Death();
@@ -206,6 +213,7 @@ namespace Assets.Scripts.Enemies
 
         private void DestroySelf()
         {
+            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
 
@@ -236,10 +244,10 @@ namespace Assets.Scripts.Enemies
 
         private void HandleReceiveHealthBumpFromBoss()
         {
-            if (currentHealth <= 30)
+            if (currentHealth <= 30 && currentHealth > 0)
             {
                 currentHealth += 30;
-                currentHealthBar.transform.localScale = new Vector3((currentHealth / 100) > 0 ? (currentHealth / 100) : 0, currentHealthBar.transform.localScale.y);
+                currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
                 effectBuff.SetActive(true);
                 effectBuff.GetComponentInChildren<ParticleSystem>().Play();
             }
@@ -249,9 +257,15 @@ namespace Assets.Scripts.Enemies
         {
             this.currentHealth = currentHealth;
         }
+
         public override float GetCurrentHealth()
         {
             return currentHealth;
+        }
+
+        public override EnemyType GetEnemyType()
+        {
+            return EnemyType.MECHS_ROBOT;
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -264,6 +278,16 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
+        public override GameObject GetSelf()
+        {
+            return self;
+        }
+
+
+        public override bool IsShortRangeStrike()
+        {
+            return false;
+        }
 
     }
 }
