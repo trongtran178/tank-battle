@@ -36,6 +36,7 @@ namespace Assets.Scripts.Enemies
 
         void Start()
         {
+            IgnoreEnemies();
             attackTarget = FindAttackTarget();
             animator.Play("Idle");
             InvokeRepeating("HandleAttack", .1f, .1f);
@@ -47,6 +48,7 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
+           
             if (currentHealth <= 0)
             {
                 Death();
@@ -59,7 +61,7 @@ namespace Assets.Scripts.Enemies
         private void Move()
         {
             if (currentHealth <= 0) return;
-            if (attackTarget == null)
+            if (attackTarget == null )
             {
                 animator.Play("Idle");
                 return;
@@ -103,9 +105,11 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null || attackTarget.activeSelf == false) return;
-            if(currentHealth <= 0) return;
-
+            if (attackTarget == null || attackTarget.activeSelf == false || currentHealth <= 0) {
+                CancelInvoke("HandleAttack");
+                horizontalMove = 0;
+                return;
+            }
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
         }

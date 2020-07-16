@@ -32,6 +32,7 @@ namespace Assets.Scripts.Enemies
 
         void Start()
         {
+            IgnoreEnemies();
             animation = self.GetComponent<Animation>();
             animation["Run"].speed += 4.0f;
             rigidBody2D = self.GetComponent<Rigidbody2D>();
@@ -44,6 +45,7 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
+           
             if (currentHealth <= 0 || isDeath)
             {
                 Death();

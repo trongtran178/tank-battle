@@ -20,13 +20,12 @@ namespace Assets.Scripts.Enemies
         public GameObject bossLevel2;
         public GameObject bossLevel3;
         public GameObject takeDamagePoint;
-
         public static ArrayList enemies;
 
         private float currentHealth;
         private float generateEnemyTime = 10.0f;
         //private float takeDamageRatio = .5f;
-        private float takeDamageRatio = 1.0f;
+        private float takeDamageRatio = 0.5f;
         private bool isBurn = false;
 
         // If flag is true, generateEnemyTime will be decrease, ...
@@ -48,8 +47,8 @@ namespace Assets.Scripts.Enemies
 
         private void Start()
         {
+            IgnoreEnemies();
             Globals.CurrentLevel = SceneManager.GetActiveScene().name;
-
             if (GameObject.FindGameObjectWithTag("player") != null)
             {
                 isGenerating = true;
@@ -59,6 +58,7 @@ namespace Assets.Scripts.Enemies
 
         private void Update()
         {
+            
             if (currentHealth <= 30 && !isBurn)
             {
                 BurnEnemyFactory();
@@ -71,8 +71,8 @@ namespace Assets.Scripts.Enemies
             {
                 // DO NOTHING
             }
-
-            if (GameObject.FindGameObjectWithTag("player") == null)
+            attackTarget = FindAttackTarget();
+            if (attackTarget == null || attackTarget.activeSelf == false)
             {
                 CancelInvoke("GenerateEnemy");
                 isGenerating = false;

@@ -53,6 +53,7 @@ namespace Assets.Scripts.Enemies
         // Start is called before the first frame update
         void Start()
         {
+            IgnoreEnemies();
             attackTarget = FindAttackTarget();
             animator.Play("Walk");
             weaponLeftAnimator.Play("Idle");
@@ -63,6 +64,7 @@ namespace Assets.Scripts.Enemies
         // Update is called once per frame
         void Update()
         {
+          
             if (currentHealth <= 0)
             {
                 Death();
@@ -157,7 +159,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);

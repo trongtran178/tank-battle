@@ -39,12 +39,14 @@ namespace Assets.Scripts.Enemies
 
         void Start()
         {
+            IgnoreEnemies();
             attackTarget = FindAttackTarget();
             InvokeRepeating("HandleAttack", .1f, .1f);
         }
 
         void Update()
         {
+            
             if (currentHealth <= 0)
             {
                 Death();
@@ -57,7 +59,7 @@ namespace Assets.Scripts.Enemies
 
         private void Move()
         {
-            if (attackTarget == null || player == null)
+            if (attackTarget == null || attackTarget.activeSelf == false)
             {
                 CancelInvoke("HandleAttack");
                 animator.Play("idle_normal");
@@ -102,7 +104,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null || player == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
@@ -246,10 +248,11 @@ namespace Assets.Scripts.Enemies
                 if (!isDeath)
                 {
                     isDeath = true;
-                    foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
-                    {
-                        enemy.GetComponentInChildren<Enemy>()?.Death();
-                    }
+                    Death();
+                    //foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
+                    //{
+                    //    enemy.GetComponentInChildren<Enemy>()?.Death();
+                    //}
                 }
             }
             else
