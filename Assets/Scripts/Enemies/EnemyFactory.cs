@@ -31,7 +31,7 @@ namespace Assets.Scripts.Enemies
 
         // If flag is true, generateEnemyTime will be decrease, ...
         private bool flag = false;
-        private bool isGenerating = false;
+        private bool isGenerating;
         private GameObject[] effectBurnArray;
         private System.Random random = new System.Random();
 
@@ -49,7 +49,12 @@ namespace Assets.Scripts.Enemies
         private void Start()
         {
             Globals.CurrentLevel = SceneManager.GetActiveScene().name;
-            InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
+
+            if (GameObject.FindGameObjectWithTag("player") != null)
+            {
+                isGenerating = true;
+                InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
+            }
         }
 
         private void Update()

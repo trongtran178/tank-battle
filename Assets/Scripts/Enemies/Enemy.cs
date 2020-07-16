@@ -10,7 +10,7 @@ namespace Assets.Scripts.Enemies
         public float maxHealth = 100.0f;
         protected float moveSpeed = 30.0f;
         protected float attackSpeed = 50.0f;
-
+        public bool isIgnore = false;
         protected GameObject attackTarget;
         protected GameObject player;
 
@@ -25,17 +25,24 @@ namespace Assets.Scripts.Enemies
         public abstract EnemyType GetEnemyType();
         public abstract bool IsShortRangeStrike();
         // Detect collision with other enemy, enemy should go through another enemy
-        private void Awake()
-        {
-            player = GameObject.FindGameObjectWithTag("player");
+        //private void Awake()
+        //{
+            
+        //}
+        //private void Start()
+        //{
+        //    player = GameObject.FindGameObjectWithTag("player");
 
+            
+        //}
+        private void Update()
+        {
             GameObject[] otherEnemyControllers = GameObject.FindGameObjectsWithTag("enemy_controller");
             foreach (GameObject enemyController in otherEnemyControllers)
             {
                 Physics2D.IgnoreCollision(enemyController.GetComponent<PolygonCollider2D>(), GetComponent<PolygonCollider2D>());
             }
         }
-        
         protected GameObject FindAttackTarget()
         {
             GameObject _attackTarget = null, playerTarget = null;
