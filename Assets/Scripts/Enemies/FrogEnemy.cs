@@ -184,7 +184,6 @@ namespace Assets.Scripts.Enemies
             currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
             animation.Play("Mon_T_Dead");
             Invoke("DestroySelf", 1);
-            // Destroy(self);
         }
 
         private void DestroySelf()

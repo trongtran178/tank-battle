@@ -12,10 +12,10 @@ public class TriggerEvent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (Globals.IsNewGame == false)
-        {
-            Invoke("LoadPreviousGameState", (float)0.02);
-        }
+        //if (Globals.IsNewGame == false)
+        //{
+        //    Invoke("LoadPreviousGameState", 1.0f);
+        //}
     }
 
     void LoadPreviousGameState()

@@ -40,7 +40,7 @@ namespace Assets.Scripts.Enemies
             attackTarget = FindAttackTarget();
             animator.Play("Idle");
             InvokeRepeating("HandleAttack", .1f, .1f);
-            InvokeRepeating("HandleGenerateChild", 5.0f, 45.0f);
+            InvokeRepeating("HandleGenerateChild", 5.0f, 25.0f);
         }
 
         void Update()

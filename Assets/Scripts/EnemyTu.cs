@@ -19,13 +19,13 @@ public class EnemyTu : MonoBehaviour
     private Vector3 kc;
     public float distanceMax;
     public float distanceMin;
+    public bool isDizzy = false;
 
     public Image healthyBar;
     public float maxHealthy = 100f;
     public float health;
 
     private GameObject[] enemy;
-    private bool isDizzy = false;
 
     // Start is called before the first frame update
     void Start()

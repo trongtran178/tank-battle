@@ -25,7 +25,8 @@ namespace Assets.Scripts.Enemies
 
         private float currentHealth;
         private float generateEnemyTime = 10.0f;
-        private float takeDamageRatio = 1f;
+        //private float takeDamageRatio = .5f;
+        private float takeDamageRatio = 1.0f;
         private bool isBurn = false;
 
         // If flag is true, generateEnemyTime will be decrease, ...

@@ -11,7 +11,7 @@ public class dog : MonoBehaviour
     private float velx = 5;
     private float vely = 0;
     private Vector3 kc;
-    private bool isDizzy = false;
+    public bool isDizzy = false;
 
     private GameObject[] enemy;
 
@@ -97,9 +97,10 @@ public class dog : MonoBehaviour
     }
 
     public void Dizzy()
-    { 
+    {
         isDizzy = true;
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX;
+        if (rb != null)
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX;
         ami.SetBool("isWalk", false);
         ami.SetBool("isAttack", false);
         Invoke("DizzyFinished", 4.0f);

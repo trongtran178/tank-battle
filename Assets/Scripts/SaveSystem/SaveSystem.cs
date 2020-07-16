@@ -4,6 +4,7 @@ using Assets.Scripts.Enemies;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace Assets.Scripts.SaveSystem
 {
@@ -43,23 +44,26 @@ namespace Assets.Scripts.SaveSystem
                 {
                     Dogcollider dogCollider = alliesObject.GetComponentInChildren<Dogcollider>();
                     float currentHealth = dogCollider.health;
-
+                    bool isDizzy = alliesObject.GetComponent<dog>() ? alliesObject.GetComponent<dog>().isDizzy : false;
                     AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.DOG,
                                                             currentHealth,
                                                             alliesObject.transform.position.x,
                                                             alliesObject.transform.position.y,
-                                                            alliesObject.transform.position.z);
+                                                            alliesObject.transform.position.z,
+                                                            isDizzy);
                     alliesObjectsSerializable.Add(alliesObjectData);
                 }
                 else if (alliesObject.GetComponentInChildren<PlaneCollider>() != null)
                 {
                     PlaneCollider planCollider = alliesObject.GetComponentInChildren<PlaneCollider>();
                     float currentHealth = planCollider.PlaneHealth;
+                    //bool isDizzy = alliesObject.GetComponent<PlaneControiler>().isDizzy;
                     AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.PLANE,
                                                             currentHealth,
                                                             alliesObject.transform.position.x,
                                                             alliesObject.transform.position.y,
-                                                            alliesObject.transform.position.z);
+                                                            alliesObject.transform.position.z,
+                                                            false); // no dizzy
                     alliesObjectsSerializable.Add(alliesObjectData);
                 }
 
@@ -67,11 +71,13 @@ namespace Assets.Scripts.SaveSystem
                 {
                     EnemyTu enemyTu = alliesObject.GetComponentInChildren<EnemyTu>();
                     float currentHealth = enemyTu.health;
+                    bool isDizzy = enemyTu ? enemyTu.isDizzy : false;
                     AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.TANK,
                                                             currentHealth,
                                                             alliesObject.transform.position.x,
                                                             alliesObject.transform.position.y,
-                                                            alliesObject.transform.position.z);
+                                                            alliesObject.transform.position.z,
+                                                            isDizzy);
                     alliesObjectsSerializable.Add(alliesObjectData);
                 }
             }
@@ -80,9 +86,9 @@ namespace Assets.Scripts.SaveSystem
             // SAVE RECOVERY INITIALIZE TIME OF ALLIES !
             ManaArmy[] manaArmyArray = manageRecoveryTime.GetComponentsInChildren<ManaArmy>();
 
-            for(int i = 0; i < manaArmyArray.Length; i++)
+            for (int i = 0; i < manaArmyArray.Length; i++)
             {
-                if(manaArmyArray[i].alliesObject.GetComponentInChildren<Dogcollider>() != null)
+                if (manaArmyArray[i].alliesObject.GetComponentInChildren<Dogcollider>() != null)
                 {
                     // DOG
                     InitAlliesTimeData initDogTimeData = new InitAlliesTimeData(AlliesType.DOG, manaArmyArray[i].manaArmy);
@@ -120,7 +126,6 @@ namespace Assets.Scripts.SaveSystem
             playerDataSerializable.PositionY = playerGameObject.transform.position.y;
             playerDataSerializable.PositionZ = playerGameObject.transform.position.z;
 
-
             formatter.Serialize(enemiesStream, enemyFactoryData);
             formatter.Serialize(alliesStream, alliesObjectsSerializable);
             formatter.Serialize(initAlliesTimeStream, initAlliesTimesSerializable);
@@ -154,73 +159,105 @@ namespace Assets.Scripts.SaveSystem
 
         public static ArrayList LoadAllies()
         {
-            if (File.Exists(alliesPath))
+            try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                FileStream stream = new FileStream(alliesPath, FileMode.Open);
-                ArrayList alliesData = formatter.Deserialize(stream) as ArrayList;
+                if (File.Exists(alliesPath))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    FileStream stream = new FileStream(alliesPath, FileMode.Open);
+                    ArrayList alliesData = formatter.Deserialize(stream) as ArrayList;
 
-                stream.Close();
-                return alliesData;
+                    stream.Close();
+                    return alliesData;
+                }
+                else
+                {
+                    Debug.Log("Error: Save file not found!");
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
-                Debug.Log("Error: Save file not found!");
+                Debug.Log("Error :" + e.Message);
                 return null;
             }
         }
 
         public static ArrayList LoadInitAlliesTimes()
         {
-            if (File.Exists(initAlliesTimePath))
+            try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                FileStream stream = new FileStream(initAlliesTimePath, FileMode.Open);
-                ArrayList initAlliesTimes = formatter.Deserialize(stream) as ArrayList;
+                if (File.Exists(initAlliesTimePath))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    FileStream stream = new FileStream(initAlliesTimePath, FileMode.Open);
+                    ArrayList initAlliesTimes = formatter.Deserialize(stream) as ArrayList;
 
-                stream.Close();
-                return initAlliesTimes;
+                    stream.Close();
+                    return initAlliesTimes;
+                }
+                else
+                {
+                    Debug.Log("Error: Save file not found!");
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
-                Debug.Log("Error: Save file not found!");
+                Debug.Log("Error :" + e.Message);
                 return null;
             }
         }
 
         public static ArrayList LoadInitBulletTimes()
         {
-            if (File.Exists(initBulletTimePath))
+            try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                FileStream stream = new FileStream(initBulletTimePath, FileMode.Open);
-                ArrayList initBulletTimes = formatter.Deserialize(stream) as ArrayList;
+                if (File.Exists(initBulletTimePath))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    FileStream stream = new FileStream(initBulletTimePath, FileMode.Open);
+                    ArrayList initBulletTimes = formatter.Deserialize(stream) as ArrayList;
 
-                stream.Close();
-                return initBulletTimes;
+                    stream.Close();
+                    return initBulletTimes;
+                }
+                else
+                {
+                    Debug.Log("Error: Save file not found!");
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
-                Debug.Log("Error: Save file not found!");
+                Debug.Log("Error :" + e.Message);
                 return null;
             }
         }
 
         public static PlayerData LoadPlayer()
         {
-            string playerPath = Application.persistentDataPath + "/player.fun";
-            if (File.Exists(playerPath))
+            try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                FileStream stream = new FileStream(playerPath, FileMode.Open);
-                PlayerData playerData = formatter.Deserialize(stream) as PlayerData;
+                if (File.Exists(playerPath))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    FileStream stream = new FileStream(playerPath, FileMode.Open);
 
-                stream.Close();
-                return playerData;
+                    PlayerData playerData = formatter.Deserialize(stream) as PlayerData;
+                    stream.Close();
+                    return playerData;
+
+                }
+                else
+                {
+                    Debug.Log("Error: Save file not found!");
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
-                Debug.Log("Error: Save file not found!");
+                Debug.Log("Error :" + e.Message);
                 return null;
             }
         }

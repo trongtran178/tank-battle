@@ -6,7 +6,7 @@ namespace Assets.Scripts.SaveSystem
     public class PlayerData
     {
         public string CurrentLevel { get; set; }
-        public double CurrentHealth { get; set; }
+        public float CurrentHealth { get; set; }
         public float CurrentMana { get; set; }
         public float PositionX { get; set; }
         public float PositionY { get; set; }
@@ -14,7 +14,7 @@ namespace Assets.Scripts.SaveSystem
 
         public PlayerData() { }
 
-        public PlayerData(string currentLevel, double currentHealth, float currentMana, float positionX, float positionY, float positionZ)
+        public PlayerData(string currentLevel, float currentHealth, float currentMana, float positionX, float positionY, float positionZ)
         {
             CurrentLevel = currentLevel;
             CurrentHealth = currentHealth;

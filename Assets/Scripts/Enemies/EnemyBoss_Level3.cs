@@ -19,7 +19,7 @@ namespace Assets.Scripts.Enemies
         private bool isDeath = false;
         private System.Random random = new System.Random();
         private int randomPushAwayAttack;
-        long countAttack = 0;
+        private long countAttack = 0;
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -49,9 +49,8 @@ namespace Assets.Scripts.Enemies
                 Death();
                 return;
             }
-            
             attackTarget = FindAttackTarget();
-            if (attackTarget == null) return;
+            if (attackTarget == null || GameObject.FindGameObjectWithTag("player") == null) return;
             HandleMinimumDistanceIndicatorBetweenAttackTarget();
             Move();
 
@@ -62,6 +61,7 @@ namespace Assets.Scripts.Enemies
             if (attackTarget == null || GameObject.FindGameObjectWithTag("player") == null)
             {
                 animation.Play("Idle");
+
                 return;
             }
 
@@ -73,7 +73,6 @@ namespace Assets.Scripts.Enemies
 
             if (IsFlip())
             {
-
                 self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, 90, self.transform.eulerAngles.z);
                 horizontalMove = 1 * moveSpeed;
             }
@@ -84,6 +83,7 @@ namespace Assets.Scripts.Enemies
             }
 
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
+
             if (distanceBetweenAttackTarget > minimumDistanceIndicatorBetweenAttackTarget)
             {
                 CancelInvoke("HandleAttack");
@@ -99,7 +99,7 @@ namespace Assets.Scripts.Enemies
         private void FixedUpdate()
         {
             HandleMove();
-             
+
             if (countAttack > 0 && (countAttack % randomPushAwayAttack) == 0)
             {
                 // HAT TUNG
@@ -112,7 +112,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null) return;
+            if (attackTarget == null || GameObject.FindGameObjectWithTag("player") == null) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
@@ -270,7 +270,7 @@ namespace Assets.Scripts.Enemies
             foreach (GameObject allies in alliesObjectsPushAway)
             {
 
-                if (allies.transform.position.x <= self.transform.position.x)
+                if (allies.transform.position.x <= self.transform.position.x + 3)
                 {
 
                     allies.GetComponent<AlliesBeingPushAway>()?.PushAway(true);

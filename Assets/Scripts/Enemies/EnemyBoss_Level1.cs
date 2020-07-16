@@ -16,7 +16,7 @@ namespace Assets.Scripts.Enemies
         private float currentHealth;
         private float minimumDistanceIndicatorBetweenAttackTarget = 15;
         private Rigidbody2D rigidBody2D;
-        private double takeDamageRatio = .05;
+        private double takeDamageRatio = .3;
         private bool isDeath = false;
         private GameObject enemyNeedBumpHealth;
         /// <summary>
@@ -247,7 +247,7 @@ namespace Assets.Scripts.Enemies
                     isDeath = true;
                     foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
                     {
-                        enemy.GetComponentInChildren<Enemy>().Death();
+                        enemy.GetComponentInChildren<Enemy>()?.Death();
                     }
                 }
             }

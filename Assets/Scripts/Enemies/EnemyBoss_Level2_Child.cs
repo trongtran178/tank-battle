@@ -14,7 +14,7 @@ namespace Assets.Scripts.Enemies
         private float currentHealth;
         private float minimumDistanceIndicatorBetweenAttackTarget = 7;
         private Rigidbody2D rigidBody2D;
-        private double takeDamageRatio = 1;
+        private double takeDamageRatio = .5;
         private bool isDeath = false;
 
         /// <summary>
@@ -207,18 +207,24 @@ namespace Assets.Scripts.Enemies
             currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
             if (currentHealth <= 0)
             {
-                if (!isDeath)
-                {
-                    isDeath = true;
-                    foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
-                    {
-                        if (enemy.GetComponentInChildren<EnemyBoss_Level2_Child>() != null)
-                            enemy.GetComponentInChildren<Enemy>().Death();
-                    }
-                }
+                isDeath = true;
+                Destroy(self);
+                //if (!isDeath)
+                //{
+                //    isDeath = true;
+                //    foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
+                //    {
+                //        if (enemy.GetComponentInChildren<EnemyBoss_Level2_Child>() != null)
+                //            enemy.GetComponentInChildren<Enemy>().Death();
+                //    }
+                //}
             }
             else
             {
+                //currentHealth = 0;
+                //currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
+                //animation.Play("Mon_T_Dead");
+                //Invoke("DestroySelf", 1);
                 // Take damage animator
                 // animator.Play("Damage");
             }

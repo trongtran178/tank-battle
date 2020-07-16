@@ -50,7 +50,7 @@ public class MenuController : MonoBehaviour
 
     private GameObject gun;
 
-   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -100,28 +100,33 @@ public class MenuController : MonoBehaviour
 
     public void SaveGame()
     {
-        try { 
+        try
+        {
             SaveSystem.SaveGameFactory(player, enemyHouse.GetComponentInChildren<EnemyFactory>(), manageRecoveryTime);
-            ResumeGame();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Debug.Log(e.Message);
         }
+        ResumeGame();
+
+
     }
 
     public void LoadGame()
     {
         // Destroy all enemies
+
         foreach (GameObject enemy in EnemyFactory.enemies)
         {
             Destroy(enemy);
         }
 
+        GameObject[] alliesArray = GameObject.FindGameObjectsWithTag("allies");
         // Destroy all allies
-        foreach (GameObject allies in GameObject.FindGameObjectsWithTag("allies"))
+        for (int i = 0; i < alliesArray.Length; i++)
         {
-            Destroy(allies);
+            Destroy(alliesArray[i]);
         }
 
         // Destroy player
@@ -130,11 +135,12 @@ public class MenuController : MonoBehaviour
 
         // GET PREVIOUS USER DATA
         PlayerData playerData = SaveSystem.LoadPlayer();
-
-        currentPlayerObject.transform.position = new Vector3(playerData.PositionX, playerData.PositionY, playerData.PositionZ);
-        currentPlayerObject.GetComponentInChildren<TankController2>().health = (int) playerData.CurrentHealth;
-
-        HealthBarTank.healthTank = (float) playerData.CurrentHealth;
+        if (playerData != null)
+        {
+            currentPlayerObject.transform.position = new Vector3(playerData.PositionX, playerData.PositionY, playerData.PositionZ);
+            currentPlayerObject.GetComponentInChildren<TankController2>().health = (int)playerData.CurrentHealth;
+        }
+        HealthBarTank.healthTank = playerData.CurrentHealth;
         ManaTank.manaTank = playerData.CurrentMana;
 
         EnemyFactory.enemies.Clear();
@@ -196,7 +202,7 @@ public class MenuController : MonoBehaviour
                     }
                 case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_2_CHILD:
                     {
-                        GameObject bossLevel2ChildInit = Instantiate(bossLevel2, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2_Child.transform.rotation);
+                        GameObject bossLevel2ChildInit = Instantiate(bossLevel2_Child, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2_Child.transform.rotation);
                         bossLevel2ChildInit.SetActive(true);
                         bossLevel2ChildInit.transform.localScale = new Vector3(2, 2, 2);
                         bossLevel2ChildInit.GetComponentInChildren<EnemyBoss_Level2_Child>().SetCurrentHealth(enemyData.CurrentHeath);
@@ -214,7 +220,6 @@ public class MenuController : MonoBehaviour
                         EnemyFactory.enemies.Add(bossLevel3Init);
                         break;
                     }
-
             }
         }
 
@@ -229,25 +234,32 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject alliesDogInit = Instantiate(alliesDog, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesDog.transform.rotation);
                         alliesDogInit.SetActive(true);
-                        alliesDogInit.GetComponentInChildren<Dogcollider>().health = (float) alliesObjectData.CurrentHeath;
+                        alliesDogInit.GetComponentInChildren<Dogcollider>().health = alliesObjectData.CurrentHeath;
+                        alliesDogInit.GetComponentInChildren<Dogcollider>().RepaintHealthBar();
+                        //if (alliesObjectData.IsDizzy)
+                        //    Invoke();
+                        //    alliesDogInit.GetComponent<dog>().Dizzy();
                         break;
                     }
                 case AlliesType.PLANE:
                     {
                         GameObject alliesPlaneInit = Instantiate(alliesPlane, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesPlane.transform.rotation);
                         alliesPlaneInit.SetActive(true);
-                        alliesPlaneInit.GetComponentInChildren<PlaneCollider>().PlaneHealth = (float) alliesObjectData.CurrentHeath;
+                        alliesPlaneInit.GetComponentInChildren<PlaneCollider>().PlaneHealth = alliesObjectData.CurrentHeath;
                         break;
                     }
                 case AlliesType.TANK:
                     {
                         GameObject alliesTankInit = Instantiate(alliesTank, new Vector3(alliesObjectData.PositionX, alliesObjectData.PositionY, alliesObjectData.PositionZ), alliesTank.transform.rotation);
                         alliesTankInit.SetActive(true);
-                        alliesTankInit.GetComponentInChildren<EnemyTu>().health = (float) alliesObjectData.CurrentHeath;
+                        alliesTankInit.GetComponentInChildren<EnemyTu>().health = alliesObjectData.CurrentHeath;
+                        //if (alliesObjectData.IsDizzy)
+                        //    alliesTankInit.GetComponent<EnemyTu>().Dizzy();
                         break;
                     }
             }
         }
+
 
 
         // RE-INITIALIZE RECOVERY ALLIES TIME

@@ -15,7 +15,7 @@ public class TankController2 : MonoBehaviour
     private bool isDizzy = false;
     public GameObject location;
     private trajectoryScript trajectoryHandleScript;
-
+    // 
     public GameObject bulletsAndAllies;
 
     // Start is called before the first frame update

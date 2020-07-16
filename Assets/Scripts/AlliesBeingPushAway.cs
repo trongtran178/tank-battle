@@ -21,6 +21,7 @@ public class AlliesBeingPushAway : MonoBehaviour
     }
     void Update()
     {
+        moveDir = self.transform.position - new Vector3(self.transform.position.x + (isMoveToLeft ? (5) : (-5)), self.transform.position.y, self.transform.position.z);
         if (isPushAway)
         {
             self.transform.position += moveDir * moveDirSpeed * Time.fixedDeltaTime;
@@ -32,7 +33,6 @@ public class AlliesBeingPushAway : MonoBehaviour
             //self.GetComponent<PlaneControiler>()?.Dizzy();
             if (pushAwayTime - beginningPushAwayTime >= 0.3f)
             {
-                moveDir = self.transform.position - new Vector3(self.transform.position.x + (isMoveToLeft ? (5) : (-5)), self.transform.position.y, self.transform.position.z);
                 isPushAway = false;
                 effectDizzy.SetActive(true);
                 Invoke("DizzyFinished", 4.0f);
