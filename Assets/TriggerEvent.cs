@@ -16,29 +16,44 @@ public class TriggerEvent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //if (Globals.IsNewGame == false)
-        //{
-        //    Invoke("LoadPreviousGameState", 1.0f);
-        //}
+        winToast.SetActive(false);
+        loseToast.SetActive(false);
+        if (Globals.IsNewGame == false)
+        {
+            Invoke("LoadPreviousGameState", .2f);
+        }
     }
 
     void Update()
     {
         HandleWinLose();
-        Debug.Log("Is win: " + isWin);
         if (isWin && !winToast.activeSelf)
         {
             winToast.SetActive(true);
+            menuGame.GetComponent<MenuController>().isWin = true;
         }
-        else if(isLose && !loseToast.activeSelf)
+        //else
+        //{
+        //    winToast.SetActive(false);
+        //    menuGame.GetComponent<MenuController>().isWin = false;
+
+        //}
+
+        if (isLose && !loseToast.activeSelf)
         {
             loseToast.SetActive(true);
+            menuGame.GetComponent<MenuController>().isLose = true;
         }
+        //else
+        //{
+        //    loseToast.SetActive(false);
+        //    menuGame.GetComponent<MenuController>().isLose = false;
+        //}
     }
 
     private void HandleWinLose()
     {
-        if (enemyHouse.GetComponentInChildren<Assets.Scripts.Enemies.Enemy>().GetPlayer() == null)
+        if (GameObject.FindGameObjectWithTag("player") == null)
         {
             isLose = true;
         }
@@ -51,7 +66,8 @@ public class TriggerEvent : MonoBehaviour
                         GameObject bossLevel1 = GameObject
                             .FindGameObjectsWithTag("enemy")
                             .FirstOrDefault(enemy => enemy.GetComponentInChildren<Assets.Scripts.Enemies.Enemy>().GetEnemyType() == Assets.Scripts.Enemies.EnemyType.BOSS_LEVEL_1);
-                        if (bossLevel1 == null) isWin = true;
+                        if (bossLevel1 == null)
+                            isWin = true;
                         break;
                     }
                 case "Level2":
@@ -59,7 +75,8 @@ public class TriggerEvent : MonoBehaviour
                         GameObject bossLevel2 = GameObject
                             .FindGameObjectsWithTag("enemy")
                             .FirstOrDefault(enemy => enemy.GetComponentInChildren<Assets.Scripts.Enemies.Enemy>().GetEnemyType() == Assets.Scripts.Enemies.EnemyType.BOSS_LEVEL_2);
-                        if (bossLevel2 == null) isWin = true;
+                        if (bossLevel2 == null)
+                            isWin = true;
                         break;
                     }
                 case "Level3":
@@ -67,7 +84,8 @@ public class TriggerEvent : MonoBehaviour
                         GameObject bossLevel3 = GameObject
                             .FindGameObjectsWithTag("enemy")
                             .FirstOrDefault(enemy => enemy.GetComponentInChildren<Assets.Scripts.Enemies.Enemy>().GetEnemyType() == Assets.Scripts.Enemies.EnemyType.BOSS_LEVEL_3);
-                        if (bossLevel3 == null) isWin = true;
+                        if (bossLevel3 == null)
+                            isWin = true;
                         break;
                     }
             }

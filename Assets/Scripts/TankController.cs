@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TankController : MonoBehaviour
+public class    TankController : MonoBehaviour
 {
 
     public Rigidbody2D backTire, frontTire,carRigidbody;

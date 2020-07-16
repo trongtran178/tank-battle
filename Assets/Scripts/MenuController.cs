@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System;
+using System.IO;
 
 public class MenuController : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class MenuController : MonoBehaviour
     public string menu;
 
     public GameObject pauseMenu;
+
+    public GameObject saveGameButton;
+    
+    public GameObject loadGameButton;
 
     // ENEMY AREA
 
@@ -48,23 +53,46 @@ public class MenuController : MonoBehaviour
 
     public bool isPaused;
 
+    public bool isWin = false;
+
+    public bool isLose = false;
+
     private GameObject gun;
 
-
+    private string playerPath;
     // Start is called before the first frame update
     void Start()
     {
         gun = GameObject.Find("Gun");
+        playerPath =  Application.persistentDataPath + "/player.fun";
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!File.Exists(playerPath))
+        {
+            loadGameButton.SetActive(false);
+        }
+
+        else
+        {
+            loadGameButton.SetActive(true);
+        }
+
+        if ((isWin == true || isLose == true))
+        {
+            saveGameButton.SetActive(false);
+            loadGameButton.SetActive(false);
+        }
+
+        
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
             {
-
+                Debug.Log(Application.persistentDataPath + "/player.fun");
                 ResumeGame();
             }
             else
@@ -95,7 +123,7 @@ public class MenuController : MonoBehaviour
     public void ReturnGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(menu);
+        SceneManager.LoadScene("Menu");
     }
 
     public void SaveGame()
@@ -109,8 +137,6 @@ public class MenuController : MonoBehaviour
             Debug.Log(e.Message);
         }
         ResumeGame();
-
-
     }
 
     public void LoadGame()
