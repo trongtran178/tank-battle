@@ -11,6 +11,8 @@ public class TriggerEvent : MonoBehaviour
     public GameObject enemyHouse;
     private bool isWin = false;
     private bool isLose = false;
+    public GameObject winToast;
+    public GameObject loseToast;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,14 +26,13 @@ public class TriggerEvent : MonoBehaviour
     {
         HandleWinLose();
         Debug.Log("Is win: " + isWin);
-        if (isWin)
+        if (isWin && !winToast.activeSelf)
         {
-
+            winToast.SetActive(true);
         }
-        else
+        else if(isLose && !loseToast.activeSelf)
         {
-
-            // LOSE
+            loseToast.SetActive(true);
         }
     }
 
@@ -39,7 +40,7 @@ public class TriggerEvent : MonoBehaviour
     {
         if (enemyHouse.GetComponentInChildren<Assets.Scripts.Enemies.Enemy>().GetPlayer() == null)
         {
-            isWin = false;
+            isLose = true;
         }
         else if (enemyHouse.activeSelf == false)
         {
