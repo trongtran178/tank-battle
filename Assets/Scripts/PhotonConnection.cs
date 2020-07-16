@@ -11,27 +11,37 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
     [SerializeField]
     private byte maxPlayersPerRoom = 4;
 
+    public GameObject connectedScreen;
+    public GameObject disconnectionScreen;
+
+
     private void Awake()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
     }
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    public void OnClick_Connection()
+    {
         print("connectting to server");
-        
+
 
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.JoinRandomRoom();
 
         }
-        else {
-            PhotonNetwork.NickName = MasterManagerPhoton.GameSettingPhoton.NickName;
+        else
+        {
+            //PhotonNetwork.NickName = MasterManagerPhoton.GameSettingPhoton.NickName;
             PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = MasterManagerPhoton.GameSettingPhoton.GameVersion;
+            //PhotonNetwork.GameVersion = MasterManagerPhoton.GameSettingPhoton.GameVersion;
         }
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+
+        
     }
 
     public override void OnConnectedToMaster()
@@ -40,8 +50,11 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
         print("connected to server");
         print(PhotonNetwork.LocalPlayer.NickName);
 
-        PhotonNetwork.CreateRoom("MyRoom");
-        PhotonNetwork.JoinRandomRoom();
+       
+        PhotonNetwork.JoinLobby(TypedLobby.Default);
+
+        //PhotonNetwork.CreateRoom("MyRoom");
+        //PhotonNetwork.JoinRandomRoom();
 
     }
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -58,8 +71,15 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         print("Disconnected "+cause);
+        disconnectionScreen.SetActive(true);
     }
 
+    public override void OnJoinedLobby()
+    {
+        if (disconnectionScreen.activeSelf)
+            disconnectionScreen.SetActive(false);
+        connectedScreen.SetActive(true);
+    }
     // Update is called once per frame
     void Update()
     {
