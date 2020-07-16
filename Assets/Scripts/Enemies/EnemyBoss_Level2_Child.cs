@@ -47,7 +47,7 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
-            if (currentHealth <= 0 || GameObject.FindGameObjectWithTag("player") == null)
+            if (currentHealth <= 0)
             {
                 Death();
                 return;
@@ -58,7 +58,7 @@ namespace Assets.Scripts.Enemies
 
         private void Move()
         {
-            if (currentHealth <= 0 || GameObject.FindGameObjectWithTag("player") == null) return;
+            if (currentHealth <= 0) return;
             if (attackTarget == null)
             {
                 animator.Play("Idle");
@@ -103,8 +103,8 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null) return;
-            if(currentHealth <= 0 || GameObject.FindGameObjectWithTag("player") == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
+            if(currentHealth <= 0) return;
 
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
@@ -117,7 +117,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleAttack()
         {
-            if (player == null || player.activeSelf == false || attackTarget == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
             if (currentHealth <= 0) return;
 
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);

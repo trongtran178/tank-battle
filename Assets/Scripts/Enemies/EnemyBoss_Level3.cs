@@ -50,7 +50,7 @@ namespace Assets.Scripts.Enemies
                 return;
             }
             attackTarget = FindAttackTarget();
-            if (attackTarget == null || GameObject.FindGameObjectWithTag("player") == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
             HandleMinimumDistanceIndicatorBetweenAttackTarget();
             Move();
 
@@ -58,7 +58,7 @@ namespace Assets.Scripts.Enemies
 
         private void Move()
         {
-            if (attackTarget == null || GameObject.FindGameObjectWithTag("player") == null)
+            if (attackTarget == null || attackTarget.activeSelf == false)
             {
                 animation.Play("Idle");
 
@@ -112,7 +112,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null || GameObject.FindGameObjectWithTag("player") == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
@@ -125,7 +125,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleAttack()
         {
-            if (player == null || player.activeSelf == false || attackTarget == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
             if (currentHealth <= 0) return;
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
             if (distanceBetweenAttackTarget <= minimumDistanceIndicatorBetweenAttackTarget)
