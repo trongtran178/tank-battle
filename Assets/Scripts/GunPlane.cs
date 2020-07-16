@@ -42,7 +42,7 @@ public class GunPlane : MonoBehaviour
 
             //kc = tank.transform.position - transform.position;
             //doLonKcPlane = Mathf.Sqrt((kc.x * kc.x) + (kc.y * kc.y));
-            shotForce = new Vector2(kc.x+10, kc.y+10    );
+            shotForce = new Vector2(kc.x+10, kc.y+10);
             if (doLonKc < 50)
             {
                 timeGunPlane -= Time.deltaTime;

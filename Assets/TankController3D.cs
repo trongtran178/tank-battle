@@ -18,6 +18,9 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     private Vector3 smootMove;
     //public GameObject cameraMain;
     new public GameObject playerCamera;
+
+    public GameObject bulletPrefab;
+    public GameObject pointShooting;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +38,7 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
             anim = GetComponent<Animator>();
             Rb = GetComponent<Rigidbody2D>();
             //cameraMain = GameObject.Find("Main Camera");
-            playerCamera.SetActive(trueư;
+            playerCamera.SetActive(true);
             //cameraMain.SetActive(false);
             
         }
@@ -113,6 +116,16 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     {
         var move = new Vector3(Input.GetAxis("Horizontal"), 0);
         transform.position += move * speed*Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            shooting();
+        }
+    }
+
+    public void shooting()
+    {
+        GameObject bullet = PhotonNetwork.Instantiate(bulletPrefab.name, pointShooting.transform.position, pointShooting.transform.rotation);
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
