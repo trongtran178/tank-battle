@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 using UnityEngine;
 using System.Linq;
 namespace Assets.Scripts.Enemies
@@ -15,7 +15,7 @@ namespace Assets.Scripts.Enemies
         private float currentHealth;
         private float minimumDistanceIndicatorBetweenAttackTarget = 10;
         private Rigidbody2D rigidBody2D;
-        private float takeDamageRatio = .05f;
+        private float takeDamageRatio = .5f;
         private bool isDeath = false;
         private System.Random random = new System.Random();
         private int randomPushAwayAttack;
@@ -32,6 +32,7 @@ namespace Assets.Scripts.Enemies
 
         void Start()
         {
+            IgnoreEnemies();
             animation = self.GetComponent<Animation>();
             animation["Run"].speed += 4.0f;
             rigidBody2D = self.GetComponent<Rigidbody2D>();
@@ -44,6 +45,7 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
+           
             if (currentHealth <= 0 || isDeath)
             {
                 Death();
@@ -60,6 +62,8 @@ namespace Assets.Scripts.Enemies
         {
             if (attackTarget == null || attackTarget.activeSelf == false)
             {
+                CancelInvoke("HandleAttack");
+                CancelInvoke("HandleMove");
                 animation.Play("Idle");
 
                 return;
@@ -180,9 +184,10 @@ namespace Assets.Scripts.Enemies
         public override void Death()
         {
             CancelInvoke("HandleAttack");
+            horizontalMove = 0;
             animation.Play("Death");
 
-            Invoke("DestroySelf", 8);
+            Invoke("DestroySelf", 5);
         }
 
         private void DestroySelf()
@@ -213,20 +218,26 @@ namespace Assets.Scripts.Enemies
 
         public override void TakeDamage(float damage)
         {
-            if (currentHealth <= 0 || isDeath) return;
-            damage = (float)(damage * takeDamageRatio);
+            if (currentHealth <= 0 || isDeath) { 
+                horizontalMove = 0;
+                return;
+            }
+            
+            damage *= takeDamageRatio;
             currentHealth -= damage;
             currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
             if (currentHealth <= 0)
             {
                 if (isDeath == false)
                 {
+                    horizontalMove = 0;
                     isDeath = true;
-                    foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
-                    {
-                        if (enemy.GetComponentInChildren<Enemy>() != null)
-                            enemy.GetComponentInChildren<Enemy>().Death();
-                    }
+                    Death();
+                    //foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
+                    //{
+                    //    if (enemy.GetComponentInChildren<Enemy>() != null)
+                    //        enemy.GetComponentInChildren<Enemy>().Death();
+                    //}
                 }
             }
             else

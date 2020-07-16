@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 using UnityEngine;
 using System.Linq;
 namespace Assets.Scripts.Enemies
@@ -37,6 +37,7 @@ namespace Assets.Scripts.Enemies
 
         void Start()
         {
+            IgnoreEnemies();
             attackTarget = FindAttackTarget();
             animator.Play("Idle");
             InvokeRepeating("HandleAttack", .1f, .1f);
@@ -45,6 +46,7 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
+           
             if (currentHealth <= 0)
             {
                 Death();
@@ -210,11 +212,12 @@ namespace Assets.Scripts.Enemies
                 if (isDeath == false)
                 {
                     isDeath = true;
-                    foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
-                    {
-                        if(enemy.GetComponentInChildren<Enemy>() != null)
-                            enemy.GetComponentInChildren<Enemy>().Death();
-                    }
+                    Death();
+                    //foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
+                    //{
+                    //    if(enemy.GetComponentInChildren<Enemy>() != null)
+                    //        enemy.GetComponentInChildren<Enemy>().Death();
+                    //}
                 }
             }
             else

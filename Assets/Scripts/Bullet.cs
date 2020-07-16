@@ -25,20 +25,21 @@ public class Bullet : MonoBehaviour
     {
         Debug.Log(collision.name);
         PlaneCollider plane = collision.GetComponent<PlaneCollider>();
-        EnemyTu enemy= collision.GetComponent<EnemyTu>();
-        TankController2 tank = collision.GetComponent<TankController2>();
+        EnemyTu alliesTank= collision.GetComponent<EnemyTu>();
+        TankController2 player = collision.GetComponent<TankController2>();
 
         Dogcollider dog = collision.GetComponent<Dogcollider>();
 
         SoldierMain soldier = collision.GetComponent<SoldierMain>();
-        if(enemy!=null)
+       
+        if(player != null)
         {
-            enemy.TakeDamage(damage);
+            player.TakeDamage(damage);
         }
-        if(tank!=null)
+        if(alliesTank != null)
         {
-            
-            tank.TakeDamage(damage);
+
+            alliesTank.TakeDamage(damage);
         }
         if (plane!=null)
         {
@@ -52,7 +53,10 @@ public class Bullet : MonoBehaviour
         {
             dog.TakeDamage(damage);
         }
-
+        if(collision.tag == "enemy_controller")
+        {
+            collision.GetComponent<Assets.Scripts.Enemies.Enemy>().TakeDamage(damage);
+        }
         
 
 

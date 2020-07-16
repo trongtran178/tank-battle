@@ -22,10 +22,15 @@ public class PlaneCollider : MonoBehaviour
     public float maxHealth = 100f;
     public float PlaneHealth;
 
-    private void Start()
+    void Awake()
     {
         PlaneHealth = maxHealth;
     }
+
+    // private void Start()
+    // {
+
+    // }
     void Update()
     {
         healthyBar.fillAmount = PlaneHealth / maxHealth;

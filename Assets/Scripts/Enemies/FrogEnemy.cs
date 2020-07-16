@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 using UnityEngine;
-using Assets.Scripts.Enemy;
+using Assets.Scripts.Enemies;
 
 namespace Assets.Scripts.Enemies
 {
@@ -39,17 +39,20 @@ namespace Assets.Scripts.Enemies
 
         void Start()
         {
+            IgnoreEnemies();
             InvokeRepeating("HandleAttack", .1f, .1f);
         }
 
         void Update()
         {
-            if(currentHealth <= 0)
+            
+            if (currentHealth <= 0)
             {
                 Death();
                 return;
             }
             attackTarget = FindAttackTarget();
+           
             Move();
         }
 
@@ -98,7 +101,7 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
-            if (attackTarget == null) return;
+            if (attackTarget == null || !attackTarget.activeSelf) return;
             if (currentHealth <= 0) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
@@ -142,8 +145,8 @@ namespace Assets.Scripts.Enemies
                 }
             }
             else
-            {
-                player.GetComponent<TankController2>().TakeDamage(20);
+            { // Player 
+                player.GetComponent<TankController2>()?.TakeDamage(20);
             }
         }
 

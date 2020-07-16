@@ -160,7 +160,7 @@ public class MenuController : MonoBehaviour
         {
             switch (enemyData.Type)
             {
-                case Assets.Scripts.Enemy.EnemyType.FROG:
+                case EnemyType.FROG:
                     {
                         GameObject frogInit = Instantiate(frog, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), frog.transform.rotation);
                         frogInit.SetActive(true);
@@ -170,7 +170,7 @@ public class MenuController : MonoBehaviour
                         EnemyFactory.enemies.Add(frogInit);
                         break;
                     }
-                case Assets.Scripts.Enemy.EnemyType.MECHS_ROBOT:
+                case EnemyType.MECHS_ROBOT:
                     {
                         GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
@@ -180,7 +180,7 @@ public class MenuController : MonoBehaviour
                         EnemyFactory.enemies.Add(mechsRobotInit);
                         break;
                     }
-                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_1:
+                case EnemyType.BOSS_LEVEL_1:
                     {
                         GameObject bossLevle1Init = Instantiate(bossLevel1, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel1.transform.rotation);
                         bossLevle1Init.SetActive(true);
@@ -190,7 +190,7 @@ public class MenuController : MonoBehaviour
                         EnemyFactory.enemies.Add(bossLevle1Init);
                         break;
                     }
-                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_2:
+                case Assets.Scripts.Enemies.EnemyType.BOSS_LEVEL_2:
                     {
                         GameObject bossLevel2Init = Instantiate(bossLevel2, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2.transform.rotation);
                         bossLevel2Init.SetActive(true);
@@ -200,7 +200,7 @@ public class MenuController : MonoBehaviour
                         EnemyFactory.enemies.Add(bossLevel2Init);
                         break;
                     }
-                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_2_CHILD:
+                case EnemyType.BOSS_LEVEL_2_CHILD:
                     {
                         GameObject bossLevel2ChildInit = Instantiate(bossLevel2_Child, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2_Child.transform.rotation);
                         bossLevel2ChildInit.SetActive(true);
@@ -210,7 +210,7 @@ public class MenuController : MonoBehaviour
                         EnemyFactory.enemies.Add(bossLevel2ChildInit);
                         break;
                     }
-                case Assets.Scripts.Enemy.EnemyType.BOSS_LEVEL_3:
+                case EnemyType.BOSS_LEVEL_3:
                     {
                         GameObject bossLevel3Init = Instantiate(bossLevel3, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel3.transform.rotation);
                         bossLevel3Init.SetActive(true);
