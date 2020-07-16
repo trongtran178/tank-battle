@@ -111,7 +111,6 @@ namespace Assets.Scripts.Enemies
 
         private void HandleAttack()
         {
-            //if (player == null || player.activeSelf == false || attackTarget == null) return;
             if (attackTarget == null || !attackTarget.activeSelf) return;
             if (currentHealth <= 0) return;
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);

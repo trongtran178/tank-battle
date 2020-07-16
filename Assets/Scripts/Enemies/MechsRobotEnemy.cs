@@ -63,14 +63,18 @@ namespace Assets.Scripts.Enemies
         // Update is called once per frame
         void Update()
         {
-            if(currentHealth <= 0)
+            if (currentHealth <= 0)
             {
                 Death();
                 return;
             }
             attackTarget = FindAttackTarget();
+            if (attackTarget == null || attackTarget.activeSelf == false)
+            {
+                CancelInvoke("HandleAttack");
+                return;
+            }
             if (currentHealth > 0) Move();
-            if (!attackTarget) CancelInvoke("HandleAttack");
         }
 
         private void Move()
@@ -131,7 +135,8 @@ namespace Assets.Scripts.Enemies
                 CancelInvoke("HandleAttack");
                 return;
             }
-            if (attackTarget != null) { 
+            if (attackTarget != null)
+            {
                 float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
                 if (distanceBetweenAttackTarget < minimumDistanceIndicatorBetweenAttackTarget + 8)
                 {

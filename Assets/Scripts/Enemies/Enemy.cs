@@ -13,7 +13,6 @@ namespace Assets.Scripts.Enemies
 
         protected GameObject attackTarget;
         protected GameObject player;
-        protected GameObject player_body;
 
         public abstract void UpgrageLevelCorrespondToPhase(Phase phase);
         public abstract void Instantiate();
@@ -26,10 +25,9 @@ namespace Assets.Scripts.Enemies
         public abstract EnemyType GetEnemyType();
         public abstract bool IsShortRangeStrike();
         // Detect collision with other enemy, enemy should go through another enemy
-        private void OnEnable()
+        private void Awake()
         {
             player = GameObject.FindGameObjectWithTag("player");
-            player_body = GameObject.FindGameObjectWithTag("player_body");
 
             GameObject[] otherEnemyControllers = GameObject.FindGameObjectsWithTag("enemy_controller");
             foreach (GameObject enemyController in otherEnemyControllers)
@@ -37,7 +35,7 @@ namespace Assets.Scripts.Enemies
                 Physics2D.IgnoreCollision(enemyController.GetComponent<PolygonCollider2D>(), GetComponent<PolygonCollider2D>());
             }
         }
-
+        
         protected GameObject FindAttackTarget()
         {
             GameObject _attackTarget = null, playerTarget = null;
@@ -46,16 +44,10 @@ namespace Assets.Scripts.Enemies
             // Key - value equivalent gameObject with distance between enemy
             Dictionary<GameObject, float> alliesDictionary = new Dictionary<GameObject, float>();
 
-            // playerTarget = player_body;
-            playerTarget = player;
-            if (player == null || player.activeSelf == false)
-            {
-                return null;
-            }
-            else
-            {
-                allies.Add(playerTarget);
-            }
+
+
+            playerTarget = GameObject.FindGameObjectWithTag("player");
+            if (playerTarget != null) allies.Add(playerTarget);
 
             // get all allies
             GameObject[] alliesArray = GameObject.FindGameObjectsWithTag("allies");

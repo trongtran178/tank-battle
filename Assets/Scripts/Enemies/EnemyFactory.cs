@@ -31,7 +31,7 @@ namespace Assets.Scripts.Enemies
 
         // If flag is true, generateEnemyTime will be decrease, ...
         private bool flag = false;
-
+        private bool isGenerating = false;
         private GameObject[] effectBurnArray;
         private System.Random random = new System.Random();
 
@@ -54,7 +54,6 @@ namespace Assets.Scripts.Enemies
 
         private void Update()
         {
-            if (!player) CancelInvoke("GenerateEnemy");
             if (currentHealth <= 30 && !isBurn)
             {
                 BurnEnemyFactory();
@@ -67,6 +66,19 @@ namespace Assets.Scripts.Enemies
             {
                 // DO NOTHING
             }
+
+            if (GameObject.FindGameObjectWithTag("player") == null)
+            {
+                CancelInvoke("GenerateEnemy");
+                isGenerating = false;
+                return;
+            } 
+            else if(GameObject.FindGameObjectWithTag("player") != null && isGenerating == false)
+            {
+                isGenerating = true;
+                InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
+            }
+
 
             if (currentHealth <= 50)
             {
