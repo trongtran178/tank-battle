@@ -46,8 +46,8 @@ namespace Assets.Scripts.Enemies
             // Key - value equivalent gameObject with distance between enemy
             Dictionary<GameObject, float> alliesDictionary = new Dictionary<GameObject, float>();
 
-            playerTarget = player_body;
-
+            // playerTarget = player_body;
+            playerTarget = player;
             if (player == null || player.activeSelf == false)
             {
                 return null;

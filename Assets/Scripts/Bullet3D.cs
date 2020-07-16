@@ -24,9 +24,15 @@ public class Bullet3D : MonoBehaviourPun
         Rb.velocity = new Vector2(speed, 0);
 
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        this.GetComponent<PhotonView>().RPC("destroy", RpcTarget.AllBuffered);
+    }
     [PunRPC]
     public void destroy()
     {
         Destroy(this.gameObject);
     }
+
 }
