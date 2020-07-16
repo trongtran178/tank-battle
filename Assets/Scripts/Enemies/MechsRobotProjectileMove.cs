@@ -17,7 +17,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
     private float initializationTime;
 
     void Start()
-    {   
+    {
         // edit tag, hard code
         player = GameObject.FindGameObjectWithTag("player");
         if (attackTarget)
@@ -40,12 +40,12 @@ public class MechsRobotProjectileMove : MonoBehaviour
         {
             DestroyProjectile();
             return;
-        }        
+        }
     }
 
     //private void FixedUpdate()
     //{
-        
+
     //}
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -53,23 +53,26 @@ public class MechsRobotProjectileMove : MonoBehaviour
         {
             Debug.Log(collision.tag);
             switch (collision.tag)
-            {           
+            {
                 case "player":
                     {
-                        player.GetComponent<TankController2>().TakeDamage(20);
+                        player.GetComponent<TankController2>()?.TakeDamage(30);
+                        player.GetComponentInChildren<TankController3D>()?.TakeDamage(30);
+
                         DestroyProjectile();
                         break;
                     }
                 case "allies":
                 case "allies_collider":
                     {
-                        if(attackTarget != null)
+                        if (attackTarget != null)
                         {
                             if (attackTarget.GetComponentInChildren<Dogcollider>() != null)
                             {
                                 attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
                             }
-                            else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null) {
+                            else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null)
+                            {
                                 attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(20);
                             }
                             else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
@@ -83,7 +86,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
                     }
             }
         }
- 
+
         if (collision.name == "GroundGrass")
         {
             DestroyProjectile();

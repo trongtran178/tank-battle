@@ -72,7 +72,7 @@ public class MenuController : MonoBehaviour
                 isPaused = true;
                 pauseMenu.SetActive(true);
                 Time.timeScale = 0f;
-                gun.SetActive(false);
+                gun?.SetActive(false);
             }
 
         }

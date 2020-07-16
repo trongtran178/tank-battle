@@ -46,7 +46,7 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
-           
+
             if (currentHealth <= 0)
             {
                 Death();
@@ -156,7 +156,10 @@ namespace Assets.Scripts.Enemies
             }
 
             else
-                player.GetComponent<TankController2>().TakeDamage(30);
+            {
+                player.GetComponent<TankController2>()?.TakeDamage(30);
+                player.GetComponent<TankController3D>()?.TakeDamage(30);
+            }
 
         }
 
@@ -204,7 +207,7 @@ namespace Assets.Scripts.Enemies
         public override void TakeDamage(float damage)
         {
             if (currentHealth <= 0 || isDeath) return;
-            damage  = (float)(damage * takeDamageRatio);
+            damage = (float)(damage * takeDamageRatio);
             currentHealth -= damage;
             currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
             if (currentHealth <= 0)
@@ -237,26 +240,26 @@ namespace Assets.Scripts.Enemies
             animator.Play("Skill");
 
             bool isBefore = false, isMiddle = false, isAfter = false;
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 Vector3 position = new Vector3();
-                if(!isBefore)
+                if (!isBefore)
                 {
                     position.Set(self.transform.position.x - 8, self.transform.position.y, self.transform.position.z);
                     isBefore = !isBefore;
                 }
-                else if(!isMiddle)
+                else if (!isMiddle)
                 {
                     position.Set(self.transform.position.x, self.transform.position.y, self.transform.position.z);
                     isMiddle = !isMiddle;
                 }
-                else if(!isAfter)
+                else if (!isAfter)
                 {
-                   
+
                     position.Set(self.transform.position.x + 8, self.transform.position.y, self.transform.position.z);
                     isAfter = !isAfter;
                 }
-                
+
                 GameObject childObject = Instantiate(child, position, child.transform.rotation);
                 childObject.SetActive(true);
                 childObject.transform.localScale = new Vector3(2, 2, 2);
