@@ -28,11 +28,11 @@ public class Bullet3D : MonoBehaviourPun
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        if (collision.name.Equals("Enemy_Controller")|| collision.name.Equals("Enemy_House_Controller"))
+        if (collision.name.Equals("Enemy_Controller") || collision.name.Equals("Enemy_House_Controller") || collision.name.Equals("Enemy_Boss_Controller"))
         {
             collision.GetComponent<Assets.Scripts.Enemies.Enemy>().TakeDamage(20);
         }
-        this.GetComponent<PhotonView>().RPC("destroy", RpcTarget.AllBuffered);
+        GetComponent<PhotonView>().RPC("destroy", RpcTarget.AllBuffered);
         
     }
     [PunRPC]

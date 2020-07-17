@@ -52,12 +52,13 @@ public class MechsRobotProjectileMove : MonoBehaviour
     {
         {
             Debug.Log(collision.tag);
+            Debug.Log(collision.name);
             switch (collision.tag)
             {
                 case "player":
                     {
                         player.GetComponent<TankController2>()?.TakeDamage(30);
-                        player.GetComponentInChildren<TankController3D>()?.TakeDamage(30);
+                        player.GetComponent<TankController3D>()?.TakeDamage(20);
 
                         DestroyProjectile();
                         break;
@@ -85,6 +86,15 @@ public class MechsRobotProjectileMove : MonoBehaviour
                         break;
                     }
             }
+
+            // Detect player 3D
+            if(collision.name.Equals("player_collider"))
+            {
+                collision.GetComponentInParent<TankController3D>()?.TakeDamage(20);
+                DestroyProjectile();
+            }
+
+
         }
 
         if (collision.name == "GroundGrass")

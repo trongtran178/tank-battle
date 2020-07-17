@@ -34,6 +34,11 @@ namespace Assets.Scripts.Enemies
         private GameObject[] effectBurnArray;
         private System.Random random = new System.Random();
 
+
+        private bool isExistsBossLevel1 = false;
+        private bool isExistsBossLevel2 = false;
+        private bool isExistsBossLevel3 = false;
+
         void Awake()
         {
             enemies = new ArrayList();
@@ -58,7 +63,8 @@ namespace Assets.Scripts.Enemies
 
         private void Update()
         {
-            
+            if (Globals.CurrentLevel.Equals("Main2"))
+                InvokeRepeating("GenerateBossMultiplayer", 0.1f, 0.1f);
             if (currentHealth <= 30 && !isBurn)
             {
                 BurnEnemyFactory();
@@ -77,8 +83,8 @@ namespace Assets.Scripts.Enemies
                 CancelInvoke("GenerateEnemy");
                 isGenerating = false;
                 return;
-            } 
-            else if(GameObject.FindGameObjectWithTag("player") != null && isGenerating == false)
+            }
+            else if (GameObject.FindGameObjectWithTag("player") != null && isGenerating == false)
             {
                 isGenerating = true;
                 InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
@@ -189,6 +195,16 @@ namespace Assets.Scripts.Enemies
                                 CreateEnemies(EnemyType.BOSS_LEVEL_3);
                             break;
                         }
+                    // Multiplayer WTF ???
+                    case "Main2":
+                        {
+                            //InvokeRepeating("GenerateBossMultiplayer", 0.1f, 0.1f);
+                            // CreateEnemies(EnemyType.BOSS_LEVEL_1);
+                            // CreateEnemies(EnemyType.BOSS_LEVEL_2);
+                            // CreateEnemies(EnemyType.BOSS_LEVEL_3);
+
+                            break;
+                        }
                 }
 
             }
@@ -202,6 +218,38 @@ namespace Assets.Scripts.Enemies
 
             }
 
+        }
+
+        private void GenerateBossMultiplayer()
+        {
+            if (currentHealth > 66)
+            {
+                return;
+            }
+            else if (currentHealth <= 66 && currentHealth > 33)
+            {
+                if (!isExistsBossLevel1)
+                {
+                    CreateEnemies(EnemyType.BOSS_LEVEL_1);
+                    isExistsBossLevel1 = true;
+                }
+            }
+            else if (currentHealth <= 3 && currentHealth > 0)
+            {
+                if (!isExistsBossLevel2)
+                {
+                    CreateEnemies(EnemyType.BOSS_LEVEL_2);
+                    isExistsBossLevel2 = true;
+                }
+            }
+            else if (currentHealth <= 0 || self.activeSelf == false)
+            {
+                if (!isExistsBossLevel3)
+                {
+                    isExistsBossLevel3 = true;
+                    CreateEnemies(EnemyType.BOSS_LEVEL_3);
+                }
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
