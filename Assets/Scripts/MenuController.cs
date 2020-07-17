@@ -16,7 +16,7 @@ public class MenuController : MonoBehaviour
     public GameObject pauseMenu;
 
     public GameObject saveGameButton;
-    
+
     public GameObject loadGameButton;
 
     // ENEMY AREA
@@ -64,13 +64,13 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         gun = GameObject.Find("Gun");
-        playerPath =  Application.persistentDataPath + "/player.fun";
+        playerPath = Application.persistentDataPath + "/player.fun";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!File.Exists(playerPath))
+        if (!File.Exists(playerPath))
         {
             loadGameButton.SetActive(false);
         }
@@ -86,7 +86,7 @@ public class MenuController : MonoBehaviour
             loadGameButton.SetActive(false);
         }
 
-        
+
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -155,7 +155,6 @@ public class MenuController : MonoBehaviour
             Destroy(alliesArray[i]);
         }
 
-        // Destroy player
         GameObject currentPlayerObject = GameObject.FindGameObjectWithTag("player");
         // Destroy(currentPlayerObject);
 
@@ -165,9 +164,10 @@ public class MenuController : MonoBehaviour
         {
             currentPlayerObject.transform.position = new Vector3(playerData.PositionX, playerData.PositionY, playerData.PositionZ);
             currentPlayerObject.GetComponentInChildren<TankController2>().health = (int)playerData.CurrentHealth;
+
+            HealthBarTank.healthTank = playerData.CurrentHealth;
+            ManaTank.manaTank = playerData.CurrentMana;
         }
-        HealthBarTank.healthTank = playerData.CurrentHealth;
-        ManaTank.manaTank = playerData.CurrentMana;
 
         EnemyFactory.enemies.Clear();
 
@@ -200,7 +200,7 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
-                        mechsRobotInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
+                        mechsRobotInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                         mechsRobotInit.GetComponentInChildren<MechsRobotEnemy>().SetCurrentHealth(enemyData.CurrentHeath);
                         mechsRobotInit.GetComponentInChildren<MechsRobotEnemy>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(mechsRobotInit);
@@ -210,17 +210,17 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject bossLevle1Init = Instantiate(bossLevel1, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel1.transform.rotation);
                         bossLevle1Init.SetActive(true);
-                        bossLevle1Init.transform.localScale = new Vector3((float)2.5, (float)4, (float)2.5);
+                        bossLevle1Init.transform.localScale = new Vector3(2.5f, 4.0f, 2.5f);
                         bossLevle1Init.GetComponentInChildren<EnemyBoss_Level1>().SetCurrentHealth(enemyData.CurrentHeath);
                         bossLevle1Init.GetComponentInChildren<EnemyBoss_Level1>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(bossLevle1Init);
                         break;
                     }
-                case Assets.Scripts.Enemies.EnemyType.BOSS_LEVEL_2:
+                case EnemyType.BOSS_LEVEL_2:
                     {
                         GameObject bossLevel2Init = Instantiate(bossLevel2, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2.transform.rotation);
                         bossLevel2Init.SetActive(true);
-                        bossLevel2Init.transform.localScale = new Vector3(120, 120, 120);
+                        bossLevel2Init.transform.localScale = new Vector3(120f, 120f, 120f);
                         bossLevel2Init.GetComponentInChildren<EnemyBoss_Level2>().SetCurrentHealth(enemyData.CurrentHeath);
                         bossLevel2Init.GetComponentInChildren<EnemyBoss_Level2>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(bossLevel2Init);
@@ -230,7 +230,7 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject bossLevel2ChildInit = Instantiate(bossLevel2_Child, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2_Child.transform.rotation);
                         bossLevel2ChildInit.SetActive(true);
-                        bossLevel2ChildInit.transform.localScale = new Vector3(2, 2, 2);
+                        bossLevel2ChildInit.transform.localScale = new Vector3(2f, 2f, 2f);
                         bossLevel2ChildInit.GetComponentInChildren<EnemyBoss_Level2_Child>().SetCurrentHealth(enemyData.CurrentHeath);
                         bossLevel2ChildInit.GetComponentInChildren<EnemyBoss_Level2_Child>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(bossLevel2ChildInit);

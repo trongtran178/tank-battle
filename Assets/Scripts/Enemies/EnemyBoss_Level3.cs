@@ -30,13 +30,17 @@ namespace Assets.Scripts.Enemies
         // Su dung de xu ly di chuyen
         private Vector3 Velocity = Vector3.zero;
 
+        void Awake()
+        {
+            currentHealth = maxHealth;
+        }
+
         void Start()
         {
             IgnoreEnemies();
             animation = self.GetComponent<Animation>();
             animation["Run"].speed += 4.0f;
             rigidBody2D = self.GetComponent<Rigidbody2D>();
-            currentHealth = maxHealth;
             attackTarget = FindAttackTarget();
             animation.Play("Idle");
             InvokeRepeating("HandleAttack", .1f, .1f);
@@ -228,7 +232,8 @@ namespace Assets.Scripts.Enemies
             
             damage *= takeDamageRatio;
             currentHealth -= damage;
-            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((currentHealth / 100f) > 0 ? (currentHealth / 100f) : 0, currentHealthBar.transform.localScale.y);
+            HandleCurrentHealthBar();
             if (currentHealth <= 0)
             {
                 if (isDeath == false)

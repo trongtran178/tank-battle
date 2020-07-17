@@ -18,125 +18,131 @@ namespace Assets.Scripts.SaveSystem
 
         public static void SaveGameFactory(GameObject playerGameObject, EnemyFactory enemyFactory, GameObject manageRecoveryTime)
         {
-
-            BinaryFormatter formatter = new BinaryFormatter();
-
-            FileStream enemiesStream = new FileStream(enemiesPath, FileMode.Create);
-            FileStream alliesStream = new FileStream(alliesPath, FileMode.Create);
-            FileStream initAlliesTimeStream = new FileStream(initAlliesTimePath, FileMode.Create);
-            FileStream initBulletTimeStream = new FileStream(initBulletTimePath, FileMode.Create);
-            FileStream playerStream = new FileStream(playerPath, FileMode.Create);
-
-            EnemyFactoryData enemyFactoryData = new EnemyFactoryData(enemyFactory);
-
-            PlayerData playerDataSerializable = new PlayerData();
-
-            ArrayList alliesObjectsSerializable = new ArrayList();
-            ArrayList initAlliesTimesSerializable = new ArrayList();
-            ArrayList initBulletTimesSerializable = new ArrayList();
-
-
-            GameObject[] alliesObjects = GameObject.FindGameObjectsWithTag("allies");
-
-            foreach (GameObject alliesObject in alliesObjects)
+            try
             {
-                if (alliesObject.GetComponentInChildren<Dogcollider>() != null)
+                BinaryFormatter formatter = new BinaryFormatter();
+
+                FileStream enemiesStream = new FileStream(enemiesPath, FileMode.Create);
+                FileStream alliesStream = new FileStream(alliesPath, FileMode.Create);
+                FileStream initAlliesTimeStream = new FileStream(initAlliesTimePath, FileMode.Create);
+                FileStream initBulletTimeStream = new FileStream(initBulletTimePath, FileMode.Create);
+                FileStream playerStream = new FileStream(playerPath, FileMode.Create);
+
+                EnemyFactoryData enemyFactoryData = new EnemyFactoryData(enemyFactory);
+
+                PlayerData playerDataSerializable = new PlayerData();
+
+                ArrayList alliesObjectsSerializable = new ArrayList();
+                ArrayList initAlliesTimesSerializable = new ArrayList();
+                ArrayList initBulletTimesSerializable = new ArrayList();
+
+
+                GameObject[] alliesObjects = GameObject.FindGameObjectsWithTag("allies");
+
+                foreach (GameObject alliesObject in alliesObjects)
                 {
-                    Dogcollider dogCollider = alliesObject.GetComponentInChildren<Dogcollider>();
-                    float currentHealth = dogCollider.health;
-                    bool isDizzy = alliesObject.GetComponent<dog>() ? alliesObject.GetComponent<dog>().isDizzy : false;
-                    AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.DOG,
-                                                            currentHealth,
-                                                            alliesObject.transform.position.x,
-                                                            alliesObject.transform.position.y,
-                                                            alliesObject.transform.position.z,
-                                                            isDizzy);
-                    alliesObjectsSerializable.Add(alliesObjectData);
-                }
-                else if (alliesObject.GetComponentInChildren<PlaneCollider>() != null)
-                {
-                    PlaneCollider planCollider = alliesObject.GetComponentInChildren<PlaneCollider>();
-                    float currentHealth = planCollider.PlaneHealth;
-                    //bool isDizzy = alliesObject.GetComponent<PlaneControiler>().isDizzy;
-                    AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.PLANE,
-                                                            currentHealth,
-                                                            alliesObject.transform.position.x,
-                                                            alliesObject.transform.position.y,
-                                                            alliesObject.transform.position.z,
-                                                            false); // no dizzy
-                    alliesObjectsSerializable.Add(alliesObjectData);
+                    if (alliesObject.GetComponentInChildren<Dogcollider>() != null)
+                    {
+                        Dogcollider dogCollider = alliesObject.GetComponentInChildren<Dogcollider>();
+                        float currentHealth = dogCollider.health;
+                        bool isDizzy = alliesObject.GetComponent<dog>() ? alliesObject.GetComponent<dog>().isDizzy : false;
+                        AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.DOG,
+                                                                currentHealth,
+                                                                alliesObject.transform.position.x,
+                                                                alliesObject.transform.position.y,
+                                                                alliesObject.transform.position.z,
+                                                                isDizzy);
+                        alliesObjectsSerializable.Add(alliesObjectData);
+                    }
+                    else if (alliesObject.GetComponentInChildren<PlaneCollider>() != null)
+                    {
+                        PlaneCollider planCollider = alliesObject.GetComponentInChildren<PlaneCollider>();
+                        float currentHealth = planCollider.PlaneHealth;
+                        //bool isDizzy = alliesObject.GetComponent<PlaneControiler>().isDizzy;
+                        AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.PLANE,
+                                                                currentHealth,
+                                                                alliesObject.transform.position.x,
+                                                                alliesObject.transform.position.y,
+                                                                alliesObject.transform.position.z,
+                                                                false); // no dizzy
+                        alliesObjectsSerializable.Add(alliesObjectData);
+                    }
+
+                    else if (alliesObject.GetComponentInChildren<EnemyTu>() != null)
+                    {
+                        EnemyTu enemyTu = alliesObject.GetComponentInChildren<EnemyTu>();
+                        float currentHealth = enemyTu.health;
+                        bool isDizzy = enemyTu ? enemyTu.isDizzy : false;
+                        AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.TANK,
+                                                                currentHealth,
+                                                                alliesObject.transform.position.x,
+                                                                alliesObject.transform.position.y,
+                                                                alliesObject.transform.position.z,
+                                                                isDizzy);
+                        alliesObjectsSerializable.Add(alliesObjectData);
+                    }
                 }
 
-                else if (alliesObject.GetComponentInChildren<EnemyTu>() != null)
+
+                // SAVE RECOVERY INITIALIZE TIME OF ALLIES !
+                ManaArmy[] manaArmyArray = manageRecoveryTime.GetComponentsInChildren<ManaArmy>();
+
+                for (int i = 0; i < manaArmyArray.Length; i++)
                 {
-                    EnemyTu enemyTu = alliesObject.GetComponentInChildren<EnemyTu>();
-                    float currentHealth = enemyTu.health;
-                    bool isDizzy = enemyTu ? enemyTu.isDizzy : false;
-                    AlliesObjectData alliesObjectData = new AlliesObjectData(AlliesType.TANK,
-                                                            currentHealth,
-                                                            alliesObject.transform.position.x,
-                                                            alliesObject.transform.position.y,
-                                                            alliesObject.transform.position.z,
-                                                            isDizzy);
-                    alliesObjectsSerializable.Add(alliesObjectData);
+                    if (manaArmyArray[i].alliesObject.GetComponentInChildren<Dogcollider>() != null)
+                    {
+                        // DOG
+                        InitAlliesTimeData initDogTimeData = new InitAlliesTimeData(AlliesType.DOG, manaArmyArray[i].manaArmy);
+                        initAlliesTimesSerializable.Add(initDogTimeData);
+                    }
+                    if (manaArmyArray[i].alliesObject.GetComponentInChildren<PlaneCollider>() != null)
+                    {
+                        // PLANE
+                        InitAlliesTimeData initPlaneTimeData = new InitAlliesTimeData(AlliesType.PLANE, manaArmyArray[i].manaArmy);
+                        initAlliesTimesSerializable.Add(initPlaneTimeData);
+
+                    }
+                    if (manaArmyArray[i].alliesObject.GetComponentInChildren<EnemyTu>() != null)
+                    {
+                        // TANK
+                        InitAlliesTimeData initTankTimeData = new InitAlliesTimeData(AlliesType.TANK, manaArmyArray[i].manaArmy);
+                        initAlliesTimesSerializable.Add(initTankTimeData);
+                    }
                 }
+
+
+                // SAVE RECOVERY TIME OF BULLET !
+                ManaBullet[] manaBulletArray = manageRecoveryTime.GetComponentsInChildren<ManaBullet>();
+                for (int i = 0; i < manaBulletArray.Length; i++)
+                {
+                    // Bullet order start from 0, 1, 2, 3, 4, 5 ...
+                    InitBulletTimeData initBulletTimeData = new InitBulletTimeData(i, manaBulletArray[i].manaBullet);
+                    initBulletTimesSerializable.Add(initBulletTimeData);
+                }
+
+                playerDataSerializable.CurrentLevel = SceneManager.GetActiveScene().name; // Level1, Level2, Level3
+                playerDataSerializable.CurrentHealth = playerGameObject.GetComponentInChildren<TankController2>().health;
+                playerDataSerializable.CurrentMana = ManaTank.manaTank;
+                playerDataSerializable.PositionX = playerGameObject.transform.position.x;
+                playerDataSerializable.PositionY = playerGameObject.transform.position.y;
+                playerDataSerializable.PositionZ = playerGameObject.transform.position.z;
+
+                formatter.Serialize(enemiesStream, enemyFactoryData);
+                formatter.Serialize(alliesStream, alliesObjectsSerializable);
+                formatter.Serialize(initAlliesTimeStream, initAlliesTimesSerializable);
+                formatter.Serialize(initBulletTimeStream, initBulletTimesSerializable);
+                formatter.Serialize(playerStream, playerDataSerializable);
+
+                enemiesStream.Close();
+                alliesStream.Close();
+                initAlliesTimeStream.Close();
+                initBulletTimeStream.Close();
+                playerStream.Close();
             }
-
-
-            // SAVE RECOVERY INITIALIZE TIME OF ALLIES !
-            ManaArmy[] manaArmyArray = manageRecoveryTime.GetComponentsInChildren<ManaArmy>();
-
-            for (int i = 0; i < manaArmyArray.Length; i++)
+            catch (Exception e)
             {
-                if (manaArmyArray[i].alliesObject.GetComponentInChildren<Dogcollider>() != null)
-                {
-                    // DOG
-                    InitAlliesTimeData initDogTimeData = new InitAlliesTimeData(AlliesType.DOG, manaArmyArray[i].manaArmy);
-                    initAlliesTimesSerializable.Add(initDogTimeData);
-                }
-                if (manaArmyArray[i].alliesObject.GetComponentInChildren<PlaneCollider>() != null)
-                {
-                    // PLANE
-                    InitAlliesTimeData initPlaneTimeData = new InitAlliesTimeData(AlliesType.PLANE, manaArmyArray[i].manaArmy);
-                    initAlliesTimesSerializable.Add(initPlaneTimeData);
-
-                }
-                if (manaArmyArray[i].alliesObject.GetComponentInChildren<EnemyTu>() != null)
-                {
-                    // TANK
-                    InitAlliesTimeData initTankTimeData = new InitAlliesTimeData(AlliesType.TANK, manaArmyArray[i].manaArmy);
-                    initAlliesTimesSerializable.Add(initTankTimeData);
-                }
+                Debug.Log(e.Message);
             }
-
-
-            // SAVE RECOVERY TIME OF BULLET !
-            ManaBullet[] manaBulletArray = manageRecoveryTime.GetComponentsInChildren<ManaBullet>();
-            for (int i = 0; i < manaBulletArray.Length; i++)
-            {
-                // Bullet order start from 0, 1, 2, 3, 4, 5 ...
-                InitBulletTimeData initBulletTimeData = new InitBulletTimeData(i, manaBulletArray[i].manaBullet);
-                initBulletTimesSerializable.Add(initBulletTimeData);
-            }
-
-            playerDataSerializable.CurrentLevel = SceneManager.GetActiveScene().name; // Level1, Level2
-            playerDataSerializable.CurrentHealth = playerGameObject.GetComponentInChildren<TankController2>().health;
-            playerDataSerializable.CurrentMana = ManaTank.manaTank;
-            playerDataSerializable.PositionX = playerGameObject.transform.position.x;
-            playerDataSerializable.PositionY = playerGameObject.transform.position.y;
-            playerDataSerializable.PositionZ = playerGameObject.transform.position.z;
-
-            formatter.Serialize(enemiesStream, enemyFactoryData);
-            formatter.Serialize(alliesStream, alliesObjectsSerializable);
-            formatter.Serialize(initAlliesTimeStream, initAlliesTimesSerializable);
-            formatter.Serialize(initBulletTimeStream, initBulletTimesSerializable);
-            formatter.Serialize(playerStream, playerDataSerializable);
-
-            enemiesStream.Close();
-            alliesStream.Close();
-            initAlliesTimeStream.Close();
-            initBulletTimeStream.Close();
-            playerStream.Close();
         }
 
         public static EnemyFactoryData LoadEnemyFactory()

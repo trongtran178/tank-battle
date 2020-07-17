@@ -10,7 +10,6 @@ namespace Assets.Scripts.Enemies
         public float maxHealth = 100.0f;
         protected float moveSpeed = 30.0f;
         protected float attackSpeed = 50.0f;
-        public bool isIgnore = false;
         protected GameObject attackTarget;
         protected GameObject player;
         protected GameObject player_body;
