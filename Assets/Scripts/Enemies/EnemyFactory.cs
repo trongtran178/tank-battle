@@ -230,16 +230,16 @@ namespace Assets.Scripts.Enemies
             {
                 if (!isExistsBossLevel1)
                 {
-                    CreateEnemies(EnemyType.BOSS_LEVEL_1);
                     isExistsBossLevel1 = true;
+                    CreateEnemies(EnemyType.BOSS_LEVEL_1);
                 }
             }
-            else if (currentHealth <= 3 && currentHealth > 0)
+            else if (currentHealth <= 33 && currentHealth > 0)
             {
                 if (!isExistsBossLevel2)
                 {
-                    CreateEnemies(EnemyType.BOSS_LEVEL_2);
                     isExistsBossLevel2 = true;
+                    CreateEnemies(EnemyType.BOSS_LEVEL_2);
                 }
             }
             else if (currentHealth <= 0 || self.activeSelf == false)
