@@ -57,7 +57,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
                 case "player":
                     {
                         player.GetComponent<TankController2>()?.TakeDamage(30);
-                        // player.GetComponent<TankController3D>()?.TakeDamage(30);
+                        player.GetComponentInChildren<TankController3D>()?.TakeDamage(30);
 
                         DestroyProjectile();
                         break;

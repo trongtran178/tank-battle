@@ -19,6 +19,12 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     //public GameObject cameraMain;
     new public GameObject playerCamera;
 
+    public Image healthyBar;
+    public float maxHealth = 100f;
+    public float tankHealth;
+    private int damge;
+
+
     public GameObject bulletPrefab;
     public GameObject pointShooting;
     // Start is called before the first frame update
@@ -34,6 +40,7 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
         if (photonView.IsMine)
         {
 
+            tankHealth = maxHealth;
             nametxt.text = PhotonNetwork.NickName;
             anim = GetComponent<Animator>();
             Rb = GetComponent<Rigidbody2D>();
@@ -108,6 +115,22 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
             //speed = 0;
         }
     }
+
+    public void TakeDamage(int damge)
+    {
+        this.damge = damge;
+        if (photonView.IsMine)
+        {
+            this.GetComponent<PhotonView>().RPC("PunTakeDamage", RpcTarget.AllBuffered);
+        }
+    }
+    [PunRPC]
+    private void PunTakeDamage()
+    {
+        tankHealth -= this.damge;
+    }
+
+
     private void smoothMovement()
     {
         transform.position = Vector3.Lerp(transform.position, smootMove, Time.deltaTime * 10);
@@ -121,8 +144,17 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
         {
             shooting();
         }
+
+        healthyBar.fillAmount = tankHealth / maxHealth;
+        if (tankHealth <= 0)
+            this.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
     }
 
+    [PunRPC]
+    private void destroyTank()
+    {
+        Destroy(this.gameObject);
+    }
     public void shooting()
     {
         GameObject bullet = PhotonNetwork.Instantiate(bulletPrefab.name, pointShooting.transform.position, pointShooting.transform.rotation);
@@ -132,10 +164,12 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
+            stream.SendNext(tankHealth);
         }
         else if (stream.IsReading)
         {
            smootMove = (Vector3)stream.ReceiveNext();
+            tankHealth = (float)stream.ReceiveNext();
         }
 
     }

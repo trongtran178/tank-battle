@@ -24,9 +24,21 @@ public class Bullet3D : MonoBehaviourPun
         Rb.velocity = new Vector2(speed, 0);
 
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+        if (collision.name.Equals("Enemy_Controller")|| collision.name.Equals("Enemy_House_Controller"))
+        {
+            collision.GetComponent<Assets.Scripts.Enemies.Enemy>().TakeDamage(20);
+        }
+        this.GetComponent<PhotonView>().RPC("destroy", RpcTarget.AllBuffered);
+        
+    }
     [PunRPC]
     public void destroy()
     {
         Destroy(this.gameObject);
     }
+
 }
