@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Enemies;
 using UnityEngine;
 namespace Assets.Scripts.Enemies
 {
@@ -15,7 +13,7 @@ namespace Assets.Scripts.Enemies
         protected GameObject player_body;
 
         public abstract void UpgrageLevelCorrespondToPhase(Phase phase);
-        public abstract void Instantiate();
+        // public abstract void Instantiate();
         public abstract void Death();
         public abstract void TakeDamage(float damage);
         public abstract void ReceiveHealthBumpFromBoss();
@@ -50,18 +48,30 @@ namespace Assets.Scripts.Enemies
 
         protected GameObject FindAttackTarget()
         {
-            player = GameObject.FindGameObjectWithTag("player");
-            player_body = GameObject.FindGameObjectWithTag("player_body");
+            //player = GameObject.FindGameObjectWithTag("player");
+            //player_body = GameObject.FindGameObjectWithTag("player_body");
 
-            GameObject _attackTarget = null, playerTarget = null;
+            GameObject _attackTarget = null;
+            GameObject[] playerTargets = new GameObject[10];
             List<GameObject> allies = new List<GameObject>();
 
             // Key - value equivalent gameObject with distance between enemy
             Dictionary<GameObject, float> alliesDictionary = new Dictionary<GameObject, float>();
 
-            playerTarget = GameObject.FindGameObjectWithTag("player_body");
+            playerTargets = GameObject.FindGameObjectsWithTag("player_body");
             //playerTarget = player_body;
-            if (playerTarget != null && !allies.Contains(playerTarget)) allies.Add(playerTarget);
+            if (playerTargets != null)
+            {
+                //&& !allies.Contains(playerTarget)
+                for(int i = 0; i < playerTargets.Length; i++)
+                {
+                    if (!allies.Contains(playerTargets[i]))
+                    {
+                        allies.Add(playerTargets[i]);
+                    }
+                }
+                // allies.Add(playerTarget);
+            }
 
             // get all allies
             GameObject[] alliesArray = GameObject.FindGameObjectsWithTag("allies");
@@ -79,8 +89,7 @@ namespace Assets.Scripts.Enemies
                 allies.Add(alliesArray[i]);
             }
 
-            //float shortestAttackTargetDistance = Vector2.Distance(playerTarget.transform.position, transform.position);
-            float shortestAttackTargetDistance = 1000.0f;
+            float shortestAttackTargetDistance = float.MaxValue;
 
             foreach (GameObject alliesGameObject in allies)
             {

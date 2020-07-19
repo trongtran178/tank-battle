@@ -23,7 +23,7 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.name);
+        // Debug.Log(collision.name);
         PlaneCollider plane = collision.GetComponent<PlaneCollider>();
         EnemyTu alliesTank= collision.GetComponent<EnemyTu>();
         TankController2 player = collision.GetComponent<TankController2>();

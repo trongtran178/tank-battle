@@ -1,135 +1,170 @@
-﻿using System;
-using Assets.Scripts.Enemies;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Enemies
-{
+{ 
     public class EnemyBoss_Level2_Child : Enemy
     {
-        public GameObject self;
         public GameObject currentHealthBar;
         public GameObject effectBuff;
+        public GameObject self;
+        public GameObject triggerEvent;
 
-        private Animator animator; // include walk, idle, attack
+        private TriggerEvent triggerEventScript;
         private float currentHealth;
-        private float minimumDistanceIndicatorBetweenAttackTarget = 7;
+        private float takeDamageRatio = 1.0f;
         private Rigidbody2D rigidBody2D;
-        private double takeDamageRatio = .5;
-        private bool isDeath = false;
-
+        private Animator animator;
+        
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
         ///  else enemy will Idle
         /// </summary>
-        private float horizontalMove = 0;
+        private float horizontalMove = 0f;
 
         // Su dung de xu ly di chuyen
         private Vector3 Velocity = Vector3.zero;
 
-        void Awake()
-        {
-            animator = self.GetComponent<Animator>();
-            rigidBody2D = self.GetComponent<Rigidbody2D>();
-            currentHealth = maxHealth;
-        }
-
         void Start()
         {
+            animator = self.GetComponent<Animator>();
+            currentHealth = maxHealth;
+            rigidBody2D = GetComponentInParent<Rigidbody2D>();
             IgnoreEnemies();
-            attackTarget = FindAttackTarget();
-            animator.Play("Idle");
             InvokeRepeating("HandleAttack", .1f, .1f);
-            moveSpeed = 10;
-
-            effectBuff.SetActive(true);
-            effectBuff.GetComponentInChildren<ParticleSystem>().Play();
+            moveSpeed = 10.0f;
+            triggerEventScript = triggerEvent.GetComponent<TriggerEvent>();
         }
 
         void Update()
         {
-           
             if (currentHealth <= 0)
             {
                 Death();
                 return;
             }
             attackTarget = FindAttackTarget();
-            Move();
+            if (attackTarget == null || attackTarget.activeSelf == false)
+            {
+                horizontalMove = 0f;
+                return;
+            }
+            else if (currentHealth > 0 && attackTarget != null && attackTarget.activeSelf) Move();
+            Debug.Log(triggerEventScript == null);
+            if (triggerEventScript.IsWin == true || triggerEventScript.IsLose == true)
+            {
+                EnemyFactory.enemies.Remove(self);
+                Destroy(self);
+            }
+           
         }
 
-        private void Move()
+
+
+        void Move()
         {
-            if (currentHealth <= 0) return;
-            if (attackTarget == null )
+            Debug.Log(horizontalMove);
+            if (attackTarget == null || attackTarget.activeSelf == false)
             {
                 animator.Play("Idle");
+                horizontalMove = 0f;
                 return;
             }
 
             // Neu het mau thi khong the tan cong duoc nua
             if (currentHealth <= 0) return;
             // Neu dang tan cong thi khong chay animation va k tan cong nua, doi den khi 1 luot danh thanh cong
-
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) return;
 
             if (IsFlip())
             {
-
+                if (attackTarget == null) {
+                    
+                    horizontalMove = 0f;
+                    return;
+                }
+                
                 self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, 90, self.transform.eulerAngles.z);
-                horizontalMove = 1 * moveSpeed;
+                horizontalMove = 1f * moveSpeed;
             }
             else
             {
+                if (attackTarget == null)
+                {
+                    horizontalMove = 0f;
+                    return;
+                }
                 self.transform.eulerAngles = new Vector3(self.transform.eulerAngles.x, -90, self.transform.eulerAngles.z);
-                horizontalMove = -1 * moveSpeed;
+                horizontalMove = -1f * moveSpeed;
             }
+
 
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
-            if (distanceBetweenAttackTarget > minimumDistanceIndicatorBetweenAttackTarget)
+            if (distanceBetweenAttackTarget >= 10)
             {
-                CancelInvoke("HandleAttack");
+                CancelInvoke("Attack");
                 animator.Play("Walk");
+
             }
             else
             {
-                InvokeRepeating("HandleAttack", .1f, .1f);
-                horizontalMove = 0;
+                horizontalMove = 0f;
             }
         }
 
         private void FixedUpdate()
         {
+            if (attackTarget == null)
+            {
+                horizontalMove = 0f;
+                return;
+            }
             HandleMove();
         }
 
         private void HandleMove()
         {
-            if (attackTarget == null || attackTarget.activeSelf == false || currentHealth <= 0) {
-                CancelInvoke("HandleAttack");
-                horizontalMove = 0;
+            if (attackTarget == null || attackTarget.activeSelf == false) {
+                horizontalMove = 0f;
+                return;
+            };
+            if (currentHealth <= 0) {
+                horizontalMove = 0f;
                 return;
             }
-            Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
-            rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
+           
+            Vector3 targetVelocity = new Vector2(horizontalMove * 10.0f * Time.deltaTime, rigidBody2D.velocity.y);
+            rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .01f);
         }
 
         public void HandleCurrentHealthBar()
         {
-            currentHealthBar.transform.localScale = new Vector3((float)(double)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
         }
 
         private void HandleAttack()
         {
-            if (attackTarget == null || attackTarget.activeSelf == false) return;
+            if (attackTarget == null || !attackTarget.activeSelf || GameObject.FindGameObjectsWithTag("player").Length <= 0) {
+                horizontalMove = 0f;
+                animator.Play("Idle");
+                return;
+            }
+            
             if (currentHealth <= 0) return;
-
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
-            if (distanceBetweenAttackTarget <= minimumDistanceIndicatorBetweenAttackTarget)
+
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+                horizontalMove = 0f;
+                return;
+            } 
+            else if (distanceBetweenAttackTarget < 10)
             {
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) return;
-                animator.Play("Attack");
-                Invoke("AttackTargetTakeDamage", .5f);
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                {
+                    horizontalMove = 0f;
+                    return;
+                }
+                Invoke("AttackTargetTakeDamage", 0.3f);
                 /////////////////////////////////////////
                 /////////// IMPORTANT CODE //////////////
                 /////////// SET SPEED OF ANIMATION //////
@@ -140,59 +175,71 @@ namespace Assets.Scripts.Enemies
 
         private void AttackTargetTakeDamage()
         {
-            if (attackTarget == null) return;
-            if (attackTarget.tag.Equals("allies"))
+            if (attackTarget == null) {
+                horizontalMove = 0f;
+                return;
+            }
+           
+            if (attackTarget.tag.Equals("allies") || attackTarget.tag.Equals("allies_collider"))
             {
                 if (attackTarget.GetComponentInChildren<Dogcollider>() != null)
                 {
                     attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
-                }
-                else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null)
-                {
-                    attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(20);
                 }
                 else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
                 {
                     attackTarget.GetComponentInChildren<EnemyTu>().TakeDamage(20);
                 }
             }
-
             else
-            {
-                player.GetComponent<TankController2>()?.TakeDamage(30);
-                player.GetComponent<TankController3D>()?.TakeDamage(30);
+            { // Player 
+                attackTarget?.GetComponentInParent<TankController2>()?.TakeDamage(10);
+                attackTarget?.GetComponentInParent<TankController3D>()?.TakeDamage(20);
             }
-
         }
 
         private bool IsFlip()
         {
-            if (attackTarget.transform.position.x - transform.position.x > 0)
+            if (attackTarget.transform.position.x > transform.position.x)
+            {
                 return true;
+            }
             return false;
-        }
-
-        public override void Death()
-        {
-            CancelInvoke("HandleAttack");
-
-            Invoke("DestroySelf", (float)0.5);
-        }
-
-        private void DestroySelf()
-        {
-            EnemyFactory.enemies.Remove(self);
-            Destroy(self);
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
             Bullet bullet = collider.GetComponent<Bullet>();
-
             if (bullet != null)
             {
                 TakeDamage(bullet.damage);
             }
+        }
+
+        public override void TakeDamage(float damage)
+        {
+            Debug.Log(damage);
+            damage = (float)(damage * takeDamageRatio);
+            currentHealth -= damage;
+            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
+            if (currentHealth <= 0)
+            {
+                Death();
+            }
+        }
+
+        public override void Death()
+        {
+            currentHealth = 0;
+            currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
+            EnemyFactory.enemies.Remove(self);
+            Invoke("DestroySelf", 1);
+        }
+
+        private void DestroySelf()
+        {
+            EnemyBoss_Level2.listChild.Remove(self);
+            Destroy(self);
         }
 
         public override void SetCurrentHealth(float currentHealth)
@@ -205,36 +252,9 @@ namespace Assets.Scripts.Enemies
             return currentHealth;
         }
 
-        public override void TakeDamage(float damage)
+        public override EnemyType GetEnemyType()
         {
-            if (currentHealth <= 0 || isDeath) return;
-            damage = (float)(damage * takeDamageRatio);
-            currentHealth -= damage;
-
-            currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
-            if (currentHealth <= 0)
-            {
-                isDeath = true;
-                Destroy(self);
-                //if (!isDeath)
-                //{
-                //    isDeath = true;
-                //    foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
-                //    {
-                //        if (enemy.GetComponentInChildren<EnemyBoss_Level2_Child>() != null)
-                //            enemy.GetComponentInChildren<Enemy>().Death();
-                //    }
-                //}
-            }
-            else
-            {
-                //currentHealth = 0;
-                //currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
-                //animation.Play("Mon_T_Dead");
-                //Invoke("DestroySelf", 1);
-                // Take damage animator
-                // animator.Play("Damage");
-            }
+            return EnemyType.BOSS_LEVEL_2_CHILD;
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -242,19 +262,25 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        public override void Instantiate()
-        {
-            throw new System.NotImplementedException();
-        }
+        //public override void Instantiate()
+        //{
+            // throw new System.NotImplementedException();
+        //}
 
         public override void ReceiveHealthBumpFromBoss()
         {
-            // throw new System.NotImplementedException();
+            Invoke("HandleReceiveHealthBumpFromBoss", 1.5f);
         }
 
-        public override EnemyType GetEnemyType()
+        private void HandleReceiveHealthBumpFromBoss()
         {
-            return EnemyType.BOSS_LEVEL_2_CHILD;
+            if (currentHealth <= 30 && currentHealth > 0)
+            {
+                currentHealth += 30;
+                currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
+                effectBuff.SetActive(true);
+                effectBuff.GetComponentInChildren<ParticleSystem>().Play();
+            }
         }
 
         public override GameObject GetSelf()
@@ -268,3 +294,4 @@ namespace Assets.Scripts.Enemies
         }
     }
 }
+

@@ -3,7 +3,8 @@ using System.Collections;
 using Assets.Scripts.Enemies;
 using UnityEngine;
 
-namespace Assets.Scripts.SaveSystem {
+namespace Assets.Scripts.SaveSystem
+{
 
     [Serializable]
     public class EnemyFactoryData
@@ -27,11 +28,13 @@ namespace Assets.Scripts.SaveSystem {
             ArrayList enemies = enemyFactory.getEnemies();
             for (int i = 0; i < enemies.Count; i++)
             {
-                GameObject enemyObject = (GameObject) enemies[i];
-                Enemies.Enemy enemy = enemyObject.GetComponentInChildren<Enemies.Enemy>();
-
-                EnemyData enemyData = new EnemyData(enemy.GetEnemyType(), enemy.GetCurrentHealth(), enemy.transform.position.x, enemy.transform.position.y, enemy.transform.position.z); ;
-                EnemiesData.Add(enemyData);
+                GameObject enemyObject = (GameObject)enemies[i];
+                if (enemyObject != null && enemyObject.activeSelf)
+                {
+                    Enemies.Enemy enemy = enemyObject.GetComponentInChildren<Enemies.Enemy>();
+                    EnemyData enemyData = new EnemyData(enemy.GetEnemyType(), enemy.GetCurrentHealth(), enemy.transform.position.x, enemy.transform.position.y, enemy.transform.position.z); ;
+                    EnemiesData.Add(enemyData);
+                }
             }
         }
 
