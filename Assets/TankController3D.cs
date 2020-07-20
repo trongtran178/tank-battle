@@ -134,6 +134,10 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     private void smoothMovement()
     {
         transform.position = Vector3.Lerp(transform.position, smootMove, Time.deltaTime * 10);
+
+        healthyBar.fillAmount = tankHealth / maxHealth;
+        if (tankHealth <= 0)
+            this.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
     }
     private void ProcessInput()
     {
