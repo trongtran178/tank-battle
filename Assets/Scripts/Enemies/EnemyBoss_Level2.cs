@@ -337,8 +337,6 @@ namespace Assets.Scripts.Enemies
 
         IEnumerator HandleGenerateChildWaiter()
         {
-
-
             GameObject childObject1 = Instantiate(child, new Vector3(self.transform.position.x, self.transform.position.y, self.transform.position.z), child.transform.rotation);
             childObject1.SetActive(true);
             childObject1.transform.localScale = new Vector3(4.0f, 4.0f, 6.0f);
