@@ -73,10 +73,13 @@ namespace Assets.Scripts.Enemies
             attackTarget = FindAttackTarget();
             if (attackTarget == null || attackTarget.activeSelf == false)
             {
+                animator.Play("Idle");
+                weaponLeftAnimator.Play("Idle");
+                weaponRightAnimator.Play("Idle");
                 CancelInvoke("HandleAttack");
                 return;
             }
-            if (currentHealth > 0) Move();
+            if (currentHealth > 0 && attackTarget != null || attackTarget.activeSelf) Move();
         }
 
         private void Move()
@@ -132,8 +135,10 @@ namespace Assets.Scripts.Enemies
 
         private void HandleAttack()
         {
-            if (currentHealth <= 0 || !self.activeSelf || self == null)
+            if (currentHealth <= 0 || !self.activeSelf || self == null || attackTarget == null || !attackTarget.activeSelf)
             {
+                weaponLeftAnimator.Play("Idle");
+                weaponRightAnimator.Play("Idle");
                 CancelInvoke("HandleAttack");
                 return;
             }
@@ -149,6 +154,12 @@ namespace Assets.Scripts.Enemies
                     _projectile.SetActive(true);
                     Instantiate(_projectile, firePoint.transform.position, firePoint.transform.rotation);
                 }
+            } else
+            {
+                weaponLeftAnimator.Play("Idle");
+                weaponRightAnimator.Play("Idle");
+                CancelInvoke("HandleAttack");
+                return;
             }
         }
 
@@ -215,12 +226,13 @@ namespace Assets.Scripts.Enemies
             weaponLeftAnimator.Play("Idle");
             weaponRightAnimator.Play("Idle");
             currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
+            EnemyFactory.enemies.Remove(self);
             Invoke("DestroySelf", 2);
         }
 
         private void DestroySelf()
         {
-            EnemyFactory.enemies.Remove(self);
+           
             Destroy(self);
         }
 
@@ -280,10 +292,10 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        public override void Instantiate()
-        {
-            throw new System.NotImplementedException();
-        }
+        //public override void Instantiate()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
         public override GameObject GetSelf()
         {

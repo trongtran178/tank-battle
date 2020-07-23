@@ -146,8 +146,8 @@ namespace Assets.Scripts.Enemies
             }
             else
             { // Player 
-                player.GetComponent<TankController2>()?.TakeDamage(20);
-                player.GetComponent<TankController3D>()?.TakeDamage(20);
+                attackTarget?.GetComponentInParent<TankController2>()?.TakeDamage(20);
+                attackTarget?.GetComponentInParent<TankController3D>()?.TakeDamage(1);
             }
         }
 
@@ -186,12 +186,12 @@ namespace Assets.Scripts.Enemies
             currentHealth = 0;
             currentHealthBar.transform.localScale = new Vector3(0, currentHealthBar.transform.localScale.y);
             animation.Play("Mon_T_Dead");
+            EnemyFactory.enemies.Remove(self);
             Invoke("DestroySelf", 1);
         }
 
         private void DestroySelf()
         {
-            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
       
@@ -215,10 +215,10 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        public override void Instantiate()
-        {
-            throw new System.NotImplementedException();
-        }
+        //public override void Instantiate()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
         public override void ReceiveHealthBumpFromBoss()
         {

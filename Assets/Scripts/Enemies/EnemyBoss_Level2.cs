@@ -1,8 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using Assets.Scripts.Enemies;
 using UnityEngine;
-using System.Linq;
 namespace Assets.Scripts.Enemies
 {
     public class EnemyBoss_Level2 : Enemy
@@ -15,9 +12,9 @@ namespace Assets.Scripts.Enemies
         private float currentHealth;
         private float minimumDistanceIndicatorBetweenAttackTarget = 15;
         private Rigidbody2D rigidBody2D;
-        private float takeDamageRatio = .05f;
+        private float takeDamageRatio = .02f;
         private bool isDeath = false;
-        private System.Random random = new System.Random();
+        public static ArrayList listChild;
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -33,15 +30,17 @@ namespace Assets.Scripts.Enemies
             animator = self.GetComponent<Animator>();
             rigidBody2D = self.GetComponent<Rigidbody2D>();
             currentHealth = maxHealth;
+            listChild = new ArrayList();
         }
 
         void Start()
         {
             IgnoreEnemies();
-            attackTarget = FindAttackTarget();
+            //attackTarget = FindAttackTarget();
             animator.Play("Idle");
             InvokeRepeating("HandleAttack", .1f, .1f);
-            InvokeRepeating("HandleGenerateChild", 5.0f, 25.0f);
+            InvokeRepeating("HandleGenerateChild", 25.0f, 25.0f);
+            moveSpeed = 80.0f;
         }
 
         void Update()
@@ -61,9 +60,26 @@ namespace Assets.Scripts.Enemies
             if (attackTarget == null)
             {
                 animator.Play("Idle");
-                return;
-            }
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                }
 
+            }
+            else
+            {
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                    {
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                    }
+
+                }
+            }
+            if (attackTarget == null) return;
             // Neu het mau thi khong the tan cong duoc nua
             if (currentHealth <= 0) return;
             // Neu dang tan cong thi khong chay animation va k tan cong nua, doi den khi 1 luot danh thanh cong
@@ -105,8 +121,34 @@ namespace Assets.Scripts.Enemies
 
         private void HandleMove()
         {
+            if (attackTarget == null)
+            {
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                    {
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                    }
+
+                }
+
+            }
+            else
+            {
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                    {
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                    }
+
+                }
+            }
             if (attackTarget == null) return;
             if (currentHealth <= 0) return;
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) return;
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Skill")) return;
             Vector3 targetVelocity = new Vector2(horizontalMove * 10f * Time.fixedDeltaTime, rigidBody2D.velocity.y);
             rigidBody2D.velocity = Vector3.SmoothDamp(rigidBody2D.velocity, targetVelocity, ref Velocity, .05f);
         }
@@ -118,7 +160,28 @@ namespace Assets.Scripts.Enemies
 
         private void HandleAttack()
         {
-            if (attackTarget == null || attackTarget.activeSelf == false) return;
+            if (attackTarget == null || attackTarget.activeSelf == false)
+            {
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                }
+                return;
+            }
+            else
+            {
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                    {
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                    }
+
+                }
+            }
+
             if (currentHealth <= 0) return;
 
             float distanceBetweenAttackTarget = Vector2.Distance(attackTarget.transform.position, transform.position);
@@ -138,7 +201,30 @@ namespace Assets.Scripts.Enemies
 
         private void AttackTargetTakeDamage()
         {
-            if (attackTarget == null) return;
+            if (attackTarget == null || attackTarget.activeSelf == false)
+            {
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                }
+            }
+            else
+            {
+                foreach (GameObject child in listChild)
+                {
+                    if (child != null && child.activeSelf == true)
+                    {
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+                        child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                    }
+
+                }
+            }
+
+            if (attackTarget == null || attackTarget.activeSelf == false)
+                return;
+
             if (attackTarget.tag.Equals("allies"))
             {
                 if (attackTarget.GetComponentInChildren<Dogcollider>() != null)
@@ -157,8 +243,8 @@ namespace Assets.Scripts.Enemies
 
             else
             {
-                player.GetComponent<TankController2>()?.TakeDamage(30);
-                player.GetComponent<TankController3D>()?.TakeDamage(30);
+                attackTarget.GetComponentInParent<TankController2>()?.TakeDamage(30);
+                attackTarget.GetComponentInParent<TankController3D>()?.TakeDamage(30);
             }
 
         }
@@ -175,12 +261,20 @@ namespace Assets.Scripts.Enemies
             CancelInvoke("HandleAttack");
             animator.Play("Death");
 
-            Invoke("DestroySelf", 8);
+            EnemyFactory.enemies.Remove(self);
+            foreach (GameObject child in listChild)
+            {
+                if (child != null && child.activeSelf == true)
+                {
+                    Destroy(child);
+                }
+
+            }
+            Invoke("DestroySelf", 2.0f);
         }
 
         private void DestroySelf()
         {
-            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
 
@@ -216,11 +310,6 @@ namespace Assets.Scripts.Enemies
                 {
                     isDeath = true;
                     Death();
-                    //foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
-                    //{
-                    //    if(enemy.GetComponentInChildren<Enemy>() != null)
-                    //        enemy.GetComponentInChildren<Enemy>().Death();
-                    //}
                 }
             }
             else
@@ -234,37 +323,40 @@ namespace Assets.Scripts.Enemies
         // Special skill
         private void HandleGenerateChild()
         {
+            if (listChild.Count > 15)
+                return;
+            // else isGenerating = false;
+
+
             if (attackTarget == null) return;
             if (isDeath || currentHealth <= 0) return;
 
             animator.Play("Skill");
+            StartCoroutine(HandleGenerateChildWaiter());
+        }
 
-            bool isBefore = false, isMiddle = false, isAfter = false;
-            for (int i = 0; i < 3; i++)
-            {
-                Vector3 position = new Vector3();
-                if (!isBefore)
-                {
-                    position.Set(self.transform.position.x - 8, self.transform.position.y, self.transform.position.z);
-                    isBefore = !isBefore;
-                }
-                else if (!isMiddle)
-                {
-                    position.Set(self.transform.position.x, self.transform.position.y, self.transform.position.z);
-                    isMiddle = !isMiddle;
-                }
-                else if (!isAfter)
-                {
+        IEnumerator HandleGenerateChildWaiter()
+        {
 
-                    position.Set(self.transform.position.x + 8, self.transform.position.y, self.transform.position.z);
-                    isAfter = !isAfter;
-                }
 
-                GameObject childObject = Instantiate(child, position, child.transform.rotation);
-                childObject.SetActive(true);
-                childObject.transform.localScale = new Vector3(2, 2, 2);
-                EnemyFactory.enemies.Add(childObject);
-            }
+            GameObject childObject1 = Instantiate(child, new Vector3(self.transform.position.x, self.transform.position.y, self.transform.position.z), child.transform.rotation);
+            childObject1.SetActive(true);
+            childObject1.transform.localScale = new Vector3(4.0f, 4.0f, 6.0f);
+            listChild.Add(childObject1);
+            yield return new WaitForSeconds(.2f);
+
+            GameObject childObject2 = Instantiate(child, new Vector3(self.transform.position.x - 8, self.transform.position.y, self.transform.position.z), child.transform.rotation);
+            childObject2.SetActive(true);
+            childObject2.transform.localScale = new Vector3(4.0f, 4.0f, 6.0f);
+            listChild.Add(childObject2);
+            yield return new WaitForSeconds(.4f);
+
+            GameObject childObject3 = Instantiate(child, new Vector3(self.transform.position.x + 8, self.transform.position.y, self.transform.position.z), child.transform.rotation);
+            childObject3.SetActive(true);
+            childObject3.transform.localScale = new Vector3(4.0f, 4.0f, 6.0f);
+            listChild.Add(childObject3);
+            yield return new WaitForSeconds(.5f);
+
         }
 
         public override void UpgrageLevelCorrespondToPhase(Phase phase)
@@ -272,10 +364,10 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        public override void Instantiate()
-        {
-            throw new System.NotImplementedException();
-        }
+        //public override void Instantiate()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
         public override void ReceiveHealthBumpFromBoss()
         {

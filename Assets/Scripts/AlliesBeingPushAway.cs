@@ -42,21 +42,16 @@ public class AlliesBeingPushAway : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Collision e " + collision.gameObject.tag);
-        Debug.Log(collision.gameObject.tag);
-        if (collision.gameObject.tag.Equals("vertical_wall")) {
+        if (collision.gameObject.tag.Equals("vertical_wall"))
+        {
 
             moveDirSpeed = 0;
         }
-        
-
-
     }
 
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        Debug.Log("Collision exit " + collision.gameObject.tag);
         if (collision.gameObject.tag.Equals("vertical_wall"))
         {
 

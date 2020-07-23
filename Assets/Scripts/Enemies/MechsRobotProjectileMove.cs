@@ -19,7 +19,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
     void Start()
     {
         // edit tag, hard code
-        player = GameObject.FindGameObjectWithTag("player");
+        //player = GameObject.FindGameObjectWithTag("player");
         if (attackTarget)
         {
             moveDir = (attackTarget.transform.position - self.transform.position).normalized;
@@ -50,52 +50,56 @@ public class MechsRobotProjectileMove : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision == null) return;
+        switch (collision.tag)
         {
-            Debug.Log(collision.tag);
-            Debug.Log(collision.name);
-            switch (collision.tag)
-            {
-                case "player":
-                    {
-                        player.GetComponent<TankController2>()?.TakeDamage(30);
-                        player.GetComponent<TankController3D>()?.TakeDamage(20);
+            case "player":
+                {
+                    attackTarget?.GetComponentInParent<TankController2>()?.TakeDamage(30);
+                    attackTarget?.GetComponentInParent<TankController3D>()?.TakeDamage(20);
 
-                        DestroyProjectile();
-                        break;
-                    }
-                case "allies":
-                case "allies_collider":
+                    DestroyProjectile();
+                    break;
+                }
+            case "allies":
+            case "allies_collider":
+                {
+                    if (attackTarget != null)
                     {
-                        if (attackTarget != null)
+                        if (attackTarget?.GetComponentInChildren<Dogcollider>() != null)
                         {
-                            if (attackTarget.GetComponentInChildren<Dogcollider>() != null)
-                            {
-                                attackTarget.GetComponentInChildren<Dogcollider>().TakeDamage(20);
-                            }
-                            else if (attackTarget.GetComponentInChildren<PlaneCollider>() != null)
-                            {
-                                attackTarget.GetComponentInChildren<PlaneCollider>().TakeDamage(20);
-                            }
-                            else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
-                            {
-                                attackTarget.GetComponentInChildren<EnemyTu>().TakeDamage(20);
-                            }
-                            Debug.Log("Destroy projectile");
-                            DestroyProjectile();
+                            attackTarget?.GetComponentInChildren<Dogcollider>()?.TakeDamage(20);
                         }
-                        break;
+                        else if (attackTarget?.GetComponentInChildren<PlaneCollider>() != null)
+                        {
+                            attackTarget?.GetComponentInChildren<PlaneCollider>()?.TakeDamage(20);
+                        }
+                        else if (attackTarget?.GetComponent<PlaneCollider>() != null)
+                        {
+                            attackTarget?.GetComponent<PlaneCollider>()?.TakeDamage(20);
+                        }
+                        else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
+                        {
+                            attackTarget?.GetComponentInChildren<EnemyTu>()?.TakeDamage(20);
+                        }
+                        Debug.Log("Destroy projectile");
+                        DestroyProjectile();
                     }
-            }
-
-            // Detect player 3D
-            if(collision.name.Equals("player_collider"))
-            {
-                collision.GetComponentInParent<TankController3D>()?.TakeDamage(20);
-                DestroyProjectile();
-            }
-
-
+                    break;
+                }
         }
+
+        // Detect player 3D
+        if (collision.name.Equals("player_collider"))
+        {
+            //collision.GetComponentInParent<TankController3D>()?.TakeDamage(20);
+            collision?.GetComponentInParent<TankController3D>()?.TakeDamage(1);
+            //player.GetComponent<TankController3D>()?.TakeDamage(1);
+            DestroyProjectile();
+        }
+
+
+
 
         if (collision.name == "GroundGrass")
         {
@@ -107,6 +111,7 @@ public class MechsRobotProjectileMove : MonoBehaviour
     void DestroyProjectile()
     {
         // Instantiate(explosion, transform.position, transform.rotation);
-        Destroy(self);
+        if (self)
+            Destroy(self);
     }
 }

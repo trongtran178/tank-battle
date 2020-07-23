@@ -25,7 +25,7 @@ namespace Assets.Scripts.Enemies
         private float currentHealth;
         private float generateEnemyTime = 10.0f;
         //private float takeDamageRatio = .5f;
-        private float takeDamageRatio = 0.5f;
+        private float takeDamageRatio = 1f;
         private bool isBurn = false;
 
         // If flag is true, generateEnemyTime will be decrease, ...
@@ -33,7 +33,7 @@ namespace Assets.Scripts.Enemies
         private bool isGenerating;
         private GameObject[] effectBurnArray;
         private System.Random random = new System.Random();
-
+        private int randomVal = 0;
 
         private bool isExistsBossLevel1 = false;
         private bool isExistsBossLevel2 = false;
@@ -54,16 +54,40 @@ namespace Assets.Scripts.Enemies
         {
             IgnoreEnemies();
             Globals.CurrentLevel = SceneManager.GetActiveScene().name;
+            switch(Globals.CurrentLevel)
+            {
+                case "Level1":
+                    {
+                        takeDamageRatio = .3f;
+                        break;
+                    }
+                case "Level2":
+                    {
+                        takeDamageRatio = .5f;
+                        break;
+                    }
+                case "Level3":
+                    {
+                        takeDamageRatio = .1f;
+                        break;
+                    }
+                default:
+                    {
+                        takeDamageRatio = .3f;
+                        break;
+                    }
+            }
             if (GameObject.FindGameObjectWithTag("player") != null)
             {
                 isGenerating = true;
-                InvokeRepeating("GenerateEnemy", 1.0f, generateEnemyTime);
+                InvokeRepeating("GenerateEnemy", .5f, generateEnemyTime);
             }
         }
 
         private void Update()
         {
-            if (Globals.CurrentLevel.Equals("Main2"))
+            randomVal = random.Next(1, 10);
+            if (Globals.CurrentLevel != null && Globals.CurrentLevel.Equals("Main2"))
                 InvokeRepeating("GenerateBossMultiplayer", 0.1f, 0.1f);
             if (currentHealth <= 30 && !isBurn)
             {
@@ -112,7 +136,7 @@ namespace Assets.Scripts.Enemies
                     {
                         GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
                         frogInit.SetActive(true);
-                        frogInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
+                        frogInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                         enemies.Add(frogInit);
                         break;
                     }
@@ -120,7 +144,7 @@ namespace Assets.Scripts.Enemies
                     {
                         GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
-                        mechsRobotInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
+                        mechsRobotInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                         enemies.Add(mechsRobotInit);
                         break;
                     }
@@ -287,11 +311,6 @@ namespace Assets.Scripts.Enemies
             currentHealthBar.transform.localScale = new Vector3((float)((currentHealth / 100) > 0 ? (currentHealth / 100) : 0), currentHealthBar.transform.localScale.y);
         }
 
-        public void HandleBurnHouse()
-        {
-
-        }
-
         private void GenerateEnemy()
         {
             int count = 0;
@@ -304,7 +323,6 @@ namespace Assets.Scripts.Enemies
             }
             if (currentHealth > 0)
             {
-                int randomVal = random.Next(1, 10);
                 CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
             }
         }
@@ -366,11 +384,11 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        public override void Instantiate()
-        {
-            // DO NOTHING
-            throw new System.NotImplementedException();
-        }
+        //public override void Instantiate()
+        //{
+        //    // DO NOTHING
+        //    throw new System.NotImplementedException();
+        //}
 
         public override void ReceiveHealthBumpFromBoss()
         {

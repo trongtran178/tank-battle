@@ -187,12 +187,23 @@ public class trajectoryScript : MonoBehaviour {
 
 
                 Vector3 ballFingerDiff1 = ballPos - fingerPos;
+                Debug.Log(ballFingerDiff1);
+
 
                 // if(Mathf.Sqrt((ballFingerDiff1.x*ballFingerDiff1.x)+(ballFingerDiff1.y*ballFingerDiff1.y))>maxDistance)
 
                 ballFingerDiff = ballFingerDiff1;
 
                 shotForce = new Vector2(ballFingerDiff.x * shootingPowerX, ballFingerDiff.y * shootingPowerY);  //The velocity of the shot is found
+
+                Debug.Log("shotforce: " + shotForce.x + "  " + shotForce.y);
+                if (shotForce.x > 50)
+                    shotForce.x = 50;
+
+                if (shotForce.x < -50)
+                    shotForce.x = -50;
+                //if (shotForce.y > 50)
+                //    shotForce.y = 50;
 
                 if ((Mathf.Sqrt((ballFingerDiff.x * ballFingerDiff.x) + (ballFingerDiff.y * ballFingerDiff.y)) > (0.4f)))
                 { //If the distance between the finger/cursor and the "ball" is big enough...

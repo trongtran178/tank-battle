@@ -86,8 +86,6 @@ public class MenuController : MonoBehaviour
             loadGameButton.SetActive(false);
         }
 
-
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
@@ -100,7 +98,14 @@ public class MenuController : MonoBehaviour
                 isPaused = true;
                 pauseMenu.SetActive(true);
                 Time.timeScale = 0f;
-                gun?.SetActive(false);
+                try
+                {
+                    gun?.SetActive(false);
+                }
+                catch
+                {
+                    Debug.Log("Player being killed");
+                }
             }
 
         }
@@ -117,7 +122,8 @@ public class MenuController : MonoBehaviour
         isPaused = false;
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
-        gun.SetActive(true);
+        if (gun != null)
+            gun.SetActive(true);
     }
 
     public void ReturnGame()
@@ -130,6 +136,7 @@ public class MenuController : MonoBehaviour
     {
         try
         {
+
             SaveSystem.SaveGameFactory(player, enemyHouse.GetComponentInChildren<EnemyFactory>(), manageRecoveryTime);
         }
         catch (Exception e)
@@ -190,7 +197,7 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject frogInit = Instantiate(frog, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), frog.transform.rotation);
                         frogInit.SetActive(true);
-                        frogInit.transform.localScale = new Vector3((float)1.5, (float)1.5, (float)1.5);
+                        frogInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                         frogInit.GetComponentInChildren<FrogEnemy>().SetCurrentHealth(enemyData.CurrentHeath);
                         frogInit.GetComponentInChildren<FrogEnemy>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(frogInit);
@@ -230,10 +237,10 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject bossLevel2ChildInit = Instantiate(bossLevel2_Child, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), bossLevel2_Child.transform.rotation);
                         bossLevel2ChildInit.SetActive(true);
-                        bossLevel2ChildInit.transform.localScale = new Vector3(2f, 2f, 2f);
+                        bossLevel2ChildInit.transform.localScale = new Vector3(4.0f, 4.0f, 6.0f);
                         bossLevel2ChildInit.GetComponentInChildren<EnemyBoss_Level2_Child>().SetCurrentHealth(enemyData.CurrentHeath);
                         bossLevel2ChildInit.GetComponentInChildren<EnemyBoss_Level2_Child>().HandleCurrentHealthBar();
-                        EnemyFactory.enemies.Add(bossLevel2ChildInit);
+                        EnemyBoss_Level2.listChild?.Add(bossLevel2ChildInit);
                         break;
                     }
                 case EnemyType.BOSS_LEVEL_3:

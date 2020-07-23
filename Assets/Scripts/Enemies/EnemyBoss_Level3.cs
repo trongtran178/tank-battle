@@ -15,7 +15,7 @@ namespace Assets.Scripts.Enemies
         private float currentHealth;
         private float minimumDistanceIndicatorBetweenAttackTarget = 10;
         private Rigidbody2D rigidBody2D;
-        private float takeDamageRatio = .5f;
+        private float takeDamageRatio = .03f;
         private bool isDeath = false;
         private System.Random random = new System.Random();
         private int randomPushAwayAttack;
@@ -49,7 +49,7 @@ namespace Assets.Scripts.Enemies
 
         void Update()
         {
-           
+
             if (currentHealth <= 0 || isDeath)
             {
                 Death();
@@ -62,7 +62,7 @@ namespace Assets.Scripts.Enemies
 
         }
 
-        private void Move()
+        void Move()
         {
             if (attackTarget == null || attackTarget.activeSelf == false)
             {
@@ -141,7 +141,7 @@ namespace Assets.Scripts.Enemies
                 if (animation.IsPlaying("Attack")) return;
                 animation.Play("Attack");
                 Invoke("AttackTargetTakeDamage", 0.7f);
-                self.GetComponent<Animation>()["Attack"].speed = (float)1.5;
+                self.GetComponent<Animation>()["Attack"].speed = 2.0f;
                 countAttack++;
 
 
@@ -175,8 +175,8 @@ namespace Assets.Scripts.Enemies
 
             else
             {
-                player.GetComponent<TankController2>()?.TakeDamage(30);
-                player.GetComponent<TankController3D>()?.TakeDamage(30);
+                attackTarget.GetComponentInParent<TankController2>()?.TakeDamage(30);
+                attackTarget.GetComponentInParent<TankController3D>()?.TakeDamage(30);
             }
 
         }
@@ -193,13 +193,12 @@ namespace Assets.Scripts.Enemies
             CancelInvoke("HandleAttack");
             horizontalMove = 0;
             animation.Play("Death");
-
-            Invoke("DestroySelf", 5);
+            EnemyFactory.enemies.Remove(self);
+            Invoke("DestroySelf", 2.0f);
         }
 
         private void DestroySelf()
         {
-            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
 
@@ -225,11 +224,12 @@ namespace Assets.Scripts.Enemies
 
         public override void TakeDamage(float damage)
         {
-            if (currentHealth <= 0 || isDeath) { 
+            if (currentHealth <= 0 || isDeath)
+            {
                 horizontalMove = 0;
                 return;
             }
-            
+
             damage *= takeDamageRatio;
             currentHealth -= damage;
             currentHealthBar.transform.localScale = new Vector3((currentHealth / 100f) > 0 ? (currentHealth / 100f) : 0, currentHealthBar.transform.localScale.y);
@@ -274,16 +274,24 @@ namespace Assets.Scripts.Enemies
             if (currentHealth <= 0 || isDeath) return;
             ArrayList alliesObjectsPushAway = new ArrayList(5);
             List<GameObject> allAllies = GameObject.FindGameObjectsWithTag("allies").ToList();
-            GameObject player = GameObject.FindGameObjectWithTag("player");
-            allAllies.Add(player);
+            GameObject[] players = GameObject.FindGameObjectsWithTag("player");
+            foreach(GameObject player in players)
+            {
+                if(!allAllies.Contains(player))
+                {
+                    allAllies.Add(player);
+                }
+            }
             foreach (GameObject alliesObject in allAllies)
             {
+                if (allAllies != null && alliesObject.activeSelf)
+                { 
+                    float distanceBetweenBoss = Vector2.Distance(self.transform.position, alliesObject.transform.position);
 
-                float distanceBetweenBoss = Vector2.Distance(self.transform.position, alliesObject.transform.position);
-
-                if (distanceBetweenBoss <= 20)
-                {
-                    alliesObjectsPushAway.Add(alliesObject);
+                    if (distanceBetweenBoss <= 20)
+                    {
+                        alliesObjectsPushAway.Add(alliesObject);
+                    }
                 }
             }
             foreach (GameObject allies in alliesObjectsPushAway)
@@ -306,10 +314,10 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        public override void Instantiate()
-        {
-            throw new System.NotImplementedException();
-        }
+        //public override void Instantiate()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
         public override void ReceiveHealthBumpFromBoss()
         {

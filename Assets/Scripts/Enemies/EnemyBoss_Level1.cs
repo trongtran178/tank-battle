@@ -11,14 +11,16 @@ namespace Assets.Scripts.Enemies
     {
         public GameObject self;
         public GameObject currentHealthBar;
+        
 
         private Animator animator; // include jump, idle, attack, fall back.
         private float currentHealth;
         private float minimumDistanceIndicatorBetweenAttackTarget = 15;
         private Rigidbody2D rigidBody2D;
-        private double takeDamageRatio = .3;
+        private double takeDamageRatio = .04f;
         private bool isDeath = false;
         private GameObject enemyNeedBumpHealth;
+        private AudioSource audioSourceBegin;
         /// <summary>
         ///  If horizontalMove negative, enemy will moving in left side,
         ///  else if horizontalMove is positive, enemy will moving in right side,
@@ -32,7 +34,7 @@ namespace Assets.Scripts.Enemies
         void Awake()
         {
             animator = self.GetComponent<Animator>();
-
+            audioSourceBegin = self.GetComponent<AudioSource>();
             currentHealth = maxHealth;
             rigidBody2D = GetComponentInParent<Rigidbody2D>();
         }
@@ -42,6 +44,8 @@ namespace Assets.Scripts.Enemies
             IgnoreEnemies();
             attackTarget = FindAttackTarget();
             InvokeRepeating("HandleAttack", .1f, .1f);
+            audioSourceBegin.Play();
+            moveSpeed = 40.0f;
         }
 
         void Update()
@@ -53,12 +57,19 @@ namespace Assets.Scripts.Enemies
                 return;
             }
             attackTarget = FindAttackTarget();
+            if (attackTarget == null || attackTarget.activeSelf == false)
+            {
+                CancelInvoke("HandleAttack");
+                animator.Play("idle_combat");
+                return;
+            }
             Move();
             HandleBumpBloodForTeammates();
         }
 
         private void Move()
         {
+            if (currentHealth <= 0) return;
             if (attackTarget == null || attackTarget.activeSelf == false)
             {
                 CancelInvoke("HandleAttack");
@@ -67,7 +78,6 @@ namespace Assets.Scripts.Enemies
             }
 
             // Neu het mau thi khong the tan cong duoc nua
-            if (currentHealth <= 0) return;
             // Neu dang tan cong thi khong chay animation va k tan cong nua, doi den khi 1 luot danh thanh cong
 
             //if (animator.is("Mon_T_Attack")) return;
@@ -156,8 +166,8 @@ namespace Assets.Scripts.Enemies
                 
             else
             {
-                player.GetComponent<TankController2>()?.TakeDamage(30);
-                player.GetComponent<TankController3D>()?.TakeDamage(30);
+                attackTarget.GetComponentInParent<TankController2>()?.TakeDamage(30);
+                attackTarget.GetComponentInParent<TankController3D>()?.TakeDamage(30);
 
             }
 
@@ -211,13 +221,12 @@ namespace Assets.Scripts.Enemies
         {
             CancelInvoke("HandleAttack");
             animator.Play("dead");
-
-            Invoke("DestroySelf", 8);
+            EnemyFactory.enemies?.Remove(self);
+            Invoke("DestroySelf", 2.0f);
         }
 
         private void DestroySelf()
         {
-            EnemyFactory.enemies.Remove(self);
             Destroy(self);
         }
 
@@ -272,10 +281,10 @@ namespace Assets.Scripts.Enemies
             throw new System.NotImplementedException();
         }
 
-        public override void Instantiate()
-        {
-            throw new System.NotImplementedException();
-        }
+        //public  void Instantiate()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
         public override void ReceiveHealthBumpFromBoss()
         {
