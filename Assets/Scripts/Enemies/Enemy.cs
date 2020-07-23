@@ -22,34 +22,9 @@ namespace Assets.Scripts.Enemies
         public abstract GameObject GetSelf();
         public abstract EnemyType GetEnemyType();
         public abstract bool IsShortRangeStrike();
-        // Detect collision with other enemy, enemy should go through another enemy
-        //private void Awake()
-        //{
-
-        //}
-        //private void Start()
-        //{
-        //    // player = GameObject.FindGameObjectWithTag("player");
-
-        //    GameObject[] otherEnemyControllers = GameObject.FindGameObjectsWithTag("enemy_controller");
-        //    foreach (GameObject enemyController in otherEnemyControllers)
-        //    {
-        //        Physics2D.IgnoreCollision(enemyController.GetComponent<PolygonCollider2D>(), GetComponent<PolygonCollider2D>());
-        //    }
-        //}
-        //void Update()
-        //{
-        //    GameObject[] otherEnemyControllers = GameObject.FindGameObjectsWithTag("enemy_controller");
-        //    foreach (GameObject enemyController in otherEnemyControllers)
-        //    {
-        //        Physics2D.IgnoreCollision(enemyController.GetComponent<PolygonCollider2D>(), GetComponent<PolygonCollider2D>());
-        //    }
-        //}
 
         protected GameObject FindAttackTarget()
         {
-            //player = GameObject.FindGameObjectWithTag("player");
-            //player_body = GameObject.FindGameObjectWithTag("player_body");
 
             GameObject _attackTarget = null;
             GameObject[] playerTargets = new GameObject[10];
@@ -62,7 +37,6 @@ namespace Assets.Scripts.Enemies
             //playerTarget = player_body;
             if (playerTargets != null)
             {
-                //&& !allies.Contains(playerTarget)
                 for(int i = 0; i < playerTargets.Length; i++)
                 {
                     if (!allies.Contains(playerTargets[i]))
@@ -70,7 +44,6 @@ namespace Assets.Scripts.Enemies
                         allies.Add(playerTargets[i]);
                     }
                 }
-                // allies.Add(playerTarget);
             }
 
             // get all allies

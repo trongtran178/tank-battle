@@ -58,17 +58,17 @@ namespace Assets.Scripts.Enemies
             {
                 case "Level1":
                     {
-                        takeDamageRatio = .3f;
+                        takeDamageRatio = .2f;
                         break;
                     }
                 case "Level2":
                     {
-                        takeDamageRatio = .5f;
+                        takeDamageRatio = .1f;
                         break;
                     }
                 case "Level3":
                     {
-                        takeDamageRatio = .1f;
+                        takeDamageRatio = .05f;
                         break;
                     }
                 default:
