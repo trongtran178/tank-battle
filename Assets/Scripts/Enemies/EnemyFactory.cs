@@ -136,7 +136,7 @@ namespace Assets.Scripts.Enemies
                     {
                         GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
                         frogInit.SetActive(true);
-                        frogInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                        frogInit.transform.localScale = new Vector3(3.0f, 3.0f, 3.0f);
                         enemies.Add(frogInit);
                         break;
                     }
@@ -144,7 +144,7 @@ namespace Assets.Scripts.Enemies
                     {
                         GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
-                        mechsRobotInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                        mechsRobotInit.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
                         enemies.Add(mechsRobotInit);
                         break;
                     }

@@ -197,7 +197,7 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject frogInit = Instantiate(frog, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), frog.transform.rotation);
                         frogInit.SetActive(true);
-                        frogInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                        frogInit.transform.localScale = new Vector3(3.0f, 3.0f, 3.0f);
                         frogInit.GetComponentInChildren<FrogEnemy>().SetCurrentHealth(enemyData.CurrentHeath);
                         frogInit.GetComponentInChildren<FrogEnemy>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(frogInit);
@@ -207,7 +207,7 @@ public class MenuController : MonoBehaviour
                     {
                         GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(enemyData.PositionX, enemyData.PositionY, enemyData.PositionZ), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
-                        mechsRobotInit.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                        mechsRobotInit.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
                         mechsRobotInit.GetComponentInChildren<MechsRobotEnemy>().SetCurrentHealth(enemyData.CurrentHeath);
                         mechsRobotInit.GetComponentInChildren<MechsRobotEnemy>().HandleCurrentHealthBar();
                         EnemyFactory.enemies.Add(mechsRobotInit);

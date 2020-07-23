@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,62 +51,65 @@ public class MechsRobotProjectileMove : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision == null) return;
-        switch (collision.tag)
+        try
         {
-            case "player":
-                {
-                    attackTarget?.GetComponentInParent<TankController2>()?.TakeDamage(30);
-                    attackTarget?.GetComponentInParent<TankController3D>()?.TakeDamage(20);
-
-                    DestroyProjectile();
-                    break;
-                }
-            case "allies":
-            case "allies_collider":
-                {
-                    if (attackTarget != null)
+            if (collision == null) return;
+            switch (collision.tag)
+            {
+                case "player":
                     {
-                        if (attackTarget?.GetComponentInChildren<Dogcollider>() != null)
-                        {
-                            attackTarget?.GetComponentInChildren<Dogcollider>()?.TakeDamage(20);
-                        }
-                        else if (attackTarget?.GetComponentInChildren<PlaneCollider>() != null)
-                        {
-                            attackTarget?.GetComponentInChildren<PlaneCollider>()?.TakeDamage(20);
-                        }
-                        else if (attackTarget?.GetComponent<PlaneCollider>() != null)
-                        {
-                            attackTarget?.GetComponent<PlaneCollider>()?.TakeDamage(20);
-                        }
-                        else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
-                        {
-                            attackTarget?.GetComponentInChildren<EnemyTu>()?.TakeDamage(20);
-                        }
-                        Debug.Log("Destroy projectile");
+                        attackTarget?.GetComponentInParent<TankController2>()?.TakeDamage(30);
+                        attackTarget?.GetComponentInParent<TankController3D>()?.TakeDamage(20);
+
                         DestroyProjectile();
+                        break;
                     }
-                    break;
-                }
-        }
+                case "allies":
+                case "allies_collider":
+                    {
+                        if (attackTarget != null)
+                        {
+                            if (attackTarget?.GetComponentInChildren<Dogcollider>() != null)
+                            {
+                                attackTarget?.GetComponentInChildren<Dogcollider>()?.TakeDamage(20);
+                            }
+                            else if (attackTarget?.GetComponentInChildren<PlaneCollider>() != null)
+                            {
+                                attackTarget?.GetComponentInChildren<PlaneCollider>()?.TakeDamage(20);
+                            }
+                            else if (attackTarget?.GetComponent<PlaneCollider>() != null)
+                            {
+                                attackTarget?.GetComponent<PlaneCollider>()?.TakeDamage(20);
+                            }
+                            else if (attackTarget.GetComponentInChildren<EnemyTu>() != null)
+                            {
+                                attackTarget?.GetComponentInChildren<EnemyTu>()?.TakeDamage(20);
+                            }
+                            Debug.Log("Destroy projectile");
+                            DestroyProjectile();
+                        }
+                        break;
+                    }
+            }
 
-        // Detect player 3D
-        if (collision.name.Equals("player_collider"))
+            // Detect player 3D
+            if (collision.name.Equals("player_collider"))
+            {
+                //collision.GetComponentInParent<TankController3D>()?.TakeDamage(20);
+                collision?.GetComponentInParent<TankController3D>()?.TakeDamage(1);
+                //player.GetComponent<TankController3D>()?.TakeDamage(1);
+                DestroyProjectile();
+            }
+
+            if (collision.name == "GroundGrass")
+            {
+                DestroyProjectile();
+            }
+        }
+        catch
         {
-            //collision.GetComponentInParent<TankController3D>()?.TakeDamage(20);
-            collision?.GetComponentInParent<TankController3D>()?.TakeDamage(1);
-            //player.GetComponent<TankController3D>()?.TakeDamage(1);
-            DestroyProjectile();
+            Debug.Log("Catch error in robot projectile !");
         }
-
-
-
-
-        if (collision.name == "GroundGrass")
-        {
-            DestroyProjectile();
-        }
-
     }
 
     void DestroyProjectile()
