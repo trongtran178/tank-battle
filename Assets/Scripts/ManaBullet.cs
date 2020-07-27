@@ -16,7 +16,8 @@ public class ManaBullet : MonoBehaviour
     void Start()
     {
         //bullet = GetComponent<Image>();
-        manaBullet = maxBullet;
+        //manaBullet = maxBullet;
+        manaBullet=0;
     }
 
     // Update is called once per frame
