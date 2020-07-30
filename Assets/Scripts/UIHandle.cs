@@ -31,6 +31,7 @@ public class UIHandle : MonoBehaviourPunCallbacks
         camera.SetActive(false);
 
     }
+ 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         print("Room Join fail "+returnCode+" Message "+message);

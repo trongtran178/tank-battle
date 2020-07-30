@@ -16,7 +16,7 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     public Text nametxt;
 
     private Vector3 smootMove;
-    //public GameObject cameraMain;
+    public GameObject cameraMain;
     new public GameObject playerCamera;
 
     public Image healthyBar;
@@ -156,6 +156,11 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     [PunRPC]
     private void destroyTank()
     {
+        //cameraMain = GameObject.Find("Main Camera");
+        //cameraMain.SetActive(true);
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LeaveLobby();
+        PhotonNetwork.Disconnect();
         Destroy(this.gameObject);
     }
     public void shooting()

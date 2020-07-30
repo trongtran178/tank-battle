@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System;
 using System.IO;
+using Photon.Pun;
 
 public class MenuController : MonoBehaviour
 {
@@ -60,12 +61,15 @@ public class MenuController : MonoBehaviour
     private GameObject gun;
 
     private string playerPath;
+
+    private TankController3D tankController3D;
     // Start is called before the first frame update
     void Start()
     {
         gun = GameObject.Find("Gun");
         playerPath = Application.persistentDataPath + "/player.fun";
         Debug.Log(SceneManager.GetActiveScene());
+        
         
     }
 
@@ -136,6 +140,8 @@ public class MenuController : MonoBehaviour
 
     public void ReturnGame()
     {
+        tankController3D = GameObject.FindGameObjectWithTag("player").GetComponent<TankController3D>();
+        tankController3D.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
         Time.timeScale = 1f;
         SceneManager.LoadScene("Menu");
     }

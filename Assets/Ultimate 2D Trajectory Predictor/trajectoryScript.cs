@@ -64,7 +64,7 @@ public class trajectoryScript : MonoBehaviour {
     public static bool block3 = false;
 
     public float maxDistance;
-    private bool flagCheckGun = true;
+    private bool flagCheckGun = false;
     private bool flagMouse = true;
 
 
@@ -95,9 +95,9 @@ public class trajectoryScript : MonoBehaviour {
             }
             trajectoryDots.SetActive(false);                            //Trajectory initialization complete, the trajectory is hidden
 
-            block1 = true;
-            block2 = true;
-            block3 = true;
+            block1 = false;
+            block2 = false;
+            block3 = false;
        
 
     }
