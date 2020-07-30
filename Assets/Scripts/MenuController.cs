@@ -65,6 +65,8 @@ public class MenuController : MonoBehaviour
     {
         gun = GameObject.Find("Gun");
         playerPath = Application.persistentDataPath + "/player.fun";
+        Debug.Log(SceneManager.GetActiveScene());
+        
     }
 
     // Update is called once per frame
@@ -78,6 +80,12 @@ public class MenuController : MonoBehaviour
         else
         {
             loadGameButton.SetActive(true);
+        }
+
+        if (SceneManager.GetActiveScene().name.Equals("Main2"))
+        {
+            if(saveGameButton.activeSelf) saveGameButton.SetActive(false);
+            if(loadGameButton.activeSelf) loadGameButton.SetActive(false);
         }
 
         if ((isWin == true || isLose == true))
