@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System;
 using System.IO;
+using Photon.Pun;
 
 public class MenuController : MonoBehaviour
 {
@@ -60,11 +61,16 @@ public class MenuController : MonoBehaviour
     private GameObject gun;
 
     private string playerPath;
+
+    private TankController3D tankController3D;
     // Start is called before the first frame update
     void Start()
     {
         gun = GameObject.Find("Gun");
         playerPath = Application.persistentDataPath + "/player.fun";
+        Debug.Log(SceneManager.GetActiveScene());
+        
+        
     }
 
     // Update is called once per frame
@@ -78,6 +84,12 @@ public class MenuController : MonoBehaviour
         else
         {
             loadGameButton.SetActive(true);
+        }
+
+        if (SceneManager.GetActiveScene().name.Equals("Main2"))
+        {
+            if(saveGameButton.activeSelf) saveGameButton.SetActive(false);
+            if(loadGameButton.activeSelf) loadGameButton.SetActive(false);
         }
 
         if ((isWin == true || isLose == true))
@@ -128,6 +140,8 @@ public class MenuController : MonoBehaviour
 
     public void ReturnGame()
     {
+        tankController3D = GameObject.FindGameObjectWithTag("player").GetComponent<TankController3D>();
+        tankController3D.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
         Time.timeScale = 1f;
         SceneManager.LoadScene("Menu");
     }

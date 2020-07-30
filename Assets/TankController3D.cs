@@ -158,6 +158,9 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     {
         //cameraMain = GameObject.Find("Main Camera");
         //cameraMain.SetActive(true);
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LeaveLobby();
+        PhotonNetwork.Disconnect();
         Destroy(this.gameObject);
     }
     public void shooting()

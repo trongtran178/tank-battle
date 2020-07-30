@@ -70,7 +70,7 @@ public class PhotonConnection : MonoBehaviourPunCallbacks
     }
     public override void OnDisconnected(DisconnectCause cause)
     {
-        print("Disconnected "+cause);
+        // print("Disconnected "+cause);
         disconnectionScreen.SetActive(true);
     }
 
