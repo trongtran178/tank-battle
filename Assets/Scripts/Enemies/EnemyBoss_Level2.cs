@@ -75,6 +75,7 @@ namespace Assets.Scripts.Enemies
                     {
                         child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
                         child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                        // GameObject.FindGameObjectWithTag("player").GetComponent<TankController3D>().
                     }
 
                 }
