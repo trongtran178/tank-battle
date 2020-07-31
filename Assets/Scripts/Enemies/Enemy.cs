@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Photon.Pun;
 using UnityEngine;
 namespace Assets.Scripts.Enemies
 {

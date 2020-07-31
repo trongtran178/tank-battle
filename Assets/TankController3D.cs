@@ -148,6 +148,10 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
         {
             shooting();
         }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            this.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
+        }
 
         healthyBar.fillAmount = tankHealth / maxHealth;
         if (tankHealth <= 0)
