@@ -140,8 +140,7 @@ public class MenuController : MonoBehaviour
 
     public void ReturnGame()
     {
-        tankController3D = GameObject.FindGameObjectWithTag("player").GetComponent<TankController3D>();
-        tankController3D.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
+
         Time.timeScale = 1f;
         SceneManager.LoadScene("Menu");
     }

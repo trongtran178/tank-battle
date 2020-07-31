@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Enemies;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -41,6 +42,7 @@ namespace Assets.Scripts.Enemies
 
         void Awake()
         {
+            // if(enemies.)
             enemies = new ArrayList();
             currentHealth = maxHealth;
             effectBurnArray = GameObject.FindGameObjectsWithTag("house_fire");

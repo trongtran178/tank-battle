@@ -162,8 +162,8 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LeaveLobby();
         PhotonNetwork.Disconnect();
-        PhotonNetwork.Destroy(gameObject);
 
+        PhotonNetwork.Destroy(this.gameObject);
         SceneManager.LoadScene("Menu");
     }
     public void shooting()
