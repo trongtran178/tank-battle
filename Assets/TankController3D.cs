@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TankController3D : MonoBehaviourPun,IPunObservable
@@ -135,8 +136,8 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
     {
         transform.position = Vector3.Lerp(transform.position, smootMove, Time.deltaTime * 10);
         healthyBar.fillAmount = tankHealth / maxHealth;
-        if (tankHealth <= 0)
-            this.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
+        //if (tankHealth <= 0)
+        //    this.GetComponent<PhotonView>().RPC("destroyTank", RpcTarget.AllBuffered);
     }
     private void ProcessInput()
     {
@@ -161,7 +162,9 @@ public class TankController3D : MonoBehaviourPun,IPunObservable
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LeaveLobby();
         PhotonNetwork.Disconnect();
-        Destroy(this.gameObject);
+
+        PhotonNetwork.Destroy(this.gameObject);
+        SceneManager.LoadScene("Menu");
     }
     public void shooting()
     {

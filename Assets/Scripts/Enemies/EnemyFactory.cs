@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Enemies;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -134,7 +135,9 @@ namespace Assets.Scripts.Enemies
             {
                 case EnemyType.FROG:
                     {
-                        GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
+                         //PhotonNetwork.Instantiate(bulletPrefab.name, pointShooting.transform.position, pointShooting.transform.rotation);
+                        //GameObject frogInit = Instantiate(frog, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
+                        GameObject frogInit = PhotonNetwork.Instantiate(frog.name, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), frog.transform.rotation);
                         frogInit.SetActive(true);
                         frogInit.transform.localScale = new Vector3(3.0f, 3.0f, 3.0f);
                         enemies.Add(frogInit);
@@ -142,7 +145,7 @@ namespace Assets.Scripts.Enemies
                     }
                 case EnemyType.MECHS_ROBOT:
                     {
-                        GameObject mechsRobotInit = Instantiate(mechsRobot, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
+                        GameObject mechsRobotInit = PhotonNetwork.Instantiate(mechsRobot.name, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), mechsRobot.transform.rotation);
                         mechsRobotInit.SetActive(true);
                         mechsRobotInit.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
                         enemies.Add(mechsRobotInit);
@@ -158,7 +161,7 @@ namespace Assets.Scripts.Enemies
                     }
                 case EnemyType.BOSS_LEVEL_1:
                     {
-                        GameObject bossLevel1Init = Instantiate(bossLevel1, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel1.transform.rotation);
+                        GameObject bossLevel1Init = PhotonNetwork.Instantiate(bossLevel1.name, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel1.transform.rotation);
                         bossLevel1Init.SetActive(true);
                         bossLevel1Init.transform.localScale = new Vector3(2.5f, 4.0f, 2.5f);
                         enemies.Add(bossLevel1Init);
@@ -166,7 +169,7 @@ namespace Assets.Scripts.Enemies
                     }
                 case EnemyType.BOSS_LEVEL_2:
                     {
-                        GameObject bossLevel2Init = Instantiate(bossLevel2, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel2.transform.rotation);
+                        GameObject bossLevel2Init = PhotonNetwork.Instantiate(bossLevel2.name, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel2.transform.rotation);
                         bossLevel2Init.SetActive(true);
                         bossLevel2Init.transform.localScale = new Vector3(120, 120, 120);
                         enemies.Add(bossLevel2Init);
@@ -174,7 +177,7 @@ namespace Assets.Scripts.Enemies
                     }
                 case EnemyType.BOSS_LEVEL_3:
                     {
-                        GameObject bossLevel3Init = Instantiate(bossLevel3, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel3.transform.rotation);
+                        GameObject bossLevel3Init = PhotonNetwork.Instantiate(bossLevel3.name, new Vector3(self.transform.position.x - 18, self.transform.position.y, self.transform.position.z), bossLevel3.transform.rotation);
                         bossLevel3Init.SetActive(true);
                         bossLevel3Init.transform.localScale = new Vector3(.7f, .7f, .7f);
                         enemies.Add(bossLevel3Init);
