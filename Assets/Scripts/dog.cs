@@ -32,15 +32,18 @@ public class dog : MonoBehaviour
         vely = rb.velocity.y;
         rb.velocity = new Vector2(velx, vely);
         checkflag = GameObject.Find("colliderDog");
+        Dogcollider dogcollider = GetComponentInChildren<Dogcollider>();
+       
+        if (dogcollider == null)
+        {
+            Destroy(gameObject);
+        }
 
         if (isDizzy)
         {
             return;
         }
-        if (checkflag == null)
-        {
-            Destroy(gameObject);
-        }
+
         if (velx > 0)
         {
             ami.SetBool("isWalk", true);

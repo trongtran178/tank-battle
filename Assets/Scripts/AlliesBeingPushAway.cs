@@ -21,6 +21,9 @@ public class AlliesBeingPushAway : MonoBehaviour
     }
     void Update()
     {
+        if (self.GetComponentInChildren<Dogcollider>()?.health <= 0) Destroy(gameObject);
+        if (self.GetComponentInChildren<EnemyTu>()?.health <= 0) Destroy(gameObject);
+        if (self.GetComponentInChildren<PlaneCollider>()?.PlaneHealth <= 0) Destroy(gameObject);
         moveDir = self.transform.position - new Vector3(self.transform.position.x + (isMoveToLeft ? (5) : (-5)), self.transform.position.y, self.transform.position.z);
         if (isPushAway)
         {

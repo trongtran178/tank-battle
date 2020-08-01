@@ -51,9 +51,10 @@ namespace Assets.Scripts.Enemies
             GameObject[] alliesArray = GameObject.FindGameObjectsWithTag("allies");
             for (int i = 0; i < alliesArray.Length; i++)
             {
-                // If enemy attack form is short range strike and target is plane, then ignore it
+                // If enemy attack form is short range strike and target is plane, then ignore it (exception in level 3)
                 // Handle logic here
-                if (GetEnemyType() != EnemyType.BOSS_LEVEL_3
+                if (GetEnemyType() != EnemyType.BOSS_LEVEL_2
+                    && GetEnemyType() != EnemyType.BOSS_LEVEL_3
                     && IsShortRangeStrike()
                     && alliesArray[i].GetComponentInChildren<PlaneControiler>() != null
                 )
@@ -67,7 +68,8 @@ namespace Assets.Scripts.Enemies
 
             foreach (GameObject alliesGameObject in allies)
             {
-                float distance = Vector2.Distance(alliesGameObject.transform.position, transform.position);
+                //float distance = Vector2.Distance(alliesGameObject.transform.position, transform.position);
+                float distance = Vector2.Distance(new Vector2(alliesGameObject.transform.position.x, transform.position.y), transform.position);
                 if (shortestAttackTargetDistance >= distance)
                 {
                     shortestAttackTargetDistance = distance;

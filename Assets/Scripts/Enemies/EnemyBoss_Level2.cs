@@ -52,6 +52,8 @@ namespace Assets.Scripts.Enemies
                 return;
             }
             attackTarget = FindAttackTarget();
+            if (attackTarget == null || attackTarget.activeSelf == false) return;
+            HandleMinimumDistanceIndicatorBetweenAttackTarget();
             Move();
         }
 
@@ -248,6 +250,19 @@ namespace Assets.Scripts.Enemies
                 attackTarget.GetComponentInParent<TankController3D>()?.TakeDamage(30);
             }
 
+        }
+
+        private void HandleMinimumDistanceIndicatorBetweenAttackTarget()
+        {
+
+            if (attackTarget.GetComponentInChildren<PlaneControiler>() != null)
+            {
+                minimumDistanceIndicatorBetweenAttackTarget = 20;
+            }
+            else
+            {
+                minimumDistanceIndicatorBetweenAttackTarget = 15;
+            }
         }
 
         private bool IsFlip()

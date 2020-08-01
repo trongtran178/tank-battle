@@ -39,12 +39,12 @@ namespace Assets.Scripts.Enemies
         private bool isExistsBossLevel1 = false;
         private bool isExistsBossLevel2 = false;
         private bool isExistsBossLevel3 = false;
+        private long generateEnemyCount = 0;
+
 
         void Awake()
         {
-            // if(enemies.)
-            enemies = new ArrayList();
-            currentHealth = maxHealth;
+           
             effectBurnArray = GameObject.FindGameObjectsWithTag("house_fire");
             foreach (GameObject effectBurn in effectBurnArray)
             {
@@ -54,6 +54,8 @@ namespace Assets.Scripts.Enemies
 
         private void Start()
         {
+            enemies = new ArrayList();
+            currentHealth = maxHealth;
             IgnoreEnemies();
             Globals.CurrentLevel = SceneManager.GetActiveScene().name;
             switch(Globals.CurrentLevel)
@@ -132,6 +134,7 @@ namespace Assets.Scripts.Enemies
         public void CreateEnemies(EnemyType enemyType)
         {
             if (enemies.Count >= 15) return;
+            generateEnemyCount++;
             switch (enemyType)
             {
                 case EnemyType.FROG:
@@ -282,7 +285,7 @@ namespace Assets.Scripts.Enemies
         {
             Bullet bullet = collision.GetComponent<Bullet>();
             if (bullet != null)
-            {
+            {   
                 TakeDamage(bullet.damage);
             }
         }
@@ -315,17 +318,21 @@ namespace Assets.Scripts.Enemies
 
         private void GenerateEnemy()
         {
-            int count = 0;
-            foreach (GameObject enemy in enemies)
-            {
-                if (enemy != null)
-                {
-                    count++;
-                }
-            }
+            //int count = 0;
+            //foreach (GameObject enemy in enemies)
+            //{
+            //    if (enemy != null)
+            //    {
+            //        count++;
+            //    }
+            //}
             if (currentHealth > 0)
             {
-                CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+                if (SceneManager.GetActiveScene().name.Equals("Main2")) {
+                    // Debug.Log(329 + ", " + count);
+                    CreateEnemies(generateEnemyCount % 3 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
+                }
+                else CreateEnemies(randomVal % 2 == 0 ? EnemyType.MECHS_ROBOT : EnemyType.FROG);
             }
         }
 
